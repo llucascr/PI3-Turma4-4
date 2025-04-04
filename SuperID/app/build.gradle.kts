@@ -1,9 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
-
     id("com.google.gms.google-services")
-
-    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -13,7 +12,7 @@ android {
     defaultConfig {
         applicationId = "br.edu.puccampinas.pi3.turma4.superid"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
