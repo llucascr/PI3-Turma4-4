@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
@@ -28,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -69,10 +72,22 @@ class SingUpActivity : ComponentActivity() {
                 if (taks.isSuccessful) {
                     Log.d("AUTH-INFO",
                         "createUserWithEmail:success | UID: ${taks.result.user!!.uid}")
+                    saveAccount(taks.result.user!!)
                 } else {
                     Log.w("AUTH-INFO", "createUserWithEmail:failure", taks.exception)
                 }
             }
+    }
+
+    private fun saveAccount(user: FirebaseUser) {
+        val db = Firebase.firestore
+
+        val testDoc = hashMapOf(
+            "email" to user.email,
+            "uid" to user.uid,
+        )
+
+        db.collection("UserDocs").add(testDoc)
     }
 }
 
@@ -85,7 +100,11 @@ fun Greeting2(modifier: Modifier = Modifier) {
 
     val singUpActivity = SingUpActivity()
 
-    Column {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         OutlinedTextField(
             value = email,
