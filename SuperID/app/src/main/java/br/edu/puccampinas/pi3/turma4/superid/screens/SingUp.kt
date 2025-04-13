@@ -42,8 +42,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.MainActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.creatAccount
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingUpColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
@@ -55,11 +57,12 @@ fun SingUpFormScreen(navController: NavController) {
     var passwordVisible by remember { mutableStateOf(false) }
     var agreeTerms by remember { mutableStateOf(false) }
 
+    var context = LocalContext.current
+
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(40.dp))
 
@@ -94,8 +97,8 @@ fun SingUpFormScreen(navController: NavController) {
             placeholder = { Text("Name") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFFF7F9FD),
-                unfocusedContainerColor = Color(0xFFF7F9FD)
+                focusedContainerColor = SingUpColors.White,
+                unfocusedContainerColor = SingUpColors.White
             )
         )
 
@@ -107,8 +110,8 @@ fun SingUpFormScreen(navController: NavController) {
             placeholder = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFFF7F9FD),
-                unfocusedContainerColor = Color(0xFFF7F9FD)
+                focusedContainerColor = SingUpColors.White,
+                unfocusedContainerColor = SingUpColors.White
             )
         )
 
@@ -129,8 +132,8 @@ fun SingUpFormScreen(navController: NavController) {
                 }
             },
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFFF7F9FD),
-                unfocusedContainerColor = Color(0xFFF7F9FD)
+                focusedContainerColor = SingUpColors.White,
+                unfocusedContainerColor = SingUpColors.White
             )
         )
 
@@ -149,7 +152,7 @@ fun SingUpFormScreen(navController: NavController) {
             )
             Text(
                 text = "Tarms",
-                color = Color(0xFF3A5EFF),
+                color = SingUpColors.DarkBlue,
                 fontSize = 12.sp,
                 modifier = Modifier.clickable { }
             )
@@ -159,7 +162,7 @@ fun SingUpFormScreen(navController: NavController) {
             )
             Text(
                 text = "Privacy Policy",
-                color = Color(0xFF3A5EFF),
+                color = SingUpColors.DarkBlue,
                 fontSize = 12.sp,
                 modifier = Modifier.clickable { }
             )
@@ -169,14 +172,14 @@ fun SingUpFormScreen(navController: NavController) {
 
         Button(
             onClick = {
-//                creatAccount()
+                creatAccount(context, name, email, password)
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF3A5EFF)
+                containerColor = SingUpColors.DarkBlue
             )
         ) {
             Text("Creat Account", color = Color.White)
@@ -188,7 +191,7 @@ fun SingUpFormScreen(navController: NavController) {
             Text("Do you have account? ", fontSize = 13.sp)
             Text(
                 "Sign In",
-                color = Color(0xFF3A5EFF),
+                color = SingUpColors.DarkBlue,
                 fontSize = 13.sp,
                 modifier = Modifier.clickable { }
             )
@@ -200,6 +203,6 @@ fun SingUpFormScreen(navController: NavController) {
 @Composable
 fun SingUpFormScreenPreview() {
     SuperIDTheme {
-
+        SingUpFormScreen(navController = rememberNavController())
     }
 }

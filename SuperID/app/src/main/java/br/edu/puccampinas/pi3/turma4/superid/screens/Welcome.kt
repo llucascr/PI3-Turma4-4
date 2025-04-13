@@ -20,10 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.AuthenticationActivity
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.WelcomeColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.WelcomeColors.primaryBlue
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.WelcomeColors.textColor
@@ -79,7 +82,7 @@ fun WelcomeScreen(navController: NavController) {
                 color = textColor,
                 fontSize = 14.sp,
                 lineHeight = 20.sp,
-                textAlign = TextAlign.Justify,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 24.dp)
@@ -97,9 +100,17 @@ fun WelcomeScreen(navController: NavController) {
                 shape = RoundedCornerShape(16.dp),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
             ) {
-                Text(text = "Next page", color = Color.White, fontSize = 16.sp)
+                Text(text = "Proxima página", color = Color.White, fontSize = 16.sp)
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun WelcomeScreenPreview() {
+    SuperIDTheme {
+        WelcomeScreen(navController = rememberNavController())
     }
 }

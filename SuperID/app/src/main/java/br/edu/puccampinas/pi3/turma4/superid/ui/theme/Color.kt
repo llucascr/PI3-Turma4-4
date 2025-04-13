@@ -22,3 +22,8 @@ object SingInColors {
     val primaryBlue = Color(0xFF3E61FE)
     val textColor = Color(0xFFCED1D9)
 }
+
+object SingUpColors {
+    val White = Color(0xFFF7F9FD)
+    val DarkBlue = Color(0xFF3A5EFF)
+}
