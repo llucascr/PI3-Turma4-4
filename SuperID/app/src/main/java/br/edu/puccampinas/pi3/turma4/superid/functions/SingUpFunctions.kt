@@ -9,14 +9,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-public fun creatAccount(context: Context, name: String, email: String, password: String) {
+private fun creatAccount(context: Context, name: String, email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
     val auth = Firebase.auth
     auth.createUserWithEmailAndPassword(email, password)
         .addOnCompleteListener {taks ->
             if (taks.isSuccessful) {
-                Log.d("AUTH-INFO",
-                    "createUserWithEmail:success | UID: ${taks.result.user!!.uid}")
-                saveAccount(context, name, taks.result.user!!)
+                Log.d("AUTH-INFO","createUserWithEmail:success | UID: ${taks.result.user!!.uid}")
+                saveAccount(context, name, taks.result.user!!, onSuccess, onFailure)
                 sendEmailVerification()
             } else {
                 Log.w("AUTH-INFO", "createUserWithEmail:failure", taks.exception)
@@ -25,35 +24,34 @@ public fun creatAccount(context: Context, name: String, email: String, password:
 }
 
 @SuppressLint("HardwareIds")
-private fun saveAccount(context: Context, name: String, user: FirebaseUser) {
+private fun saveAccount(context: Context, name: String, user: FirebaseUser, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
     val db = Firebase.firestore
 
     val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
 
-    val userDoc = hashMapOf(
-        "name" to name,
-        "email" to user.email,
-        "uid" to user.uid,
-        "ime" to androidId,
-        "emailValidated" to false,
+    val userDoc: HashMap<String, String> = hashMapOf(
+        "IMEI" to androidId,
+        "UID" to user.uid,
+        "NAME" to name
     )
 
-    db.collection("UserDocs").add(userDoc)
+    db.collection("users").document(user.uid).set(userDoc)
         .addOnCompleteListener {taks ->
             if (taks.isSuccessful) {
                 Log.d("FIRESTORE-INFO", "User saved!")
+                onSuccess()
             } else {
                 Log.w("FIRESTORE-INFO", "Error saving user: ${taks.exception}")
             }
         }
         .addOnFailureListener {e ->
             Log.e("FIRESTORE-INFO", "Error in save function: ", e)
+            onFailure(e)
         }
 }
 
-fun sendEmailVerification () {
+private fun sendEmailVerification () {
     val user = Firebase.auth.currentUser
-    val db = Firebase.firestore
 
     user?.sendEmailVerification()
         ?.addOnCompleteListener {taks ->
@@ -65,7 +63,7 @@ fun sendEmailVerification () {
         }
 }
 
-fun emailValidation() {
+private fun emailValidation() {
     val user = Firebase.auth.currentUser
     val db = Firebase.firestore
 
@@ -92,15 +90,26 @@ fun emailValidation() {
 }
 
 
+/**
+ * Chama as funções de validação dos campos do cadastro,
+ * para descobrir se todos são validos
+ */
+private fun fieldValidation(name: String, email: String, password: String): Boolean {
+    if (validationUtils.emptyRegistrationFields(name, email, password)
+        && validationUtils.emailValidation(email)
+        && validationUtils.passwordInvalid(password)) {
+            return false
+    }
 
-//fun validationFildsSingUp(nome: String, email: String, senha: String) {
-//    if (areSingUp)
-//}
+    return true
+}
 
-fun validationSingUp(context: Context, nome: String, email: String, senha: String,
+fun validationSingUp(context: Context, name: String, email: String, password: String,
                      onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-//    if (!validationFildsSingUp(nome, email, senha)) {
-//
-//    }
+    if (!fieldValidation(name, email, password)) {
+        onFailure(Exception("Campos inválidos"))
+        return
+    }
 
+    creatAccount(context, name, email, password, onSuccess, onFailure)
 }

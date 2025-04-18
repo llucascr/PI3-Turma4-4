@@ -18,8 +18,6 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -37,14 +35,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.MainActivity
-import br.edu.puccampinas.pi3.turma4.superid.functions.creatAccount
+import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingUp
+import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingUpColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
@@ -56,6 +54,10 @@ fun SingUpFormScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var agreeTerms by remember { mutableStateOf(false) }
+
+    var nameError by remember { mutableStateOf(false) }
+    var emailError by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
 
     var context = LocalContext.current
 
@@ -96,11 +98,21 @@ fun SingUpFormScreen(navController: NavController) {
             onValueChange = { name = it },
             placeholder = { Text("Name") },
             modifier = Modifier.fillMaxWidth(),
+            isError = nameError,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = SingUpColors.White,
                 unfocusedContainerColor = SingUpColors.White
             )
         )
+
+        if (nameError) {
+            Text(
+                text = "Name inválido",
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -109,11 +121,21 @@ fun SingUpFormScreen(navController: NavController) {
             onValueChange = { email = it },
             placeholder = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
+            isError = emailError,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = SingUpColors.White,
                 unfocusedContainerColor = SingUpColors.White
             )
         )
+
+        if (emailError) {
+            Text(
+                text = "E-mail inválido",
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -122,6 +144,7 @@ fun SingUpFormScreen(navController: NavController) {
             onValueChange = { password = it },
             placeholder = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
+            isError = passwordError,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -136,6 +159,15 @@ fun SingUpFormScreen(navController: NavController) {
                 unfocusedContainerColor = SingUpColors.White
             )
         )
+
+        if (passwordError) {
+            Text(
+                text = "Password inválido",
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -172,7 +204,26 @@ fun SingUpFormScreen(navController: NavController) {
 
         Button(
             onClick = {
-                creatAccount(context, name, email, password)
+                nameError = validationUtils.emptyRegistrationFields(name, email, password)
+                emailError = validationUtils.emailValidation(email)
+                passwordError = validationUtils.passwordInvalid(password)
+                try {
+                    validationSingUp(
+                        context,
+                        name,
+                        email,
+                        password,
+                        onSuccess = {
+                            val intent = Intent(context, MainActivity::class.java)
+                            context.startActivity(intent)
+                        },
+                        onFailure = { e ->
+                            Log.e("SINGUP", "ERRO AO CRIAR A CONTA: ${e.message}")
+                        }
+                    )
+                } catch (e: Exception) {
+                    Log.e("SINGUP", "Erro inesperado: ${e.message}")
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
