@@ -17,10 +17,10 @@ object WelcomeColors {
 }
 
 object SingInColors {
-    val backgroundColor = Color(0xFF0E0F1C)
+    val backgroundColor = Color(0xFF121212)
     val inputBackground = Color(0xFFF7F9FD)
-    val primaryBlue = Color(0xFF3E61FE)
-    val textColor = Color(0xFFCED1D9)
+    val primaryGreen = Color(0xFF1B5E20)
+    val textColor = Color(0xFFB0B0B0)
 }
 
 object SingUpColors {

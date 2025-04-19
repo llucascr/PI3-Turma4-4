@@ -214,6 +214,7 @@ fun SingUpFormScreen(navController: NavController) {
                         email,
                         password,
                         onSuccess = {
+//                            validationUtils.saveEmailForAuthentication(context, email)
                             val intent = Intent(context, MainActivity::class.java)
                             context.startActivity(intent)
                         },
@@ -244,7 +245,7 @@ fun SingUpFormScreen(navController: NavController) {
                 "Sign In",
                 color = SingUpColors.DarkBlue,
                 fontSize = 13.sp,
-                modifier = Modifier.clickable { }
+                modifier = Modifier.clickable { navController.navigate("singin")},
             )
         }
     }

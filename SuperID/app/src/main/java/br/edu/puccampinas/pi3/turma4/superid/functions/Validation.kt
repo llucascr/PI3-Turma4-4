@@ -47,6 +47,17 @@ object validationUtils  {
     }
 
     /**
+     * Verifica se os campos de dados estão vazios
+     */
+    internal fun emptyRegistrationFields(email: String, password: String): Boolean {
+        if (email == "" || password == "") {
+            Log.i("FIREBASE", "CAMPOS DE DADOS ENTÃO VAZIOS")
+            return true
+        }
+        return false
+    }
+
+    /**
      * Salva o email do usuário para ele se reautenticar ao entrar novamente no app
      */
     fun saveEmailForAuthentication(context: Context, email: String) {
@@ -105,5 +116,19 @@ object validationUtils  {
         var email = getSavedEmail(context)
 
         return user != null && email != null
+    }
+
+    /**
+     * Chama as funções de validação dos campos do cadastro,
+     * para descobrir se todos são validos
+     */
+     fun fieldValidation(name: String, email: String, password: String): Boolean {
+        if (emptyRegistrationFields(name, email, password)
+            && emailValidation(email)
+            && passwordInvalid(password)) {
+            return false
+        }
+
+        return true
     }
 }

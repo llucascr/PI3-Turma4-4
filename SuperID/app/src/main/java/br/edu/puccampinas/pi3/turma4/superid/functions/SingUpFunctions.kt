@@ -89,24 +89,9 @@ private fun emailValidation() {
 
 }
 
-
-/**
- * Chama as funções de validação dos campos do cadastro,
- * para descobrir se todos são validos
- */
-private fun fieldValidation(name: String, email: String, password: String): Boolean {
-    if (validationUtils.emptyRegistrationFields(name, email, password)
-        && validationUtils.emailValidation(email)
-        && validationUtils.passwordInvalid(password)) {
-            return false
-    }
-
-    return true
-}
-
 fun validationSingUp(context: Context, name: String, email: String, password: String,
                      onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-    if (!fieldValidation(name, email, password)) {
+    if (!validationUtils.fieldValidation(name, email, password)) {
         onFailure(Exception("Campos inválidos"))
         return
     }
