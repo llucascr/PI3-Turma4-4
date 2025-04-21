@@ -60,7 +60,9 @@ fun SingUpFormScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
     var agreeTerms by remember { mutableStateOf(false) }
+    var triedToSubmit by remember { mutableStateOf(false) }
 
     var nameError by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
@@ -204,7 +206,7 @@ fun SingUpFormScreen(navController: NavController) {
                     color = SingInColors.primaryGreen,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { }
+                    modifier = Modifier.clickable { navController.navigate("terms") }
                 )
                 Text(
                     text = " and ",
@@ -219,6 +221,13 @@ fun SingUpFormScreen(navController: NavController) {
                     modifier = Modifier.clickable { }
                 )
             }
+            if (triedToSubmit &&!agreeTerms) {
+                Text(
+                    text = "Aceitar Termos de uso!",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                )
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -228,7 +237,9 @@ fun SingUpFormScreen(navController: NavController) {
                     nameError = validationUtils.emptyRegistrationFields(name, email, password)
                     emailError = validationUtils.emailValidation(email)
                     passwordError = validationUtils.passwordInvalid(password)
-                    if (!nameError && !emailError && !passwordError) {
+                    triedToSubmit = true
+
+                    if (!nameError && !emailError && !passwordError && agreeTerms) {
                         try {
                             validationSingUp(
                                 context,

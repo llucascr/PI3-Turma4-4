@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.screens.SingInFormScreen
 import br.edu.puccampinas.pi3.turma4.superid.screens.SingUpFormScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.TermsOfUseScreen
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 class AuthenticationActivity : ComponentActivity() {
@@ -44,5 +45,6 @@ fun AuthenticationNav(modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = "singin") {
         composable("singin") { SingInFormScreen(navController) }
         composable("singup") { SingUpFormScreen(navController) }
+        composable("terms") { TermsOfUseScreen(navController) }
     }
 }
