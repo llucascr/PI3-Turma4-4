@@ -1,27 +1,34 @@
 package br.edu.puccampinas.pi3.turma4.superid.functions
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import br.edu.puccampinas.pi3.turma4.superid.MainActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
-val auth = Firebase.auth
+private val auth = Firebase.auth
 
 private fun singInAccount(context: Context, email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
     auth.signInWithEmailAndPassword(email, password)
         .addOnCompleteListener { taks ->
             if (taks.isSuccessful) {
                 var user = auth.currentUser
-                Log.d(TagsApp.AUTH_INFO.toString(), "singInWithEmailAndPassword: Success | uid: ${user?.uid}")
+                Log.d("AUTH-INFO", "singInWithEmailAndPassword: Success | uid: ${user?.uid}")
+                validationUtils.saveEmailForAuthentication(context, email)
                 onSuccess()
             } else {
-                Log.e(TagsApp.AUTH_INFO.toString(), "singInWithEmailAndPassword: Failure | error: ${taks.exception}")
-                Toast.makeText(context, "Authentication Failure", Toast.LENGTH_LONG).show()
+                Log.e("AUTH-INFO", "singInWithEmailAndPassword: Failure | error: ${taks.exception}")
             }
         }
         .addOnFailureListener { e ->
-            Log.e(TagsApp.AUTH_INFO.toString(), "Failure SingIn: ${e.message}")
+            Toast.makeText(
+                context,
+                "Email ou senha invalidos",
+                Toast.LENGTH_LONG,
+            ).show()
+            Log.e("AUTH-INFO", "Failure SingIn: ${e.message}")
         }
 }
 
@@ -29,6 +36,14 @@ private fun singInAccount(context: Context, email: String, password: String, onS
 fun validationSingIn(context: Context, email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
     if (validationUtils.emailValidation(email)
         && validationUtils.emptyRegistrationFields(email, password)) {
+        return
+    } else if (validationUtils.checkUserAuth(context)) { // Faz login se o email do usuário estiver salvo nas SharedPreferences
+        validationUtils.reauthenticateUser(
+            context,
+            password,
+            onSuccess,
+            onFailure
+        )
         return
     }
 

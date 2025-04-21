@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.MainActivity
-import br.edu.puccampinas.pi3.turma4.superid.functions.TagsApp
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingIn
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
@@ -83,23 +82,48 @@ fun SingInFormScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Email
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                placeholder = { Text("Email", color = Color.Gray, fontSize = 16.sp) },
-                singleLine = true,
-                shape = RoundedCornerShape(12.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-            )
+            if (validationUtils.checkUserAuth(context)) {
+                email = validationUtils.getSavedEmail(context).toString()
+                Row {
+                    Column {
+                        Text(
+                            text = email,
+                            color = Color.White,
+                            fontSize = 20.sp,
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    Column {
+                        Text(
+                            text = "Logout",
+                            color = SingInColors.primaryGreen,
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .clickable {
+                                    validationUtils.logoutUser(context)
+                                }
+                        )
+                    }
+                }
+            } else {
+                // Email
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    placeholder = { Text("Email", color = Color.Gray, fontSize = 16.sp) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedContainerColor = inputBackground,
+                        focusedContainerColor = inputBackground,
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedBorderColor = Color.Transparent
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                )
+            }
 
             if (emailError) {
                 Text(
@@ -168,7 +192,7 @@ fun SingInFormScreen(navController: NavController) {
                                 context.startActivity(intent)
                             },
                             onFailure = { e ->
-                                Log.e(TagsApp.SINGIN.toString(), "ERRO AO FAZER LOGIN: ${e.message}")
+                                Log.e("SINGIN", "ERRO AO FAZER LOGIN: ${e.message}")
                             }
                         )
                     }

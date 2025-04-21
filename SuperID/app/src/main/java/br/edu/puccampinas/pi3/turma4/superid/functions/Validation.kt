@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.edit
 import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
-import br.edu.puccampinas.pi3.turma4.superid.WelcomeNav
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.auth

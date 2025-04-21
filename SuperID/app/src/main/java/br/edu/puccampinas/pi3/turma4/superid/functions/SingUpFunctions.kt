@@ -16,6 +16,7 @@ private fun creatAccount(context: Context, name: String, email: String, password
             if (taks.isSuccessful) {
                 Log.d("AUTH-INFO","createUserWithEmail:success | UID: ${taks.result.user!!.uid}")
                 saveAccount(context, name, taks.result.user!!, onSuccess, onFailure)
+                validationUtils.saveEmailForAuthentication(context, email)
                 sendEmailVerification()
             } else {
                 Log.w("AUTH-INFO", "createUserWithEmail:failure", taks.exception)
