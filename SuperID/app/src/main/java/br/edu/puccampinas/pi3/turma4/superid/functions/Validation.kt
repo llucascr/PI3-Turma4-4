@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.edit
 import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
-import br.edu.puccampinas.pi3.turma4.superid.WelcomeNav
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.auth
@@ -40,6 +39,17 @@ object validationUtils  {
      */
     internal fun emptyRegistrationFields(name: String, email: String, password: String): Boolean {
         if (email == "" || password == "" || name == "") {
+            Log.i("FIREBASE", "CAMPOS DE DADOS ENTÃO VAZIOS")
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Verifica se os campos de dados estão vazios
+     */
+    internal fun emptyRegistrationFields(email: String, password: String): Boolean {
+        if (email == "" || password == "") {
             Log.i("FIREBASE", "CAMPOS DE DADOS ENTÃO VAZIOS")
             return true
         }
@@ -105,5 +115,19 @@ object validationUtils  {
         var email = getSavedEmail(context)
 
         return user != null && email != null
+    }
+
+    /**
+     * Chama as funções de validação dos campos do cadastro,
+     * para descobrir se todos são validos
+     */
+     fun fieldValidation(name: String, email: String, password: String): Boolean {
+        if (emptyRegistrationFields(name, email, password)
+            && emailValidation(email)
+            && passwordInvalid(password)) {
+            return false
+        }
+
+        return true
     }
 }

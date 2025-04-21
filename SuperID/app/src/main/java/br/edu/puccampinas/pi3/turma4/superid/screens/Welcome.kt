@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -30,10 +31,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.AuthenticationActivity
 import br.edu.puccampinas.pi3.turma4.superid.R
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.WelcomeColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.WelcomeColors.primaryBlue
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.WelcomeColors.textColor
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.backgroundColor
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
@@ -42,70 +42,73 @@ fun WelcomeScreen(navController: NavController) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = WelcomeColors.backgroundColor
+        color = backgroundColor
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            // Logo
+            Image(
+                painter = painterResource(id = R.drawable.logosuperid), // substitua pelo seu recurso
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .size(180.dp)
+            )
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Título
+            Text(
+                text = "SuperID",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = SingInColors.primaryGreen
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtítulo
+            Text(
+                text = "Bem Vindo ao SuperID",
+                fontSize = 16.sp,
+                color = Color.White
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Descrição
+            Text(
+                text = "O SuperID é um app que armazena suas senhas com segurança e permite fazer login em sites parceiros sem precisar digitá-las, usando QR Code. Com uma senha mestre, você acessa tudo de forma prática, rápida e protegida.",
+                fontSize = 14.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Botão Next Page
+            Button(
+                onClick = {
+                    var intent = Intent(contex, AuthenticationActivity::class.java)
+                    contex.startActivity(intent)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp)
+                    .clip(RoundedCornerShape(16.dp))
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logosuperid),
-                    contentDescription = "Logo",
-                    modifier = Modifier.size(200.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Text(
-                    text = "SuperID",
-                    color = primaryBlue,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = "Bem vindo ao SuperID",
-                    color = textColor,
+                    text = "Next page",
+                    color = Color.White,
                     fontSize = 16.sp
                 )
             }
-
-            Text(
-                text = "O SuperID é um app que armazena suas senhas com segurança e permite fazer " +
-                        "login em sites parceiros sem precisar digitá-las, usando QR Code. Com uma " +
-                        "senha mestre, você acessa tudo de forma prática, rápida e protegida.",
-                color = textColor,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp)
-            )
-
-            Button(
-                onClick = {
-                    val intent = Intent(contex, AuthenticationActivity::class.java)
-                    contex.startActivity(intent)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = primaryBlue),
-                shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
-            ) {
-                Text(text = "Proxima página", color = Color.White, fontSize = 16.sp)
-            }
-            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
