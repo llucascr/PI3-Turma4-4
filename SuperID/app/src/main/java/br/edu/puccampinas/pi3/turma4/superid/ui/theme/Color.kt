@@ -10,11 +10,6 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-object WelcomeColors {
-    val backgroundColor = Color(0xFF0E0F1C)
-    val primaryBlue = Color(0xFF3E61FE)
-    val textColor = Color(0xFFCED1D9)
-}
 
 object SingInColors {
     val backgroundColor = Color(0xFF121212)
