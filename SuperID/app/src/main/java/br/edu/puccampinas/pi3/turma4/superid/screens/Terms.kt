@@ -1,5 +1,6 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,28 +37,34 @@ import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 fun TermsOfUseScreen(navController: NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = backgroundColor
+        color = SingInColors.backgroundColor
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 30.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
             // Botão Voltar
             Button(
                 onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),
                 modifier = Modifier
-                    .width(100.dp)
+                    .wrapContentWidth()
                     .height(40.dp)
                     .clip(RoundedCornerShape(12.dp))
             ) {
-                Text("< Voltar", color = Color.White, fontSize = 14.sp)
+                Text(
+                    text = "< Voltar",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // Título
             Text(
@@ -70,33 +78,52 @@ fun TermsOfUseScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Texto dos termos
-            Text(
-                text = """
-                -Uso do Aplicativo
-                Ao utilizar o SuperID, você concorda com estes termos e com o uso de seus dados conforme descrito.
-
-                -Cadastro e Segurança
-                O usuário deve criar uma conta com nome, e-mail e senha mestre. É responsabilidade do usuário manter essa senha em segurança.
-
-                -Armazenamento de Dados
-                As senhas e informações são criptografadas e armazenadas de forma segura no Firebase. Os dados são utilizados apenas para funcionamento do app.
-
-                -Login Sem Senha
-                O SuperID permite login em sites parceiros via QR Code, sem expor senhas. O uso dessa função implica concordância com esse processo.
-
-                -Limitação de Responsabilidade
-                Este aplicativo é educacional e não oferece garantias de segurança profissional ou corporativa. O uso é de responsabilidade do usuário.
-
-                -Atualizações
-                Os termos podem ser atualizados a qualquer momento. O uso contínuo do app confirma a aceitação das novas regras.
-                """.trimIndent(),
-                fontSize = 14.sp,
-                color = Color.White,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(20.dp)
+            // Corpo dos Termos
+            TermsSection(
+                title = "Uso do Aplicativo",
+                description = "Ao utilizar o SuperID, você concorda com estes termos e com o uso de seus dados conforme descrito."
             )
+            TermsSection(
+                title = "Cadastro e Segurança",
+                description = "O usuário deve criar uma conta com nome, e-mail e senha mestre. É responsabilidade do usuário manter essa senha em segurança."
+            )
+            TermsSection(
+                title = "Armazenamento de Dados",
+                description = "As senhas e informações são criptografadas e armazenadas de forma segura no Firebase. Os dados são utilizados apenas para funcionamento do app."
+            )
+            TermsSection(
+                title = "Login Sem Senha",
+                description = "O SuperID permite login em sites parceiros via QR Code, sem expor senhas. O uso dessa função implica concordância com esse processo."
+            )
+            TermsSection(
+                title = "Limitação de Responsabilidade",
+                description = "Este aplicativo é educacional e não oferece garantias de segurança profissional ou corporativa. O uso é de responsabilidade do usuário."
+            )
+            TermsSection(
+                title = "Atualizações",
+                description = "Os termos podem ser atualizados a qualquer momento. O uso contínuo do app confirma a aceitação das novas regras."
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
+    }
+}
+
+@Composable
+fun TermsSection(title: String, description: String) {
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = SingInColors.primaryGreen
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = description,
+            fontSize = 14.sp,
+            color = SingInColors.textColor
+        )
     }
 }
 

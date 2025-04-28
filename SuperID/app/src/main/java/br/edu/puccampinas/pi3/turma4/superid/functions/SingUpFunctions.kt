@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -21,6 +22,13 @@ private fun creatAccount(context: Context, name: String, email: String, password
             } else {
                 Log.w("AUTH-INFO", "createUserWithEmail:failure", taks.exception)
             }
+        }
+        .addOnFailureListener {e ->
+            Toast.makeText(
+                context,
+                "Email ou senha invalidos ou já existem",
+                Toast.LENGTH_LONG,
+            ).show()
         }
 }
 

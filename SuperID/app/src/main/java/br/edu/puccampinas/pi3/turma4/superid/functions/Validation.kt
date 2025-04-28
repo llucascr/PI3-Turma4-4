@@ -7,7 +7,10 @@ import androidx.core.content.edit
 import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.SignInMethodQueryResult
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.tasks.await
 
 object validationUtils  {
 
@@ -115,12 +118,6 @@ object validationUtils  {
         var email = getSavedEmail(context)
 
         return user != null && email != null
-    }
-
-    fun checkUserterms(agreeTerms: Boolean) {
-        if (!agreeTerms) {
-
-        }
     }
 
     /**

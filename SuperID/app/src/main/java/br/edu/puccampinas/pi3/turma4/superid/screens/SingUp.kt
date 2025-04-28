@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -36,9 +37,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,7 +103,6 @@ fun SingUpFormScreen(navController: NavController) {
                 placeholder = { Text("Name", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
-                isError = nameError,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = inputBackground,
                     focusedContainerColor = inputBackground,
@@ -126,7 +131,6 @@ fun SingUpFormScreen(navController: NavController) {
                 placeholder = { Text("Email", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
-                isError = emailError,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = inputBackground,
                     focusedContainerColor = inputBackground,
@@ -155,7 +159,6 @@ fun SingUpFormScreen(navController: NavController) {
                 placeholder = { Text("Password", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
-                isError = passwordError,
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -187,40 +190,64 @@ fun SingUpFormScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Terms
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox( // Só deixar o usuario criar a conta se ele aceitar os termos de uso
+                Checkbox(
                     checked = agreeTerms,
                     onCheckedChange = { agreeTerms = it },
                     colors = CheckboxDefaults.colors(checkedColor = SingInColors.primaryGreen)
                 )
-                Text(
-                    text = "I agree to the ",
-                    fontSize = 14.sp,
-                    color = textColor
-                )
-                Text(
-                    text = "Terms",
-                    color = SingInColors.primaryGreen,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { navController.navigate("terms") }
-                )
-                Text(
-                    text = " and ",
-                    fontSize = 14.sp,
-                    color = textColor
-                )
-                Text(
-                    text = "Privacy Policy",
-                    color = SingInColors.primaryGreen,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { }
+
+                val annotatedText = buildAnnotatedString {
+                    append("Concordo com os ")
+
+                    pushStringAnnotation(tag = "TERMS", annotation = "terms")
+                    withStyle(
+                        style = SpanStyle(
+                            color = SingInColors.primaryGreen,
+                            fontWeight = FontWeight.Bold,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
+                        append("Termos")
+                    }
+                    pop()
+
+                    append(" e a ")
+
+                    pushStringAnnotation(tag = "PRIVACY", annotation = "privacy")
+                    withStyle(
+                        style = SpanStyle(
+                            color = SingInColors.primaryGreen,
+                            fontWeight = FontWeight.Bold,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
+                        append("Política de Privacidade")
+                    }
+                    pop()
+                }
+
+                ClickableText(
+                    text = annotatedText,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = textColor
+                    ),
+                    onClick = { offset ->
+                        annotatedText.getStringAnnotations(tag = "TERMS", start = offset, end = offset)
+                            .firstOrNull()?.let {
+                                navController.navigate("terms")
+                            }
+                        annotatedText.getStringAnnotations(tag = "PRIVACY", start = offset, end = offset)
+                            .firstOrNull()?.let {
+                                navController.navigate("terms")
+                            }
+                    }
                 )
             }
+
             if (triedToSubmit &&!agreeTerms) {
                 Text(
                     text = "Aceitar Termos de uso!",
