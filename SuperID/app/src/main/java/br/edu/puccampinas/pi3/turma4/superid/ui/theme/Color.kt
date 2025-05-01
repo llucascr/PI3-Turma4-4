@@ -17,6 +17,14 @@ object SingInColors {
     val primaryGreen = Color(0xFF1B5E20)
     val textColor = Color(0xFFB0B0B0)
 }
+object SavePwColors {
+    val backgroundColor = Color(0xFF121212)
+    val inputBackground = Color(0xFFF7F9FD)
+    val primaryGreen = Color(0xFF1B5E20)
+    val textColor = Color(0xFF121212)
+    val onFailureColor = Color(0xFFFF0000)
+    val titleColor = Color(0xFFF7F9FD)
+}
 
 object SingUpColors {
     val White = Color(0xFFF7F9FD)
