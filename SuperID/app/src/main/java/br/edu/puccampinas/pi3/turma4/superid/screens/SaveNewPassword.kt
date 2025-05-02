@@ -54,7 +54,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.firestore.FirebaseFirestore
 import br.edu.puccampinas.pi3.turma4.superid.R
-import br.edu.puccampinas.pi3.turma4.superid.functions.SaveNewPw
 import br.edu.puccampinas.pi3.turma4.superid.functions.verifyInputs
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SavePwColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
