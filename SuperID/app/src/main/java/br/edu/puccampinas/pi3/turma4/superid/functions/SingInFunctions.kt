@@ -1,10 +1,8 @@
 package br.edu.puccampinas.pi3.turma4.superid.functions
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
-import br.edu.puccampinas.pi3.turma4.superid.MainActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 

@@ -25,7 +25,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,14 +43,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.MainActivity
+import br.edu.puccampinas.pi3.turma4.superid.CategoryActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingUp
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.backgroundColor
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.inputBackground
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.textColor
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingUpColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
@@ -247,7 +245,7 @@ fun SingUpFormScreen(navController: NavController) {
                                 email,
                                 password,
                                 onSuccess = {
-                                    val intent = Intent(context, MainActivity::class.java)
+                                    val intent = Intent(context, CategoryActivity::class.java)
                                     context.startActivity(intent)
                                 },
                                 onFailure = { e ->
