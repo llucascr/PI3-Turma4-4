@@ -168,7 +168,7 @@ fun SingInFormScreen(navController: NavController) {
 
             if (passwordError) {
                 Text(
-                    text = "Password inválido",
+                    text = "Senha com menos de 6 caracteres",
                     color = Color.Red,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)

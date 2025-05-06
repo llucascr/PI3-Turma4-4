@@ -60,69 +60,7 @@ fun CategoryScreen(navController: NavController) {
         containerColor = Color.Black,
         bottomBar = {
             Divider(color = Color.White, thickness = 4.dp)
-            BottomAppBar(
-                containerColor = Color.Black
-            ) {
-                NavigationBarItem(
-                    selected = true,
-                    onClick = { /* ação home */ },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.iconhome),
-                            contentDescription = "Home",
-                            modifier = Modifier.size(24.dp),
-                            tint = Color.White
-                        )
-                    },
-                    label = {
-                        Text("Home", color = Color.White)
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.White,
-                        selectedTextColor = Color.White,
-                        indicatorColor = Color.Transparent,
-                        unselectedIconColor = Color.Gray,
-                        unselectedTextColor = Color.Gray
-                    )
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { /* ação autenticação */ },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.iconqrcode),
-                            contentDescription = "QR Code",
-                            modifier = Modifier
-                                .size(24.dp)
-                                .graphicsLayer(
-                                    scaleX = 3.4f,
-                                    scaleY = 3.4f
-                                ),
-                            tint = Color.White
-                        )
-                    },
-                    label = {
-                        Text("QR Code", color = Color.White)
-                    }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { /* ação perfil */ },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.iconperson),
-                            contentDescription = "Perfil",
-                            modifier = Modifier.size(24.dp),
-                            tint = Color.White
-                        )
-                    },
-                    label = {
-                        Text("Perfil", color = Color.White)
-                    }
-                )
-            }
+            BottomBar()
         }
     ) { paddingValues ->
         Column(
