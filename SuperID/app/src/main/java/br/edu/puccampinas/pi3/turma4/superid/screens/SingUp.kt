@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -26,6 +29,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,15 +39,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.CategoryActivity
+import br.edu.puccampinas.pi3.turma4.superid.functions.SingUpViewModel
+import br.edu.puccampinas.pi3.turma4.superid.functions.saveName
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingUp
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
@@ -53,13 +62,13 @@ import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.textColor
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
-fun SingUpFormScreen(navController: NavController) {
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = viewModel()) {
+    val name by viewModel.name.collectAsState()
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
 
-    var agreeTerms by remember { mutableStateOf(false) }
+    val agreeTerms by viewModel.agreeTerms.collectAsState()
     var triedToSubmit by remember { mutableStateOf(false) }
 
     var nameError by remember { mutableStateOf(false) }
@@ -72,6 +81,22 @@ fun SingUpFormScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         color = backgroundColor
     ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Ícone de Voltar no canto superior esquerdo
+            IconButton(
+                onClick = { navController.navigate("singin") },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(21.dp)
+                    .height(60.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Voltar",
+                    tint = Color.White
+                )
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -80,7 +105,7 @@ fun SingUpFormScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Sign Up",
+                text = "Cadastro",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = SingInColors.primaryGreen
@@ -91,7 +116,7 @@ fun SingUpFormScreen(navController: NavController) {
             // Name
             OutlinedTextField(
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = { viewModel.onNameChange(it) },
                 placeholder = { Text("Name", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
@@ -120,7 +145,7 @@ fun SingUpFormScreen(navController: NavController) {
             // Email
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { viewModel.onEmailChange(it) },
                 placeholder = { Text("Email", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
@@ -149,7 +174,7 @@ fun SingUpFormScreen(navController: NavController) {
             // Password
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { viewModel.onPasswordChange(it) },
                 placeholder = { Text("Password", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
@@ -189,9 +214,9 @@ fun SingUpFormScreen(navController: NavController) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox( // Só deixar o usuario criar a conta se ele aceitar os termos de uso
+                Checkbox(
                     checked = agreeTerms,
-                    onCheckedChange = { agreeTerms = it },
+                    onCheckedChange = { viewModel.onAgreeTermsChange(it) },
                     colors = CheckboxDefaults.colors(checkedColor = SingInColors.primaryGreen)
                 )
                 Text(
@@ -204,6 +229,9 @@ fun SingUpFormScreen(navController: NavController) {
                     color = SingInColors.primaryGreen,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
+                    style = TextStyle(
+                        textDecoration = TextDecoration.Underline
+                    ),
                     modifier = Modifier.clickable { navController.navigate("terms") }
                 )
                 Text(
@@ -216,7 +244,10 @@ fun SingUpFormScreen(navController: NavController) {
                     color = SingInColors.primaryGreen,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { }
+                    style = TextStyle(
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    modifier = Modifier.clickable { navController.navigate("terms") }
                 )
             }
             if (triedToSubmit &&!agreeTerms) {
@@ -252,6 +283,7 @@ fun SingUpFormScreen(navController: NavController) {
                                     Log.e("SINGUP", "ERRO AO CRIAR A CONTA: ${e.message}")
                                 }
                             )
+                            saveName(context, name)
                         } catch (e: Exception) {
                             Log.e("SINGUP", "Erro inesperado: ${e.message}")
                         }
