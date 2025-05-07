@@ -117,12 +117,6 @@ object validationUtils  {
         return user != null && email != null
     }
 
-    fun checkUserterms(agreeTerms: Boolean) {
-        if (!agreeTerms) {
-
-        }
-    }
-
     /**
      * Chama as funções de validação dos campos do cadastro,
      * para descobrir se todos são validos

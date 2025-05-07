@@ -33,15 +33,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.MainActivity
+import br.edu.puccampinas.pi3.turma4.superid.CategoryActivity
+import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
+import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingIn
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
@@ -57,6 +61,7 @@ fun SingInFormScreen(navController: NavController) {
     val passwordVisible = remember { mutableStateOf(false) }
 
     var emailError by remember { mutableStateOf(false) }
+    var resetPasswordError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -84,10 +89,11 @@ fun SingInFormScreen(navController: NavController) {
 
             if (validationUtils.checkUserAuth(context)) {
                 email = validationUtils.getSavedEmail(context).toString()
+                var name = getSavedName(context)
                 Row {
                     Column {
                         Text(
-                            text = email,
+                            text = name.toString(),
                             color = Color.White,
                             fontSize = 20.sp,
                         )
@@ -168,10 +174,44 @@ fun SingInFormScreen(navController: NavController) {
 
             if (passwordError) {
                 Text(
-                    text = "Password inválido",
+                    text = "Senha com menos de 6 caracteres",
                     color = Color.Red,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                )
+            }
+
+            if (resetPasswordError) {
+                Text(
+                    text = "Digite o email para redefinir a senha",
+                    color = Color.Red,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+            // resetPassword
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                Text(
+                    text = "Esqueceu a senha ?",
+                    color = SingInColors.primaryGreen,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    style = TextStyle(
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    modifier = Modifier.clickable {
+                        if (!email.isNullOrBlank()) {
+                            resetPassword(email, context)
+                            resetPasswordError = false
+                        } else {
+                            resetPasswordError = true
+                        }
+                    }
                 )
             }
 
@@ -188,7 +228,7 @@ fun SingInFormScreen(navController: NavController) {
                             email,
                             password,
                             onSuccess = {
-                                val intent = Intent(context, MainActivity::class.java)
+                                val intent = Intent(context, CategoryActivity::class.java)
                                 context.startActivity(intent)
                             },
                             onFailure = { e ->
