@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.edu.puccampinas.pi3.turma4.superid.R
+import kotlinx.coroutines.launch
 
 class ChangeAppsPassword : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +68,7 @@ fun HeaderAlterarSenhas() {
 }
 
 @Composable
-fun TextFildsAlterarSenhas() {
+fun TextFildsAlterarSenhas(onSalvarClick: () -> Unit) {
     val verde = Color(0xFF166534)
     val branco = Color(0xFFFFFFFF)
     val preto = Color(0xFF000000)
@@ -184,17 +185,22 @@ fun TextFildsAlterarSenhas() {
                 shape = RoundedCornerShape(15.dp)
             )
     ) {
-        Button(
-            onClick = { /* ação de salvar */ },
-            modifier = Modifier.fillMaxSize(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent
-            ),
-            shape = RoundedCornerShape(15.dp),
-            contentPadding = PaddingValues()
-        ) {
-            Text("Salvar", color = Color.White)
-        }
+        ButaoSalvar(onClick = onSalvarClick)
+    }
+}
+
+@Composable
+fun ButaoSalvar(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxSize(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent
+        ),
+        shape = RoundedCornerShape(15.dp),
+        contentPadding = PaddingValues()
+    ) {
+        Text("Salvar", color = Color.White)
     }
 }
 
@@ -238,26 +244,44 @@ fun BottomBar() {
 @Preview
 @Composable
 fun AlterarSenha() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Black),
-        horizontalAlignment = Alignment.Start
-    ) {
-        HeaderAlterarSenhas()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
+        containerColor = Color.Black
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(20.dp)
-                .background(color = Color.Transparent),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(color = Color.Black),
+            horizontalAlignment = Alignment.Start
         ) {
-            TextFildsAlterarSenhas()
-        }
+            HeaderAlterarSenhas()
 
-        BottomBar()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                TextFildsAlterarSenhas(
+                    onSalvarClick = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = "Senha salva com sucesso!",
+                                actionLabel = "OK"
+                            )
+                        }
+                    }
+                )
+            }
+            BottomBar()
+        }
     }
 }
