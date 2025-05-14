@@ -48,10 +48,10 @@ import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingIn
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.backgroundColor
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.inputBackground
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.textColor
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.backgroundColor
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.inputBackground
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.textColor
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
@@ -82,7 +82,7 @@ fun SingInFormScreen(navController: NavController) {
                 text = "Sign In",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = SingInColors.primaryGreen
+                color = DarkColors.primaryGreen
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -102,7 +102,7 @@ fun SingInFormScreen(navController: NavController) {
                     Column {
                         Text(
                             text = "Logout",
-                            color = SingInColors.primaryGreen,
+                            color = DarkColors.primaryGreen,
                             fontSize = 18.sp,
                             modifier = Modifier
                                 .clickable {
@@ -198,7 +198,7 @@ fun SingInFormScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Esqueceu a senha ?",
-                    color = SingInColors.primaryGreen,
+                    color = DarkColors.primaryGreen,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
@@ -237,7 +237,7 @@ fun SingInFormScreen(navController: NavController) {
                         )
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),
+                colors = ButtonDefaults.buttonColors(containerColor = DarkColors.primaryGreen),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
@@ -257,7 +257,7 @@ fun SingInFormScreen(navController: NavController) {
                 )
                 Text(
                     text = "Sign Up",
-                    color = SingInColors.primaryGreen,
+                    color = DarkColors.primaryGreen,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable {

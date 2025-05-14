@@ -11,11 +11,13 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 
-object SingInColors {
+object DarkColors {
     val backgroundColor = Color(0xFF121212)
     val inputBackground = Color(0xFFF7F9FD)
     val primaryGreen = Color(0xFF1B5E20)
     val textColor = Color(0xFFB0B0B0)
+    val verificationTrueGrennColor = Color(0xFF2BC465)
+    val verificationFalseGrennColor = Color(0xFFB40B00)
 }
 
 object SingUpColors {

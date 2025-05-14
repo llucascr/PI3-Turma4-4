@@ -31,9 +31,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.AuthenticationActivity
 import br.edu.puccampinas.pi3.turma4.superid.R
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.backgroundColor
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.backgroundColor
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
@@ -66,7 +66,7 @@ fun WelcomeScreen(navController: NavController) {
                 text = "SuperID",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = SingInColors.primaryGreen
+                color = DarkColors.primaryGreen
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -97,7 +97,7 @@ fun WelcomeScreen(navController: NavController) {
                     var intent = Intent(contex, AuthenticationActivity::class.java)
                     contex.startActivity(intent)
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),
+                colors = ButtonDefaults.buttonColors(containerColor = DarkColors.primaryGreen),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)

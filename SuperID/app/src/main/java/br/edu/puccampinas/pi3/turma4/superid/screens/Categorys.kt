@@ -59,8 +59,7 @@ fun CategoryScreen(navController: NavController) {
     Scaffold(
         containerColor = Color.Black,
         bottomBar = {
-            Divider(color = Color.White, thickness = 4.dp)
-            BottomBar()
+            BottomBar(navController)
         }
     ) { paddingValues ->
         Column(

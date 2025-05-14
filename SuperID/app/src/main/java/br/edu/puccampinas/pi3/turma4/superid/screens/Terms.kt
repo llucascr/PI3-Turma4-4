@@ -2,7 +2,6 @@ package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,10 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.backgroundColor
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.backgroundColor
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
@@ -47,7 +45,7 @@ fun TermsOfUseScreen(navController: NavController) {
             // Botão Voltar
             Button(
                 onClick = { navController.popBackStack() },
-                colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),
+                colors = ButtonDefaults.buttonColors(containerColor = DarkColors.primaryGreen),
                 modifier = Modifier
                     .width(100.dp)
                     .height(40.dp)
@@ -63,7 +61,7 @@ fun TermsOfUseScreen(navController: NavController) {
                 text = "Termos de Uso",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = SingInColors.primaryGreen,
+                color = DarkColors.primaryGreen,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
