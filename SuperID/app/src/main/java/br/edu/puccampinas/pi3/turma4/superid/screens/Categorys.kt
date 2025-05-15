@@ -15,11 +15,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -57,9 +61,9 @@ fun CategoryScreen(navController: NavController) {
     val groupedItems = extendedItems.chunked(2)
 
     Scaffold(
-        containerColor = Color.Black,
+        containerColor = colorScheme.background,
         bottomBar = {
-            Divider(color = Color.White, thickness = 4.dp)
+            Divider(color = colorScheme.onBackground, thickness = 4.dp)
             BottomBar()
         }
     ) { paddingValues ->
@@ -67,31 +71,31 @@ fun CategoryScreen(navController: NavController) {
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(Color.Black)
+                .background(colorScheme.background)
                 .padding(16.dp)
         ) {
             Text(
                 text = "Olá, user!",
-                color = Color.White,
+                color = colorScheme.onBackground,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextField(
+            OutlinedTextField(
                 value = "",
-                onValueChange = {},
-                placeholder = { Text("pesquisar", color = Color.Gray) },
+                onValueChange = { /* TODO: Filtro de busca */ },
+                placeholder = { Text("Procurar categoria", color = colorScheme.onSecondary) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = colorScheme.onSecondary) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp)),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.DarkGray,
-                    focusedContainerColor = Color.DarkGray,
-                    disabledContainerColor = Color.DarkGray,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = colorScheme.secondary,
+                    focusedContainerColor = colorScheme.secondary,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent
                 ),
                 singleLine = true
             )
@@ -128,7 +132,7 @@ fun CategoryScreen(navController: NavController) {
                                     .weight(1f)
                                     .height(100.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFF1B5E20))
+                                    .background(colorScheme.primary)
                                     .padding(12.dp)
                             ) {
                                 Column(
@@ -137,12 +141,12 @@ fun CategoryScreen(navController: NavController) {
                                 ) {
                                     Text(
                                         text = "$label ($count)",
-                                        color = Color.White,
+                                        color = colorScheme.onPrimary,
                                         fontSize = 14.sp
                                     )
                                     Text(
                                         text = label,
-                                        color = Color.White,
+                                        color = colorScheme.onPrimary,
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -165,7 +169,7 @@ fun CategoryScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    SuperIDTheme {
+    SuperIDTheme(darkTheme = false, dynamicColor = false) {
         CategoryScreen(navController = rememberNavController())
     }
 }

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -24,6 +23,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -55,10 +55,6 @@ import br.edu.puccampinas.pi3.turma4.superid.functions.SingUpViewModel
 import br.edu.puccampinas.pi3.turma4.superid.functions.saveName
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingUp
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.backgroundColor
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.inputBackground
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.textColor
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
@@ -79,7 +75,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = backgroundColor
+        color = MaterialTheme.colorScheme.background
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Ícone de Voltar no canto superior esquerdo
@@ -93,7 +89,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Voltar",
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -108,7 +104,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                 text = "Cadastro",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = SingInColors.primaryGreen
+                color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -122,8 +118,8 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                 shape = RoundedCornerShape(12.dp),
                 isError = nameError,
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -134,7 +130,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
             if (nameError) {
                 Text(
                     text = "Nome inválido",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -151,8 +147,8 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                 shape = RoundedCornerShape(12.dp),
                 isError = emailError,
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -163,7 +159,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
             if (emailError) {
                 Text(
                     text = "E-mail inválido",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -190,8 +186,8 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -217,16 +213,16 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                 Checkbox(
                     checked = agreeTerms,
                     onCheckedChange = { viewModel.onAgreeTermsChange(it) },
-                    colors = CheckboxDefaults.colors(checkedColor = SingInColors.primaryGreen)
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
                 )
                 Text(
                     text = "I agree to the ",
                     fontSize = 14.sp,
-                    color = textColor
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
                 Text(
                     text = "Terms",
-                    color = SingInColors.primaryGreen,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
@@ -237,11 +233,11 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                 Text(
                     text = " and ",
                     fontSize = 14.sp,
-                    color = textColor
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
                 Text(
                     text = "Privacy Policy",
-                    color = SingInColors.primaryGreen,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
@@ -253,7 +249,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
             if (triedToSubmit &&!agreeTerms) {
                 Text(
                     text = "Aceitar Termos de uso!",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                 )
             }
@@ -289,7 +285,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                         }
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
@@ -304,12 +300,12 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
             Row {
                 Text(
                     text = "Do you have an account? ",
-                    color = textColor,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 14.sp
                 )
                 Text(
                     text = "Sign In",
-                    color = SingInColors.primaryGreen,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable { navController.navigate("singin") }
@@ -322,7 +318,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
 @Preview(showBackground = true)
 @Composable
 fun SingUpFormScreenPreview() {
-    SuperIDTheme {
+    SuperIDTheme(darkTheme = false, dynamicColor = false) {
         SingUpFormScreen(navController = rememberNavController())
     }
 }

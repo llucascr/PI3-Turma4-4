@@ -15,6 +15,9 @@ private val DarkColorScheme = darkColorScheme(
     primary = DarkPrimary,
     background = DarkBackground,
     surface = DarkSurface,
+    secondary = DarkTextFieldBackground,
+    onSecondary = DarkTextFieldTextColor,
+    error = DarkErrorColor,
     onPrimary = DarkOnPrimary,
     onBackground = DarkOnBackground,
     onSurface = DarkOnBackground
@@ -24,10 +27,15 @@ private val LightColorScheme = lightColorScheme(
     primary = LightPrimary,
     background = LightBackground,
     surface = LightSurface,
+    secondary = LightTextFieldBackground,
+    onSecondary = LightTextFieldTextColor,
+    error = LightErrorColor,
     onPrimary = LightOnPrimary,
     onBackground = LightOnBackground,
     onSurface = LightOnBackground
 )
+
+
 
 @Composable
 fun SuperIDTheme(

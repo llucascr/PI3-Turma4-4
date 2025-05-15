@@ -27,7 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkBackground
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.errorColor
+
 
 @Composable
 fun PasswordDetailsScreen(
@@ -46,7 +46,7 @@ fun PasswordDetailsScreen(
 
     Scaffold(
         bottomBar = { BottomBar() },
-        containerColor = DarkBackground
+        containerColor = colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -93,7 +93,7 @@ fun PasswordDetailsScreen(
                 )
                 ActionButton(
                     text = "Excluir",
-                    color = errorColor,
+                    color = colorScheme.error,
                     onClick = {/*excluir senha*/} //onDeleteClick
                 )
             }

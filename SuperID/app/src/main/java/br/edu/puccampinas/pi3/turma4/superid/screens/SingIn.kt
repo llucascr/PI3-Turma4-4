@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -48,10 +49,6 @@ import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingIn
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.backgroundColor
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.inputBackground
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.textColor
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
@@ -68,7 +65,7 @@ fun SingInFormScreen(navController: NavController) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = backgroundColor
+        color = MaterialTheme.colorScheme.background
     ) {
         Column(
             modifier = Modifier
@@ -82,7 +79,7 @@ fun SingInFormScreen(navController: NavController) {
                 text = "Sign In",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = SingInColors.primaryGreen
+                color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -94,7 +91,7 @@ fun SingInFormScreen(navController: NavController) {
                     Column {
                         Text(
                             text = name.toString(),
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 20.sp,
                         )
                     }
@@ -102,7 +99,7 @@ fun SingInFormScreen(navController: NavController) {
                     Column {
                         Text(
                             text = "Logout",
-                            color = SingInColors.primaryGreen,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 18.sp,
                             modifier = Modifier
                                 .clickable {
@@ -116,12 +113,12 @@ fun SingInFormScreen(navController: NavController) {
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    placeholder = { Text("Email", color = Color.Gray, fontSize = 16.sp) },
+                    placeholder = { Text("Email", color = MaterialTheme.colorScheme.onSecondary, fontSize = 16.sp) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = inputBackground,
-                        focusedContainerColor = inputBackground,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                        focusedContainerColor = MaterialTheme.colorScheme.secondary,
                         unfocusedBorderColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent
                     ),
@@ -134,7 +131,7 @@ fun SingInFormScreen(navController: NavController) {
             if (emailError) {
                 Text(
                     text = "E-mail inválido",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -146,7 +143,7 @@ fun SingInFormScreen(navController: NavController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                placeholder = { Text("Password", color = Color.Gray, fontSize = 16.sp) },
+                placeholder = { Text("Password", color = MaterialTheme.colorScheme.onSecondary, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
@@ -162,8 +159,8 @@ fun SingInFormScreen(navController: NavController) {
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -175,7 +172,7 @@ fun SingInFormScreen(navController: NavController) {
             if (passwordError) {
                 Text(
                     text = "Senha com menos de 6 caracteres",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -184,7 +181,7 @@ fun SingInFormScreen(navController: NavController) {
             if (resetPasswordError) {
                 Text(
                     text = "Digite o email para redefinir a senha",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -198,7 +195,7 @@ fun SingInFormScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Esqueceu a senha ?",
-                    color = SingInColors.primaryGreen,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
@@ -237,13 +234,13 @@ fun SingInFormScreen(navController: NavController) {
                         )
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
                     .clip(RoundedCornerShape(16.dp))
             ) {
-                Text("Log In", color = Color.White, fontSize = 16.sp)
+                Text("Log In", color = MaterialTheme.colorScheme.onPrimary, fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -252,12 +249,12 @@ fun SingInFormScreen(navController: NavController) {
             Row {
                 Text(
                     text = "Don't have account? ",
-                    color = textColor,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 14.sp
                 )
                 Text(
                     text = "Sign Up",
-                    color = SingInColors.primaryGreen,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable {

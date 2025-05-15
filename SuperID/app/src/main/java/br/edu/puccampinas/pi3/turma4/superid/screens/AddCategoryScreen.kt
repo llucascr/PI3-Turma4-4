@@ -28,10 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkBackground
+import androidx.compose.material3.MaterialTheme
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.TextColor
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.TextFieldBackground
 
 
 @Composable
@@ -41,7 +39,7 @@ fun AddCategoryScreen(
 ) {
     Scaffold(
         bottomBar = { BottomBar() },
-        containerColor = DarkBackground,
+        containerColor = colorScheme.background,
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -70,12 +68,12 @@ fun AddCategoryScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                placeholder = { Text("Título", color = TextColor, fontSize = 16.sp) },
+                placeholder = { Text("Título", color = colorScheme.onSecondary, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = TextFieldBackground,
-                    focusedContainerColor = TextFieldBackground,
+                    unfocusedContainerColor = colorScheme.secondary,
+                    focusedContainerColor = colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -89,11 +87,11 @@ fun AddCategoryScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                placeholder = { Text("Descrição", color = TextColor, fontSize = 16.sp) },
+                placeholder = { Text("Descrição", color = MaterialTheme.colorScheme.onSecondary, fontSize = 16.sp) },
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = TextFieldBackground,
-                    focusedContainerColor = TextFieldBackground,
+                    unfocusedContainerColor = colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),

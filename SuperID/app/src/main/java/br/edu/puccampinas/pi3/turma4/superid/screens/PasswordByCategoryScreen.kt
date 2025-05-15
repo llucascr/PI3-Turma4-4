@@ -24,6 +24,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
@@ -33,6 +34,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
@@ -51,6 +54,7 @@ fun PasswordsByCategoryScreen(
     )
 
     Scaffold(
+        containerColor = colorScheme.background,
         bottomBar = { BottomBar() },
         floatingActionButton = {
             FloatingActionButton(
@@ -64,11 +68,11 @@ fun PasswordsByCategoryScreen(
                 Icon(
                     Icons.Default.Add,
                     contentDescription = "Adicionar senha",
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(32.dp),
+                    tint = colorScheme.onPrimary
                 )
             }
         },
-        containerColor = colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -101,17 +105,18 @@ fun PasswordsByCategoryScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { /* TODO: Filtro de busca */ },
-                placeholder = { Text("Procurar senha") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Procurar senha", color = colorScheme.onSecondary) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = colorScheme.onSecondary) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = colorScheme.surfaceVariant,
-                    focusedContainerColor = colorScheme.surface,
-                    unfocusedTextColor = colorScheme.onBackground,
-                    focusedTextColor = colorScheme.onBackground,
-                    unfocusedLeadingIconColor = colorScheme.onBackground,
-                    focusedLeadingIconColor = colorScheme.onBackground
-                )
+                    unfocusedContainerColor = colorScheme.secondary,
+                    focusedContainerColor = colorScheme.secondary,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent
+                ),
+                singleLine = true
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -161,7 +166,7 @@ data class PasswordItem(val title: String, val subtitle: String)
 @Preview(showBackground = true)
 @Composable
 fun PasswordsByCategoryScreenPreview() {
-    SuperIDTheme(darkTheme = true, dynamicColor = false) {
+    SuperIDTheme(darkTheme = false, dynamicColor = false) {
         PasswordsByCategoryScreen(
             categoryName = "Redes Sociais"
             //onBackClick = {},
