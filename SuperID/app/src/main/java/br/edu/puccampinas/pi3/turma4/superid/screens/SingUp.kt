@@ -113,7 +113,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
             OutlinedTextField(
                 value = name,
                 onValueChange = { viewModel.onNameChange(it) },
-                placeholder = { Text("Name", color = Color.Gray, fontSize = 16.sp) },
+                placeholder = { Text("Nome", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 isError = nameError,
@@ -171,7 +171,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
             OutlinedTextField(
                 value = password,
                 onValueChange = { viewModel.onPasswordChange(it) },
-                placeholder = { Text("Password", color = Color.Gray, fontSize = 16.sp) },
+                placeholder = { Text("Senha", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 isError = passwordError,
@@ -197,7 +197,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
             )
             if (passwordError) {
                 Text(
-                    text = "Password inválido",
+                    text = "Senha inválida",
                     color = Color.Red,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
@@ -216,27 +216,12 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                     colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
                 )
                 Text(
-                    text = "I agree to the ",
+                    text = "Eu concordo com os  ",
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
                 Text(
-                    text = "Terms",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    modifier = Modifier.clickable { navController.navigate("terms") }
-                )
-                Text(
-                    text = " and ",
-                    fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
-                Text(
-                    text = "Privacy Policy",
+                    text = "Termos de Uso",
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
@@ -291,7 +276,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                     .height(55.dp)
                     .clip(RoundedCornerShape(16.dp))
             ) {
-                Text("Create Account", color = Color.White, fontSize = 16.sp)
+                Text("Criar Conta", color = Color.White, fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -299,12 +284,12 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
             // Sign In link
             Row {
                 Text(
-                    text = "Do you have an account? ",
+                    text = "Já tem uma conta? ",
                     color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 14.sp
                 )
                 Text(
-                    text = "Sign In",
+                    text = "Entrar",
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,

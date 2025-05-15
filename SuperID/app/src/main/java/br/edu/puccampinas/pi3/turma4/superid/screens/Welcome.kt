@@ -51,7 +51,7 @@ fun WelcomeScreen(navController: NavController) {
         ) {
             // Logo
             Image(
-                painter = painterResource(id = R.drawable.logosuperid), // substitua pelo seu recurso
+                painter = painterResource(id = R.drawable.superid), // substitua pelo seu recurso
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(180.dp)
@@ -111,7 +111,7 @@ fun WelcomeScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun WelcomeScreenPreview() {
-    SuperIDTheme(darkTheme = true, dynamicColor = false) {
+    SuperIDTheme(darkTheme = false, dynamicColor = false) {
         WelcomeScreen(navController = rememberNavController())
     }
 }

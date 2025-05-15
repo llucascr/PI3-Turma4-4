@@ -19,10 +19,10 @@ val DarkSearchBoxFocused = Color.DarkGray
 
 
 // Placeholder Light theme colors
-val LightBackground = Color(0xFFFFFFFF)
-val LightSurface = Color(0xFFFAFAFA)
+val LightBackground = Color(0xFFFAFAFA)
+val LightSurface = Color(0xFFF5F5F5)
 val LightPrimary = Color(0xFF4CAF50) // tom mais claro
-val LightTextFieldBackground = Color(0xFFF2F2F2)
+val LightTextFieldBackground = Color(0xFFEDEDED)
 val LightTextFieldTextColor = Color(0xFF333333)
 val LightErrorColor = Color(0xFFD32F2F)
 val LightOnPrimary = Color.Black

@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 
@@ -87,11 +86,11 @@ fun AddCategoryScreen(
             OutlinedTextField(
                 value = "",
                 onValueChange = { },
-                placeholder = { Text("Descrição", color = MaterialTheme.colorScheme.onSecondary, fontSize = 16.sp) },
+                placeholder = { Text("Descrição", color = colorScheme.onSecondary, fontSize = 16.sp) },
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = colorScheme.secondary,
-                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),

@@ -166,7 +166,7 @@ data class PasswordItem(val title: String, val subtitle: String)
 @Preview(showBackground = true)
 @Composable
 fun PasswordsByCategoryScreenPreview() {
-    SuperIDTheme(darkTheme = false, dynamicColor = false) {
+    SuperIDTheme(darkTheme = true, dynamicColor = false) {
         PasswordsByCategoryScreen(
             categoryName = "Redes Sociais"
             //onBackClick = {},

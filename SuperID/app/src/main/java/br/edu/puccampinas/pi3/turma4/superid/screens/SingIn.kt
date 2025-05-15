@@ -76,7 +76,7 @@ fun SingInFormScreen(navController: NavController) {
         ) {
             // Título
             Text(
-                text = "Sign In",
+                text = "Entrar",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
@@ -143,7 +143,7 @@ fun SingInFormScreen(navController: NavController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                placeholder = { Text("Password", color = MaterialTheme.colorScheme.onSecondary, fontSize = 16.sp) },
+                placeholder = { Text("Senha", color = MaterialTheme.colorScheme.onSecondary, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
@@ -248,12 +248,12 @@ fun SingInFormScreen(navController: NavController) {
             // Sign Up
             Row {
                 Text(
-                    text = "Don't have account? ",
+                    text = "Não possui conta? ",
                     color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 14.sp
                 )
                 Text(
-                    text = "Sign Up",
+                    text = "Cadastrar-se",
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
@@ -269,7 +269,7 @@ fun SingInFormScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun AuthenticationNavPreviwe() {
-    SuperIDTheme {
+    SuperIDTheme(darkTheme = true, dynamicColor = false) {
         SingInFormScreen(navController = rememberNavController())
     }
 }
