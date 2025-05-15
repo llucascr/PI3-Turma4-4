@@ -46,7 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.CategoryActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
-import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingIn
+import br.edu.puccampinas.pi3.turma4.superid.functions.validationSignIn
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.backgroundColor
@@ -223,7 +223,7 @@ fun SingInFormScreen(navController: NavController) {
                     emailError = validationUtils.emailValidation(email)
                     passwordError = validationUtils.passwordInvalid(password)
                     if (!emailError && !passwordError) {
-                        validationSingIn(
+                        validationSignIn(
                             context,
                             email,
                             password,
