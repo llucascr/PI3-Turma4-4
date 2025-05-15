@@ -77,6 +77,7 @@ fun HeaderAlterarSenhas() {
         Text("Alterar Senha", color = Color.White, fontSize = 30.sp)
     }
 }
+
 @Composable
 fun TextFieldsAlterarSenhas() {
     val verde = Color(0xFF166534)
@@ -89,6 +90,19 @@ fun TextFieldsAlterarSenhas() {
     var nova_senha by remember { mutableStateOf("") }
     var conf_nova_senha by remember { mutableStateOf("") }
 
+    // Chamada para carregar dados
+    LaunchedEffect(Unit) {
+        puxarDados(
+            onResult = { tituloDB, descricaoDB, loginDB, senhaDB ->
+                titulo = tituloDB
+                descricao = descricaoDB
+                login = loginDB
+                nova_senha = senhaDB
+                conf_nova_senha = senhaDB
+            }
+        )
+    }
+
     val commonModifier = Modifier
         .fillMaxWidth()
         .padding(top = 13.dp)
@@ -97,7 +111,7 @@ fun TextFieldsAlterarSenhas() {
     OutlinedTextField(
         value = titulo,
         onValueChange = { titulo = it },
-        placeholder = { Text("Titulo", color = Color.Gray) },
+        placeholder = { Text("Título", color = Color.Gray) },
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = verde,
             focusedBorderColor = verde,
@@ -197,7 +211,7 @@ fun BotaoSalvar(onClick: () -> Unit) {
 
 @Composable
 fun BottomBar() {
-    Button( onClick = {teste()}) { }
+    //Button( onClick = {puxarDados()}) { }
     Row(
         modifier = Modifier
             .background(Color.Transparent)
@@ -303,23 +317,32 @@ fun AlterarSenha() {
     }
 }
 
-fun teste() {
+fun puxarDados(onResult: (String, String, String, String) -> Unit) {
     val db = FirebaseFirestore.getInstance()
     val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
+    val categoria = "Sites Web"
+    val senhaId = "CPanVhlx8zNYWLYBSEj4"
 
-    db.collection("users").document(usuarioId)
+    db.collection("users")
+        .document(usuarioId)
         .collection("categorias")
+        .document(categoria)
+        .collection("senhas")
+        .document(senhaId)
         .get()
-        .addOnSuccessListener { categorias ->
-            if (!categorias.isEmpty) {
-                for (document in categorias) {
-                    Log.d("Firestore", "Categoria: ${document.id} - ${document.data}")
-                }
+        .addOnSuccessListener { document ->
+            if (document.exists()) {
+                val titulo = document.getString("titulo") ?: ""
+                val descricao = document.getString("descricao") ?: ""
+                val login = document.getString("login") ?: ""
+                val senha = document.getString("senha") ?: ""
+                Log.d("Firestore", "Dados carregados com sucesso.")
+                onResult(titulo, descricao, login, senha)
             } else {
-                Log.d("Firestore", "Nenhuma categoria encontrada.")
+                Log.d("Firestore", "Documento não encontrado.")
             }
         }
         .addOnFailureListener { exception ->
-            Log.w("Firestore", "Erro ao buscar categorias", exception)
+            Log.w("Firestore", "Erro ao buscar o documento", exception)
         }
 }
