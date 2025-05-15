@@ -1,6 +1,7 @@
 package com.example.alterarsenha
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,6 +24,16 @@ import androidx.compose.ui.unit.sp
 import br.edu.puccampinas.pi3.turma4.superid.R
 import kotlinx.coroutines.launch
 
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.DocumentReference
+
+//Imports de icons
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material.icons.filled.ArrowBack
+
 class ChangeAppsPassword : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,16 +53,16 @@ fun HeaderAlterarSenhas() {
             .fillMaxHeight(0.1f),
         verticalArrangement = Arrangement.Bottom
     ) {
-        Button(
-            onClick = { /* ação de voltar */ },
-            modifier = Modifier.height(50.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = Color.White
-            ),
-            elevation = ButtonDefaults.buttonElevation(0.dp)
+        IconButton(
+            onClick = {},
+            modifier = Modifier.size(50.dp)
         ) {
-          Image(painter = painterResource(R.drawable.iconqrcode), contentDescription = "Sofia")
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "Voltar",
+                tint = Color.White,
+                modifier = Modifier.size(30.dp)
+            )
         }
     }
 
@@ -66,9 +77,8 @@ fun HeaderAlterarSenhas() {
         Text("Alterar Senha", color = Color.White, fontSize = 30.sp)
     }
 }
-
 @Composable
-fun TextFildsAlterarSenhas(onSalvarClick: () -> Unit) {
+fun TextFieldsAlterarSenhas() {
     val verde = Color(0xFF166534)
     val branco = Color(0xFFFFFFFF)
     val preto = Color(0xFF000000)
@@ -98,7 +108,7 @@ fun TextFildsAlterarSenhas(onSalvarClick: () -> Unit) {
             focusedContainerColor = branco,
         ),
         modifier = commonModifier,
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(10.dp)
     )
 
     OutlinedTextField(
@@ -115,7 +125,7 @@ fun TextFildsAlterarSenhas(onSalvarClick: () -> Unit) {
             focusedContainerColor = branco,
         ),
         modifier = commonModifier.height(70.dp),
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(10.dp)
     )
 
     OutlinedTextField(
@@ -132,7 +142,7 @@ fun TextFildsAlterarSenhas(onSalvarClick: () -> Unit) {
             focusedContainerColor = branco,
         ),
         modifier = commonModifier,
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(10.dp)
     )
 
     OutlinedTextField(
@@ -149,7 +159,7 @@ fun TextFildsAlterarSenhas(onSalvarClick: () -> Unit) {
             focusedContainerColor = branco,
         ),
         modifier = commonModifier,
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(10.dp)
     )
 
     OutlinedTextField(
@@ -166,38 +176,19 @@ fun TextFildsAlterarSenhas(onSalvarClick: () -> Unit) {
             focusedContainerColor = branco,
         ),
         modifier = commonModifier,
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(10.dp)
     )
-
-    Box(
-        modifier = Modifier
-            .padding(top = 27.dp)
-            .fillMaxWidth()
-            .height(50.dp)
-            .shadow(
-                elevation = 15.dp,
-                shape = RoundedCornerShape(15.dp),
-                ambientColor = Color(0xFFB0FFB0),
-                spotColor = Color(0xFFB0FFB0)
-            )
-            .background(
-                color = Color(0xff0f6630),
-                shape = RoundedCornerShape(15.dp)
-            )
-    ) {
-        ButaoSalvar(onClick = onSalvarClick)
-    }
 }
 
 @Composable
-fun ButaoSalvar(onClick: () -> Unit) {
+fun BotaoSalvar(onClick: () -> Unit) {
     Button(
         onClick = onClick,
         modifier = Modifier.fillMaxSize(),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent
+            containerColor = Color.Green
         ),
-        shape = RoundedCornerShape(15.dp),
+        shape = RoundedCornerShape(10.dp),
         contentPadding = PaddingValues()
     ) {
         Text("Salvar", color = Color.White)
@@ -206,6 +197,7 @@ fun ButaoSalvar(onClick: () -> Unit) {
 
 @Composable
 fun BottomBar() {
+    Button( onClick = {teste()}) { }
     Row(
         modifier = Modifier
             .background(Color.Transparent)
@@ -223,21 +215,27 @@ fun BottomBar() {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.iconperson),
-            contentDescription = "Imagem de casa",
-            modifier = Modifier.size(30.dp)
-        )
-        Image(
-            painter = painterResource(id = R.drawable.iconqrcode),
-            contentDescription = "Imagem de qr code",
-            modifier = Modifier.size(100.dp)
-        )
-        Image(
-            painter = painterResource(id = R.drawable.iconhome),
-            contentDescription = "Imagem de perfil",
-            modifier = Modifier.size(30.dp)
-        )
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Filled.Home,
+                contentDescription = "Home",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Filled.QrCode,
+                contentDescription = "QR Code",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Filled.Person,
+                contentDescription = "Perfil",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
+        }
     }
 }
 
@@ -270,18 +268,58 @@ fun AlterarSenha() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                TextFildsAlterarSenhas(
-                    onSalvarClick = {
-                        scope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = "Senha salva com sucesso!",
-                                actionLabel = "OK"
-                            )
-                        }
-                    }
-                )
+                TextFieldsAlterarSenhas()
             }
+
+            // BOTÃO SALVAR FIXO
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .shadow(
+                        elevation = 10.dp,
+                        shape = RoundedCornerShape(10.dp),
+                        ambientColor = Color(0xFFB0FFB0),
+                        spotColor = Color(0xFFB0FFB0)
+                    )
+                    .background(
+                        color = Color(0xff0f6630),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            ) {
+                BotaoSalvar(onClick = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = "Senha salva com sucesso!",
+                            actionLabel = "OK"
+                        )
+                    }
+                })
+            }
+
             BottomBar()
         }
     }
+}
+
+fun teste() {
+    val db = FirebaseFirestore.getInstance()
+    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
+
+    db.collection("users").document(usuarioId)
+        .collection("categorias")
+        .get()
+        .addOnSuccessListener { categorias ->
+            if (!categorias.isEmpty) {
+                for (document in categorias) {
+                    Log.d("Firestore", "Categoria: ${document.id} - ${document.data}")
+                }
+            } else {
+                Log.d("Firestore", "Nenhuma categoria encontrada.")
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.w("Firestore", "Erro ao buscar categorias", exception)
+        }
 }
