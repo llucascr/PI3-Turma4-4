@@ -8,6 +8,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 
 fun resetPassword(email: String, context: Context) {
@@ -65,20 +67,20 @@ fun sendEmailVerification () {
 /**
  * Verifica se o email foi verificado ou não
  */
-fun reloadEmailVerification(): Boolean {
-    val user = FirebaseAuth.getInstance().currentUser
-    var verification: Boolean = false
+@OptIn(ExperimentalCoroutinesApi::class)
+suspend fun reloadEmailVerification(): Boolean {
+    val user = FirebaseAuth.getInstance().currentUser ?: return false
 
-    user?.reload()?.addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            if (user.isEmailVerified) {
-                Log.d("EMAIL",  "Email verificado com sucesso!")
-                verification = true
-            }
-            else {
-                Log.d("EMAIL", "Email não verificado")
+    return suspendCancellableCoroutine { continuation ->
+        user.reload().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val verified = user.isEmailVerified
+                Log.d("EMAIL", if (verified) "Email verificado com sucesso!" else "Email não verificado")
+                continuation.resume(verified, onCancellation = null)
+            } else {
+                continuation.resume(false, onCancellation = null)
             }
         }
     }
-    return verification
+
 }

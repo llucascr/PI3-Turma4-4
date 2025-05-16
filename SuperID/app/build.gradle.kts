@@ -78,7 +78,9 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation (libs.material3)
 
-    implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.androidx.material)
 
 
 }

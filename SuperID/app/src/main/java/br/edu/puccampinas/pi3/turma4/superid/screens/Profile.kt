@@ -14,8 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -24,6 +28,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +51,10 @@ import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.sendEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProfileScreen(navController: NavController) {
 
@@ -49,8 +62,13 @@ fun ProfileScreen(navController: NavController) {
     var name = getSavedName(context).toString()
     var email = validationUtils.getSavedEmail(context).toString()
 
-    var emailVerification = reloadEmailVerification()
-//    var emailVerification = false
+    var emailVerification by remember { mutableStateOf(false) }
+    if (!emailVerification) {
+        LaunchedEffect(Unit) {
+            emailVerification = reloadEmailVerification()
+        }
+    }
+//    var emailVerification = true
 
     Scaffold(
         bottomBar = {
@@ -63,6 +81,7 @@ fun ProfileScreen(navController: NavController) {
                 .padding(padding)
                 .padding(horizontal = 24.dp, vertical = 16.dp)
                 .fillMaxSize(),
+
         ) {
             Text(
                 text = "Perfil",
@@ -120,6 +139,17 @@ fun ProfileScreen(navController: NavController) {
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.weight(1f)
                     )
+                    Button(
+                        onClick = { sendEmailVerification() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        shape = RoundedCornerShape(24.dp),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text("Reenviar email de verificação", fontSize = 12.sp)
+                    }
                 } else {
                     Text(
                         text = "Email verificado",
@@ -128,17 +158,6 @@ fun ProfileScreen(navController: NavController) {
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
-                }
-                Button(
-                    onClick = { sendEmailVerification() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    ),
-                    shape = RoundedCornerShape(24.dp),
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
-                ) {
-                    Text("Reenviar email de verificação", fontSize = 12.sp)
                 }
             }
 
@@ -181,6 +200,7 @@ fun ProfileScreen(navController: NavController) {
             }
         }
     }
+
 }
 
 @Composable
