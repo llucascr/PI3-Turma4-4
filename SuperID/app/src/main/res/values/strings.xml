@@ -2,4 +2,5 @@
     <string name="app_name">SuperID</string>
     <string name="title_activity_sing_up">SingUpActivity</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="title_activity_qr_code">QrCodeActivity</string>
 </resources>
