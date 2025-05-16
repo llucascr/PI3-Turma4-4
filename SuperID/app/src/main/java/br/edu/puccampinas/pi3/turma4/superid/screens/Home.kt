@@ -1,6 +1,7 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,28 +18,37 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import br.edu.puccampinas.pi3.turma4.superid.R
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
-fun CategoryScreen(navController: NavController) {
+fun HomeScreen(navController: NavController) {
     val items = listOf(
         "Todas" to "153",
         "Sites Web" to "90",
@@ -48,7 +58,7 @@ fun CategoryScreen(navController: NavController) {
     )
 
     // Adiciona um marcador especial para o botão
-    val extendedItems = items
+    val extendedItems = items + ("add_button" to "")
 
     // Agrupa os itens em pares (chunked em 2 por linha)
     val groupedItems = extendedItems.chunked(2)
@@ -56,8 +66,9 @@ fun CategoryScreen(navController: NavController) {
     Scaffold(
         containerColor = colorScheme.background,
         bottomBar = {
+            BottomBar(navController)
             Divider(color = colorScheme.onBackground, thickness = 4.dp)
-            BottomBar()
+            BottomBar(navController)
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -166,6 +177,6 @@ fun CategoryScreen(navController: NavController) {
 @Composable
 fun MainScreenPreview() {
     SuperIDTheme(darkTheme = true, dynamicColor = false) {
-        CategoryScreen(navController = rememberNavController())
+        HomeScreen(navController = rememberNavController())
     }
 }

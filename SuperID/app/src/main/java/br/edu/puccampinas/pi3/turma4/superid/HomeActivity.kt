@@ -13,10 +13,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.screens.CategoryScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.HomeScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.ProfileScreen
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
-class CategoryActivity : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,8 +37,9 @@ class CategoryActivity : ComponentActivity() {
 fun CategoryNav(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "main") {
-        composable("main") { CategoryScreen(navController) }
+    NavHost(navController = navController, startDestination = "category") {
+        composable("home") { HomeScreen(navController) }
+        composable("profile") { ProfileScreen(navController) }
     }
 }
 

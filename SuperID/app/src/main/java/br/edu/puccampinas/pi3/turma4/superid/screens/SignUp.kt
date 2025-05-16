@@ -50,15 +50,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.CategoryActivity
-import br.edu.puccampinas.pi3.turma4.superid.functions.SingUpViewModel
+import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
+import br.edu.puccampinas.pi3.turma4.superid.functions.SignUpViewModel
 import br.edu.puccampinas.pi3.turma4.superid.functions.saveName
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingUp
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
-fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = viewModel()) {
+fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = viewModel()) {
     val name by viewModel.name.collectAsState()
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
@@ -257,7 +257,7 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
                                 email,
                                 password,
                                 onSuccess = {
-                                    val intent = Intent(context, CategoryActivity::class.java)
+                                    val intent = Intent(context, HomeActivity::class.java)
                                     context.startActivity(intent)
                                 },
                                 onFailure = { e ->
@@ -304,6 +304,6 @@ fun SingUpFormScreen(navController: NavController, viewModel: SingUpViewModel = 
 @Composable
 fun SingUpFormScreenPreview() {
     SuperIDTheme(darkTheme = false, dynamicColor = false) {
-        SingUpFormScreen(navController = rememberNavController())
+        SignUpFormScreen(navController = rememberNavController())
     }
 }

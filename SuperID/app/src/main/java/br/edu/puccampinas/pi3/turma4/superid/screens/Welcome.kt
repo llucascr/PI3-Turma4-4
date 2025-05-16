@@ -51,7 +51,7 @@ fun WelcomeScreen(navController: NavController) {
         ) {
             // Logo
             Image(
-                painter = painterResource(id = R.drawable.superid), // substitua pelo seu recurso
+                painter = painterResource(id = R.drawable.superid),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(180.dp)

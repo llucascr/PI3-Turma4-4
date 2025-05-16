@@ -44,15 +44,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.CategoryActivity
+import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
-import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingIn
+import br.edu.puccampinas.pi3.turma4.superid.functions.validationSignIn
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
-fun SingInFormScreen(navController: NavController) {
+fun SignInFormScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
@@ -220,12 +220,12 @@ fun SingInFormScreen(navController: NavController) {
                     emailError = validationUtils.emailValidation(email)
                     passwordError = validationUtils.passwordInvalid(password)
                     if (!emailError && !passwordError) {
-                        validationSingIn(
+                        validationSignIn(
                             context,
                             email,
                             password,
                             onSuccess = {
-                                val intent = Intent(context, CategoryActivity::class.java)
+                                val intent = Intent(context, HomeActivity::class.java)
                                 context.startActivity(intent)
                             },
                             onFailure = { e ->
@@ -270,6 +270,6 @@ fun SingInFormScreen(navController: NavController) {
 @Composable
 fun AuthenticationNavPreviwe() {
     SuperIDTheme(darkTheme = true, dynamicColor = false) {
-        SingInFormScreen(navController = rememberNavController())
+        SignInFormScreen(navController = rememberNavController())
     }
 }
