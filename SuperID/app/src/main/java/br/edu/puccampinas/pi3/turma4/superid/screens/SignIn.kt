@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -45,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
+import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSignIn
@@ -67,6 +70,25 @@ fun SignInFormScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Ícone de Voltar no canto superior esquerdo
+            IconButton(
+                onClick = {
+                    val intent = Intent(context, WelcomeActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(21.dp)
+                    .height(60.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Voltar",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -120,7 +142,9 @@ fun SignInFormScreen(navController: NavController) {
                         unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
                         focusedContainerColor = MaterialTheme.colorScheme.secondary,
                         unfocusedBorderColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent
+                        focusedBorderColor = Color.Transparent,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -162,7 +186,9 @@ fun SignInFormScreen(navController: NavController) {
                     unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
                     focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
+                    focusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -240,7 +266,7 @@ fun SignInFormScreen(navController: NavController) {
                     .height(55.dp)
                     .clip(RoundedCornerShape(16.dp))
             ) {
-                Text("Log In", color = MaterialTheme.colorScheme.onPrimary, fontSize = 16.sp)
+                Text("Entrar", color = MaterialTheme.colorScheme.onPrimary, fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(28.dp))

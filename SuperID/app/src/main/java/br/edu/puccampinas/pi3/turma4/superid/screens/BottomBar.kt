@@ -31,7 +31,7 @@ fun BottomBar(navController: NavController) {
     ) {
         NavigationBarItem(
             selected = true,
-            onClick = { navController.navigate("categoty")},
+            onClick = { navController.navigate("home")},
             icon = {
                 Icon(
                     imageVector = Icons.Default.Home,

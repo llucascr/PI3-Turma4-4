@@ -121,7 +121,9 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                     unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
                     focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
+                    focusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -150,7 +152,9 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                     unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
                     focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
+                    focusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -189,7 +193,9 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                     unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
                     focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
+                    focusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -276,7 +282,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                     .height(55.dp)
                     .clip(RoundedCornerShape(16.dp))
             ) {
-                Text("Criar Conta", color = Color.White, fontSize = 16.sp)
+                Text("Criar Conta", color = MaterialTheme.colorScheme.onPrimary, fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(28.dp))

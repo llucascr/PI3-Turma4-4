@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
+import br.edu.puccampinas.pi3.turma4.superid.functions.reloadEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.sendEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
@@ -48,8 +49,8 @@ fun ProfileScreen(navController: NavController) {
     var name = getSavedName(context).toString()
     var email = validationUtils.getSavedEmail(context).toString()
 
-//    var emailVerification = reloadEmailVerification()
-    var emailVerification = false
+    var emailVerification = reloadEmailVerification()
+//    var emailVerification = false
 
     Scaffold(
         bottomBar = {
