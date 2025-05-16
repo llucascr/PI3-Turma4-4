@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -26,7 +27,7 @@ import br.edu.puccampinas.pi3.turma4.superid.R
 fun BottomBar(navController: NavController) {
     Divider(color = Color.White, thickness = 4.dp)
     BottomAppBar(
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) {
         NavigationBarItem(
             selected = true,
@@ -35,16 +36,16 @@ fun BottomBar(navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.Home,
                     contentDescription = "Home",
-                    modifier = Modifier.size(30.dp),
-                    tint = Color.White
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             },
             label = {
-                Text("Home", color = Color.White)
+                Text("Home", color = MaterialTheme.colorScheme.onBackground)
             },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
-                selectedTextColor = Color.White,
+                selectedIconColor = MaterialTheme.colorScheme.onBackground,
+                selectedTextColor = MaterialTheme.colorScheme.onBackground,
                 indicatorColor = Color.Transparent,
                 unselectedIconColor = Color.Gray,
                 unselectedTextColor = Color.Gray
@@ -58,12 +59,12 @@ fun BottomBar(navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.QrCodeScanner,
                     contentDescription = "QR Code",
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.size(30.dp),
-                    tint = Color.White
                 )
             },
             label = {
-                Text("QR Code", color = Color.White)
+                Text("QR Code", color = MaterialTheme.colorScheme.onBackground)
             }
         )
 
@@ -74,12 +75,12 @@ fun BottomBar(navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = "Perfil",
-                    modifier = Modifier.size(30.dp),
-                    tint = Color.White
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             },
             label = {
-                Text("Perfil", color = Color.White)
+                Text("Perfil", color = MaterialTheme.colorScheme.onBackground)
             }
         )
     }

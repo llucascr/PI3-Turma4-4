@@ -43,13 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.R
 import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
 import br.edu.puccampinas.pi3.turma4.superid.functions.reloadEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.sendEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -65,7 +63,7 @@ fun ProfileScreen(navController: NavController) {
         bottomBar = {
             BottomBar(navController)
         },
-        containerColor = Color.Black
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -76,7 +74,7 @@ fun ProfileScreen(navController: NavController) {
             Text(
                 text = "Perfil",
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -126,7 +124,7 @@ fun ProfileScreen(navController: NavController) {
                         text = "Verifique seu Email",
                         fontSize = 15.sp,
                         textAlign = TextAlign.Start,
-                        color = DarkColors.verificationFalseGrennColor,
+                        color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.weight(1f)
                     )
                 } else {
@@ -134,14 +132,14 @@ fun ProfileScreen(navController: NavController) {
                         text = "Email verificado",
                         fontSize = 15.sp,
                         textAlign = TextAlign.Start,
-                        color = DarkColors.verificationTrueGrennColor,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
                 }
                 Button(
                     onClick = { sendEmailVerification() },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = DarkColors.primaryGreen,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
                     ),
                     shape = RoundedCornerShape(24.dp),
@@ -160,7 +158,7 @@ fun ProfileScreen(navController: NavController) {
                     Button(
                         onClick = { resetPassword(email, context) },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = DarkColors.primaryGreen,
+                            containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = Color.White
                         ),
                         shape = RoundedCornerShape(24.dp),
@@ -180,8 +178,8 @@ fun ProfileScreen(navController: NavController) {
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = DarkColors.primaryGreen,
-                    contentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 shape = RoundedCornerShape(12.dp),
                 elevation = ButtonDefaults.buttonElevation(8.dp)

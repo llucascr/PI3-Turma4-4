@@ -23,6 +23,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -54,10 +55,6 @@ import br.edu.puccampinas.pi3.turma4.superid.functions.SignUpViewModel
 import br.edu.puccampinas.pi3.turma4.superid.functions.saveName
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingUp
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.backgroundColor
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.inputBackground
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkColors.textColor
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
@@ -78,7 +75,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = backgroundColor
+        color = MaterialTheme.colorScheme.background
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Ícone de Voltar no canto superior esquerdo
@@ -92,7 +89,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Voltar",
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -107,7 +104,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                 text = "Cadastro",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = DarkColors.primaryGreen
+                color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -116,13 +113,13 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
             OutlinedTextField(
                 value = name,
                 onValueChange = { viewModel.onNameChange(it) },
-                placeholder = { Text("Name", color = Color.Gray, fontSize = 16.sp) },
+                placeholder = { Text("Nome", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 isError = nameError,
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -133,7 +130,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
             if (nameError) {
                 Text(
                     text = "Nome inválido",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -150,8 +147,8 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                 shape = RoundedCornerShape(12.dp),
                 isError = emailError,
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -162,7 +159,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
             if (emailError) {
                 Text(
                     text = "E-mail inválido",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -174,7 +171,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
             OutlinedTextField(
                 value = password,
                 onValueChange = { viewModel.onPasswordChange(it) },
-                placeholder = { Text("Password", color = Color.Gray, fontSize = 16.sp) },
+                placeholder = { Text("Senha", color = Color.Gray, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 isError = passwordError,
@@ -189,8 +186,8 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -200,7 +197,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
             )
             if (passwordError) {
                 Text(
-                    text = "Password inválido",
+                    text = "Senha inválida",
                     color = Color.Red,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
@@ -216,31 +213,16 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                 Checkbox(
                     checked = agreeTerms,
                     onCheckedChange = { viewModel.onAgreeTermsChange(it) },
-                    colors = CheckboxDefaults.colors(checkedColor = DarkColors.primaryGreen)
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
                 )
                 Text(
-                    text = "I agree to the ",
+                    text = "Eu concordo com os  ",
                     fontSize = 14.sp,
-                    color = textColor
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
                 Text(
-                    text = "Terms",
-                    color = DarkColors.primaryGreen,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    modifier = Modifier.clickable { navController.navigate("terms") }
-                )
-                Text(
-                    text = " and ",
-                    fontSize = 14.sp,
-                    color = textColor
-                )
-                Text(
-                    text = "Privacy Policy",
-                    color = DarkColors.primaryGreen,
+                    text = "Termos de Uso",
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
@@ -252,7 +234,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
             if (triedToSubmit &&!agreeTerms) {
                 Text(
                     text = "Aceitar Termos de uso!",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                 )
             }
@@ -288,13 +270,13 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
                         }
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = DarkColors.primaryGreen),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
                     .clip(RoundedCornerShape(16.dp))
             ) {
-                Text("Create Account", color = Color.White, fontSize = 16.sp)
+                Text("Criar Conta", color = Color.White, fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -302,13 +284,13 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
             // Sign In link
             Row {
                 Text(
-                    text = "Do you have an account? ",
-                    color = textColor,
+                    text = "Já tem uma conta? ",
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 14.sp
                 )
                 Text(
-                    text = "Sign In",
-                    color = DarkColors.primaryGreen,
+                    text = "Entrar",
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable { navController.navigate("singin") }
@@ -321,7 +303,7 @@ fun SignUpFormScreen(navController: NavController, viewModel: SignUpViewModel = 
 @Preview(showBackground = true)
 @Composable
 fun SingUpFormScreenPreview() {
-    SuperIDTheme {
+    SuperIDTheme(darkTheme = false, dynamicColor = false) {
         SignUpFormScreen(navController = rememberNavController())
     }
 }

@@ -12,10 +12,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Divider
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -25,12 +36,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import br.edu.puccampinas.pi3.turma4.superid.R
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
@@ -50,40 +64,65 @@ fun HomeScreen(navController: NavController) {
     val groupedItems = extendedItems.chunked(2)
 
     Scaffold(
-        containerColor = Color.Black,
+        containerColor = colorScheme.background,
         bottomBar = {
             BottomBar(navController)
+            Divider(color = colorScheme.onBackground, thickness = 4.dp)
+            BottomBar(navController)
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { /*adicionar senha*/ },
+                containerColor = colorScheme.primary,
+                shape = CircleShape,
+                modifier = Modifier
+                    .height(72.dp)
+                    .width(72.dp)
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Adicionar senha",
+                    modifier = Modifier.size(32.dp),
+                    tint = colorScheme.onPrimary
+                )
+            }
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(Color.Black)
+                .background(colorScheme.background)
                 .padding(16.dp)
         ) {
             Text(
                 text = "Olá, user!",
-                color = Color.White,
+                color = colorScheme.onBackground,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextField(
+            OutlinedTextField(
                 value = "",
-                onValueChange = {},
-                placeholder = { Text("pesquisar", color = Color.Gray) },
+                onValueChange = { /* TODO: Filtro de busca */ },
+                placeholder = { Text("Procurar categoria", color = colorScheme.onSecondary) },
+                leadingIcon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = null,
+                        tint = colorScheme.onSecondary
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp)),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.DarkGray,
-                    focusedContainerColor = Color.DarkGray,
-                    disabledContainerColor = Color.DarkGray,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = colorScheme.secondary,
+                    focusedContainerColor = colorScheme.secondary,
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent
                 ),
                 singleLine = true
             )
@@ -95,60 +134,40 @@ fun HomeScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     rowItems.forEach { (label, count) ->
-                        if (label == "add_button") {
-                            // Botão de adicionar
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(100.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(Color.Gray)
-                                    .clickable { /* ação */ },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
-                        } else {
-                            // Card de categoria
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(100.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFF1B5E20))
-                                    .padding(12.dp)
-                            ) {
-                                Column(
-                                    verticalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    Text(
-                                        text = "$label ($count)",
-                                        color = Color.White,
-                                        fontSize = 14.sp
-                                    )
-                                    Text(
-                                        text = label,
-                                        color = Color.White,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
+                    // Card de categoria
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(100.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colorScheme.primary)
+                            .padding(12.dp)
+                    ) {
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Text(
+                                text = "$label ($count)",
+                                color = colorScheme.onPrimary,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = label,
+                                color = colorScheme.onPrimary,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
-
-                    if (rowItems.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
                 }
+            }
 
-                Spacer(modifier = Modifier.height(12.dp))
+            if (rowItems.size == 1) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -157,7 +176,7 @@ fun HomeScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    SuperIDTheme {
+    SuperIDTheme(darkTheme = true, dynamicColor = false) {
         HomeScreen(navController = rememberNavController())
     }
 }
