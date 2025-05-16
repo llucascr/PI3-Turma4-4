@@ -15,28 +15,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,10 +36,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
-import br.edu.puccampinas.pi3.turma4.superid.functions.reloadEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.sendEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
 fun ProfileScreen(navController: NavController) {
@@ -56,8 +48,8 @@ fun ProfileScreen(navController: NavController) {
     var name = getSavedName(context).toString()
     var email = validationUtils.getSavedEmail(context).toString()
 
-    var emailVerification = reloadEmailVerification()
-//    var emailVerification = true
+//    var emailVerification = reloadEmailVerification()
+    var emailVerification = false
 
     Scaffold(
         bottomBar = {
@@ -140,7 +132,7 @@ fun ProfileScreen(navController: NavController) {
                     onClick = { sendEmailVerification() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = Color.White
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     shape = RoundedCornerShape(24.dp),
                     contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
@@ -159,7 +151,7 @@ fun ProfileScreen(navController: NavController) {
                         onClick = { resetPassword(email, context) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = Color.White
+                            contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         shape = RoundedCornerShape(24.dp),
                         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
@@ -203,14 +195,14 @@ fun ProfileField(
         ) {
             Text(
                 text = label,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.weight(1f),
                 fontSize = 14.sp
             )
             if (value.isNotBlank()) {
                 Text(
                     text = value,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 14.sp
                 )
             }
@@ -222,5 +214,7 @@ fun ProfileField(
 @Preview
 @Composable
 fun PreviewProfile() {
-    ProfileScreen(navController = rememberNavController())
+    SuperIDTheme(darkTheme = true, dynamicColor = false) {
+        ProfileScreen(navController = rememberNavController())
+    }
 }
