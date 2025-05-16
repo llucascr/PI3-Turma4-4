@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
+import br.edu.puccampinas.pi3.turma4.superid.functions.reloadEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationSignIn
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
@@ -63,6 +65,13 @@ fun SignInFormScreen(navController: NavController) {
     var emailError by remember { mutableStateOf(false) }
     var resetPasswordError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
+
+    var emailVerification by remember { mutableStateOf(false) }
+    if (!emailVerification) {
+        LaunchedEffect(Unit) {
+            emailVerification = reloadEmailVerification()
+        }
+    }
 
     val context = LocalContext.current
 
@@ -229,7 +238,7 @@ fun SignInFormScreen(navController: NavController) {
                     ),
                     modifier = Modifier.clickable {
                         if (!email.isNullOrBlank()) {
-                            resetPassword(email, context)
+                            resetPassword(email, emailVerification ,context)
                             resetPasswordError = false
                         } else {
                             resetPasswordError = true

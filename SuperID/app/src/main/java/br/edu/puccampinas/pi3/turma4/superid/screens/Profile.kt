@@ -168,7 +168,7 @@ fun ProfileScreen(navController: NavController) {
                 value = "",
                 trailing = {
                     Button(
-                        onClick = { resetPassword(email, context) },
+                        onClick = { resetPassword(email, emailVerification, context) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary

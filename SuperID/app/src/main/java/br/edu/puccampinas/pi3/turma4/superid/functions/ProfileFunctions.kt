@@ -12,26 +12,36 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 
-fun resetPassword(email: String, context: Context) {
+fun resetPassword(email: String, isVerificated: Boolean ,context: Context) {
     var auth = Firebase.auth
-    auth.sendPasswordResetEmail(email)
-        .addOnCompleteListener { task ->
-            if (task.isSuccessful){
-                Log.i("AUTH-FIREBASE", "Email de redefinição de senha enviado com suscesso")
-                Toast.makeText(
-                    context,
-                    "Email de redefinição de senha enviado",
-                    Toast.LENGTH_LONG,
-                ).show()
-            } else {
-                Log.e("AUTH-FIREBASE", "Erro ao enviar email de redefinição de senha")
-                Toast.makeText(
-                    context,
-                    "Não foi possivel enviar o email de redefinição de senha",
-                    Toast.LENGTH_LONG,
-                ).show()
+
+    if (isVerificated) {
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful){
+                    Log.i("AUTH-FIREBASE", "Email de redefinição de senha enviado com suscesso")
+                    Toast.makeText(
+                        context,
+                        "Email de redefinição de senha enviado",
+                        Toast.LENGTH_LONG,
+                    ).show()
+                } else {
+                    Log.e("AUTH-FIREBASE", "Erro ao enviar email de redefinição de senha")
+                    Toast.makeText(
+                        context,
+                        "Não foi possivel enviar o email de redefinição de senha",
+                        Toast.LENGTH_LONG,
+                    ).show()
+                }
             }
-        }
+    } else {
+        Toast.makeText(
+            context,
+            "Verifique o email para redefinir a senha",
+            Toast.LENGTH_LONG,
+        ).show()
+    }
+
 }
 
 /**
