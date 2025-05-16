@@ -45,7 +45,7 @@ fun PasswordDetailsScreen(
     val typography = MaterialTheme.typography
 
     Scaffold(
-        bottomBar = { BottomBar() },
+        bottomBar = { BottomBar(navController) },
         containerColor = colorScheme.background
     ) { paddingValues ->
         Column(

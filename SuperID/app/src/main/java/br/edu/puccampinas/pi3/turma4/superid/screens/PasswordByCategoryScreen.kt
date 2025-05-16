@@ -38,11 +38,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
 fun PasswordsByCategoryScreen(
     categoryName: String,
+    navController: NavController
     //onBackClick: () -> Unit,
     //onAddPasswordClick: () -> Unit,
     //onPasswordClick: (String) -> Unit
@@ -55,7 +58,7 @@ fun PasswordsByCategoryScreen(
 
     Scaffold(
         containerColor = colorScheme.background,
-        bottomBar = { BottomBar() },
+        bottomBar = { BottomBar(navController) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /*adicionar senha*/ },
@@ -168,7 +171,8 @@ data class PasswordItem(val title: String, val subtitle: String)
 fun PasswordsByCategoryScreenPreview() {
     SuperIDTheme(darkTheme = true, dynamicColor = false) {
         PasswordsByCategoryScreen(
-            categoryName = "Redes Sociais"
+            categoryName = "Redes Sociais",
+            navController = rememberNavController()
             //onBackClick = {},
             //onAddPasswordClick = {},
             //onPasswordClick = {}

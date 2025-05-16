@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 
@@ -35,9 +37,10 @@ import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 fun AddCategoryScreen(
     //onSalvarClick: () -> Unit,
     //onBackClick: () -> Unit
+    navController: NavController
 ) {
     Scaffold(
-        bottomBar = { BottomBar() },
+        bottomBar = { BottomBar(navController) },
         containerColor = colorScheme.background,
     ) { paddingValues ->
         Column(
@@ -120,6 +123,7 @@ fun AddCategoryScreen(
 fun AddCategoryScreenPreview() {
     SuperIDTheme(darkTheme = true, dynamicColor = false) {
         AddCategoryScreen(
+            navController = rememberNavController()
             //onSalvarClick = {},
             //onBackClick = {}
         )
