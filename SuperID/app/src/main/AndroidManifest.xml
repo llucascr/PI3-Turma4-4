@@ -6,9 +6,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/superid"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/superid"
         android:supportsRtl="true"
         android:theme="@style/Theme.SuperID"
         tools:targetApi="31">
@@ -32,11 +32,6 @@
             android:name=".AuthenticationActivity"
             android:exported="false"
             android:label="@string/title_activity_sing_up"
-            android:theme="@style/Theme.SuperID" />
-        <activity
-            android:name=".CategoryActivity"
-            android:exported="false"
-            android:label="@string/app_name"
             android:theme="@style/Theme.SuperID" />
     </application>
 

@@ -6,7 +6,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
@@ -25,7 +24,6 @@ import br.edu.puccampinas.pi3.turma4.superid.R
 
 @Composable
 fun BottomBar(navController: NavController) {
-    Divider(color = Color.White, thickness = 4.dp)
     BottomAppBar(
         containerColor = MaterialTheme.colorScheme.background
     ) {
