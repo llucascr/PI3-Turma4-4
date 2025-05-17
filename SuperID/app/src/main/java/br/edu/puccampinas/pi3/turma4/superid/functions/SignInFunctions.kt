@@ -1,16 +1,14 @@
 package br.edu.puccampinas.pi3.turma4.superid.functions
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
-import br.edu.puccampinas.pi3.turma4.superid.MainActivity
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 private val auth = Firebase.auth
 
-private fun singInAccount(context: Context, email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+private fun signInAccount(context: Context, email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
     auth.signInWithEmailAndPassword(email, password)
         .addOnCompleteListener { taks ->
             if (taks.isSuccessful) {
@@ -33,7 +31,7 @@ private fun singInAccount(context: Context, email: String, password: String, onS
 }
 
 
-fun validationSingIn(context: Context, email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+fun validationSignIn(context: Context, email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
     if (validationUtils.emailValidation(email)
         && validationUtils.emptyRegistrationFields(email, password)) {
         return
@@ -47,5 +45,5 @@ fun validationSingIn(context: Context, email: String, password: String, onSucces
         return
     }
 
-    singInAccount(context, email, password, onSuccess, onFailure)
+    signInAccount(context, email, password, onSuccess, onFailure)
 }
