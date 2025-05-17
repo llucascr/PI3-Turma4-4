@@ -2,6 +2,6 @@
     <string name="app_name">SuperID</string>
     <string name="title_activity_sing_up">SingUpActivity</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="title_activity_save_password">SavePasswordActivity</string>
     <string name="title_activity_home">HomeActivity</string>
-    <string name="title_activity_nav">NavActivity</string>
 </resources>
