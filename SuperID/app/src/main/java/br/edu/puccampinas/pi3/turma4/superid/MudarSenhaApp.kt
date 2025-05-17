@@ -15,7 +15,7 @@ import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 import kotlinx.coroutines.launch
 
-//Firestore!!!
+
 import com.google.firebase.firestore.FirebaseFirestore
 
 //Imports de icons
@@ -82,133 +82,18 @@ fun HeaderAlterarSenhas() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        Text("Alterar Senha", color = Color.White, fontSize = 30.sp)
+        Text("Alterar Senha", color = Color.White, fontSize = 40.sp)
     }
-}
-
-@Composable
-fun TextFieldsAlterarSenhas() {
-    val verde = Color(0xFF166534)
-    val branco = Color(0xFFFFFFFF)
-    val preto = Color(0xFF000000)
-
-    var titulo by remember { mutableStateOf("") }
-    var descricao by remember { mutableStateOf("") }
-    var login by remember { mutableStateOf("") }
-    var nova_senha by remember { mutableStateOf("") }
-    var conf_nova_senha by remember { mutableStateOf("") }
-
-    // Chamada para carregar dados
-    LaunchedEffect(Unit) {
-        puxarDados(
-            onResult = { tituloDB, descricaoDB, loginDB, senhaDB ->
-                titulo = tituloDB
-                descricao = descricaoDB
-                login = loginDB
-                nova_senha = senhaDB
-                conf_nova_senha = senhaDB
-            }
-        )
-    }
-
-    val commonModifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 13.dp)
-        .height(50.dp)
-
-    OutlinedTextField(
-        value = titulo,
-        onValueChange = { titulo = it },
-        placeholder = { Text("Título", color = Color.Gray) },
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = verde,
-            focusedBorderColor = verde,
-            focusedTextColor = preto,
-            unfocusedTextColor = preto,
-            cursorColor = preto,
-            unfocusedContainerColor = branco,
-            focusedContainerColor = branco,
-        ),
-        modifier = commonModifier,
-        shape = RoundedCornerShape(10.dp)
-    )
-
-    OutlinedTextField(
-        value = descricao,
-        onValueChange = { descricao = it },
-        placeholder = { Text("Descrição", color = Color.Gray) },
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = verde,
-            focusedBorderColor = verde,
-            focusedTextColor = preto,
-            unfocusedTextColor = preto,
-            cursorColor = verde,
-            unfocusedContainerColor = branco,
-            focusedContainerColor = branco,
-        ),
-        modifier = commonModifier.height(70.dp),
-        shape = RoundedCornerShape(10.dp)
-    )
-
-    OutlinedTextField(
-        value = login,
-        onValueChange = { login = it },
-        placeholder = { Text("Login", color = Color.Gray) },
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = verde,
-            focusedBorderColor = verde,
-            focusedTextColor = preto,
-            unfocusedTextColor = preto,
-            cursorColor = verde,
-            unfocusedContainerColor = branco,
-            focusedContainerColor = branco,
-        ),
-        modifier = commonModifier,
-        shape = RoundedCornerShape(10.dp)
-    )
-
-    OutlinedTextField(
-        value = nova_senha,
-        onValueChange = { nova_senha = it },
-        placeholder = { Text("Nova Senha", color = Color.Gray) },
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = verde,
-            focusedBorderColor = verde,
-            focusedTextColor = preto,
-            unfocusedTextColor = preto,
-            cursorColor = verde,
-            unfocusedContainerColor = branco,
-            focusedContainerColor = branco,
-        ),
-        modifier = commonModifier,
-        shape = RoundedCornerShape(10.dp)
-    )
-
-    OutlinedTextField(
-        value = conf_nova_senha,
-        onValueChange = { conf_nova_senha = it },
-        placeholder = { Text("Confirmar Senha", color = Color.Gray) },
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = verde,
-            focusedBorderColor = verde,
-            focusedTextColor = preto,
-            unfocusedTextColor = preto,
-            cursorColor = verde,
-            unfocusedContainerColor = branco,
-            focusedContainerColor = branco,
-        ),
-        modifier = commonModifier,
-        shape = RoundedCornerShape(10.dp)
-    )
 }
 
 @Composable
 fun BotaoSalvar(onClick: () -> Unit) {
+    val greenBtn = Color(0xFF166534)
     Button(
         onClick = onClick,
         modifier = Modifier.fillMaxSize(),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Green
+            containerColor = greenBtn
         ),
         shape = RoundedCornerShape(10.dp),
         contentPadding = PaddingValues()
@@ -219,7 +104,6 @@ fun BotaoSalvar(onClick: () -> Unit) {
 
 @Composable
 fun BottomBar() {
-    //Button( onClick = {puxarDados()}) { }
     Row(
         modifier = Modifier
             .background(Color.Transparent)
@@ -261,6 +145,276 @@ fun BottomBar() {
     }
 }
 
+@Composable
+fun AlterarSenha() {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    var titulo by remember { mutableStateOf("") }
+    var descricao by remember { mutableStateOf("") }
+    var login by remember { mutableStateOf("") }
+    var nova_senha by remember { mutableStateOf("") }
+    var conf_nova_senha by remember { mutableStateOf("") }
+
+    // Carrega os dados do Firestore uma vez
+    LaunchedEffect(Unit) {
+        puxarDados { t, d, l, s ->
+            titulo = t
+            descricao = d
+            login = l
+            nova_senha = s
+            conf_nova_senha = ""
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color.Black
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .background(Color.Black),
+            horizontalAlignment = Alignment.Start
+        ) {
+            HeaderAlterarSenhas()
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+
+                TextFieldsAlterarSenhas(
+                    titulo = titulo,
+                    onTituloChange = { titulo = it },
+                    descricao = descricao,
+                    onDescricaoChange = { descricao = it },
+                    login = login,
+                    onLoginChange = { login = it },
+                    nova_senha = nova_senha,
+                    onNovaSenhaChange = { nova_senha = it },
+                    conf_nova_senha = conf_nova_senha,
+                    onConfNovaSenhaChange = { conf_nova_senha = it }
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .shadow(
+                        elevation = 10.dp,
+                        shape = RoundedCornerShape(10.dp),
+                        ambientColor = Color(0xFFB0FFB0),
+                        spotColor = Color(0xFFB0FFB0)
+                    )
+                    .background(
+                        color = Color(0xff0f6630),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+            ) {
+                BotaoSalvar(
+                    onClick = {
+                    atualizarDadosFirestore(titulo, descricao, login, nova_senha,
+                        onSuccess = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Senha salva com sucesso!", "OK")
+                            }
+                        },
+                        onError = { errorMsg ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Erro ao salvar: $errorMsg", "OK")
+                            }
+                        }
+                    )
+                })
+            }
+
+            BottomBar()
+        }
+    }
+}
+
+@Composable
+fun TextFieldsAlterarSenhas(
+    titulo: String,
+    onTituloChange: (String) -> Unit,
+    descricao: String,
+    onDescricaoChange: (String) -> Unit,
+    login: String,
+    onLoginChange: (String) -> Unit,
+    nova_senha: String,
+    onNovaSenhaChange: (String) -> Unit,
+    conf_nova_senha: String,
+    onConfNovaSenhaChange: (String) -> Unit,
+) {
+    val verde = Color(0xFF166534)
+    val branco = Color(0xFFFFFFFF)
+    val preto = Color(0xFF000000)
+
+    val commonModifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 25.dp)
+        .height(50.dp)
+
+    OutlinedTextField(
+        value = titulo,
+        onValueChange = onTituloChange,
+        placeholder = { Text("Título", color = Color.Gray) },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = verde,
+            focusedBorderColor = verde,
+            focusedTextColor = preto,
+            unfocusedTextColor = preto,
+            cursorColor = preto,
+            unfocusedContainerColor = branco,
+            focusedContainerColor = branco,
+        ),
+        modifier = commonModifier,
+        shape = RoundedCornerShape(10.dp)
+    )
+
+    OutlinedTextField(
+        value = descricao,
+        onValueChange = onDescricaoChange,
+        placeholder = { Text("Descrição", color = Color.Gray) },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = verde,
+            focusedBorderColor = verde,
+            focusedTextColor = preto,
+            unfocusedTextColor = preto,
+            cursorColor = preto,
+            unfocusedContainerColor = branco,
+            focusedContainerColor = branco,
+        ),
+        modifier = commonModifier,
+        shape = RoundedCornerShape(10.dp)
+    )
+
+    OutlinedTextField(
+        value = login,
+        onValueChange = onLoginChange,
+        placeholder = { Text("Login", color = Color.Gray) },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = verde,
+            focusedBorderColor = verde,
+            focusedTextColor = preto,
+            unfocusedTextColor = preto,
+            cursorColor = preto,
+            unfocusedContainerColor = branco,
+            focusedContainerColor = branco,
+        ),
+        modifier = commonModifier,
+        shape = RoundedCornerShape(10.dp)
+    )
+
+    OutlinedTextField(
+        value = nova_senha,
+        onValueChange = onNovaSenhaChange,
+        placeholder = { Text("Nova senha", color = Color.Gray) },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = verde,
+            focusedBorderColor = verde,
+            focusedTextColor = preto,
+            unfocusedTextColor = preto,
+            cursorColor = preto,
+            unfocusedContainerColor = branco,
+            focusedContainerColor = branco,
+        ),
+        modifier = commonModifier,
+        shape = RoundedCornerShape(10.dp)
+    )
+
+    OutlinedTextField(
+        value = conf_nova_senha,
+        onValueChange = onConfNovaSenhaChange,
+        placeholder = { Text("Confirmar nova senha", color = Color.Gray) },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = verde,
+            focusedBorderColor = verde,
+            focusedTextColor = preto,
+            unfocusedTextColor = preto,
+            cursorColor = preto,
+            unfocusedContainerColor = branco,
+            focusedContainerColor = branco,
+        ),
+        modifier = commonModifier,
+        shape = RoundedCornerShape(10.dp)
+    )
+}
+
+fun atualizarDadosFirestore(
+    titulo: String,
+    descricao: String,
+    login: String,
+    senha: String,
+    onSuccess: () -> Unit,
+    onError: (String) -> Unit
+) {
+    val db = FirebaseFirestore.getInstance()
+    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
+    val categoria = "Sites Web"
+    val senhaId = "CPanVhlx8zNYWLYBSEj4"
+
+    val dadosAtualizados = hashMapOf(
+        "titulo" to titulo,
+        "descricao" to descricao,
+        "login" to login,
+        "senha" to senha
+    )
+
+    db.collection("users")
+        .document(usuarioId)
+        .collection("categorias")
+        .document(categoria)
+        .collection("senhas")
+        .document(senhaId)
+        .set(dadosAtualizados)
+        .addOnSuccessListener {
+            onSuccess()
+        }
+        .addOnFailureListener { e ->
+            onError(e.message ?: "Erro")
+        }
+}
+
+fun puxarDados(onResult: (String, String, String, String) -> Unit) {
+    val db = FirebaseFirestore.getInstance()
+    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
+    val categoria = "Sites Web"
+    val senhaId = "CPanVhlx8zNYWLYBSEj4"
+
+    db.collection("users")
+        .document(usuarioId)
+        .collection("categorias")
+        .document(categoria)
+        .collection("senhas")
+        .document(senhaId)
+        .get()
+        .addOnSuccessListener { document ->
+            if (document.exists()) {
+                val titulo = document.getString("titulo") ?: ""
+                val descricao = document.getString("descricao") ?: ""
+                val login = document.getString("login") ?: ""
+                val senha = document.getString("senha") ?: ""
+                Log.d("Firestore", "Dados carregados com sucesso.")
+                onResult(titulo, descricao, login, senha)
+            } else {
+                Log.d("Firestore", "Documento não encontrado.")
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.w("Firestore", "Erro ao buscar o documento", exception)
+        }
+}
+
+/*
 @Preview
 @Composable
 fun AlterarSenha() {
@@ -313,8 +467,7 @@ fun AlterarSenha() {
                 BotaoSalvar(onClick = {
                     scope.launch {
                         snackbarHostState.showSnackbar(
-                            message = "Senha salva com sucesso!",
-                            actionLabel = "OK"
+                            "Senha salva com sucesso!", "OK"
                         )
                     }
                 })
@@ -325,32 +478,4 @@ fun AlterarSenha() {
     }
 }
 
-fun puxarDados(onResult: (String, String, String, String) -> Unit) {
-    val db = FirebaseFirestore.getInstance()
-    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
-    val categoria = "Sites Web"
-    val senhaId = "CPanVhlx8zNYWLYBSEj4"
-
-    db.collection("users")
-        .document(usuarioId)
-        .collection("categorias")
-        .document(categoria)
-        .collection("senhas")
-        .document(senhaId)
-        .get()
-        .addOnSuccessListener { document ->
-            if (document.exists()) {
-                val titulo = document.getString("titulo") ?: ""
-                val descricao = document.getString("descricao") ?: ""
-                val login = document.getString("login") ?: ""
-                val senha = document.getString("senha") ?: ""
-                Log.d("Firestore", "Dados carregados com sucesso.")
-                onResult(titulo, descricao, login, senha)
-            } else {
-                Log.d("Firestore", "Documento não encontrado.")
-            }
-        }
-        .addOnFailureListener { exception ->
-            Log.w("Firestore", "Erro ao buscar o documento", exception)
-        }
-}
+ */
