@@ -18,61 +18,56 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import br.edu.puccampinas.pi3.turma4.superid.functions.getCategorys
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    val items = listOf(
-        "Todas" to "153",
-        "Sites Web" to "90",
-        "Redes Sociais" to "27",
-        "Aplicativos" to "18",
-        "Streaming" to "6"
-    )
+    var categoryList by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
 
-    // Adiciona um marcador especial para o botão
-    val extendedItems = items + ("add_button" to "")
+    // Chama a função para buscar as categorias
+    LaunchedEffect(Unit) {
+        getCategorys { categories ->
+            categoryList = categories
+        }
+    }
 
-    // Agrupa os itens em pares (chunked em 2 por linha)
-    val groupedItems = extendedItems.chunked(2)
+    val groupedItems = categoryList.chunked(2)
 
     Scaffold(
-        containerColor = colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            BottomBar(navController)
-            Divider(color = colorScheme.onBackground, thickness = 4.dp)
+            Divider(color = MaterialTheme.colorScheme.onBackground, thickness = 4.dp)
             BottomBar(navController)
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*adicionar senha*/ },
-                containerColor = colorScheme.primary,
+                onClick = { /* Adicionar senha */ },
+                containerColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
                 modifier = Modifier
                     .height(72.dp)
@@ -82,7 +77,7 @@ fun HomeScreen(navController: NavController) {
                     Icons.Default.Add,
                     contentDescription = "Adicionar senha",
                     modifier = Modifier.size(32.dp),
-                    tint = colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
@@ -91,12 +86,12 @@ fun HomeScreen(navController: NavController) {
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(colorScheme.background)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
             Text(
                 text = "Olá, user!",
-                color = colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -106,20 +101,20 @@ fun HomeScreen(navController: NavController) {
             OutlinedTextField(
                 value = "",
                 onValueChange = { /* TODO: Filtro de busca */ },
-                placeholder = { Text("Procurar categoria", color = colorScheme.onSecondary) },
+                placeholder = { Text("Procurar categoria", color = MaterialTheme.colorScheme.onSecondary) },
                 leadingIcon = {
                     Icon(
                         Icons.Default.Search,
                         contentDescription = null,
-                        tint = colorScheme.onSecondary
+                        tint = MaterialTheme.colorScheme.onSecondary
                     )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = colorScheme.secondary,
-                    focusedContainerColor = colorScheme.secondary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -127,46 +122,47 @@ fun HomeScreen(navController: NavController) {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
+
             groupedItems.forEach { rowItems ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     rowItems.forEach { (label, count) ->
-                    // Card de categoria
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(100.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(colorScheme.primary)
-                            .padding(12.dp)
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxSize()
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(100.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(MaterialTheme.colorScheme.primary)
+                                .padding(12.dp)
                         ) {
-                            Text(
-                                text = "$label ($count)",
-                                color = colorScheme.onPrimary,
-                                fontSize = 14.sp
-                            )
-                            Text(
-                                text = label,
-                                color = colorScheme.onPrimary,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Column(
+                                verticalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = "$label ($count)",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 14.sp
+                                )
+                                Text(
+                                    text = label,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
+
+                    // Se a linha tiver apenas um item, preenche o espaço restante
+                    if (rowItems.size == 1) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
                 }
-            }
 
-            if (rowItems.size == 1) {
-                Spacer(modifier = Modifier.weight(1f))
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
