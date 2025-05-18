@@ -1,5 +1,6 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
+import android.R
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -48,12 +50,15 @@ import br.edu.puccampinas.pi3.turma4.superid.functions.createCategory
 import br.edu.puccampinas.pi3.turma4.superid.functions.getCategorys
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 import com.google.android.gms.tasks.Task
+import com.google.android.recaptcha.internal.zztu
 import com.google.firebase.firestore.QuerySnapshot
 
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
     var categoryList by remember { mutableStateOf<List<Pair<String, Long>>>(emptyList()) }
+
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
        getCategorys { categories ->
@@ -74,7 +79,7 @@ fun HomeScreen(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    createCategory(context, "Cursos")
+                    showDialog = true
                 },
                 containerColor = colorScheme.primary,
                 shape = CircleShape,
@@ -89,6 +94,13 @@ fun HomeScreen(navController: NavController) {
                     tint = colorScheme.onPrimary
                 )
             }
+            CategoryInputDialog(
+                showDialog = showDialog,
+                onDismiss = { showDialog = false },
+                onConfirm = { nomeCategoria ->
+                    createCategory(context, nomeCategoria)
+                }
+            )
         }
     ) { paddingValues ->
         Column(
@@ -173,6 +185,57 @@ fun HomeScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
+    }
+}
+
+@Composable
+fun CategoryInputDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var text by remember { mutableStateOf("") }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            confirmButton = {
+                Text(
+                    text = "Confirmar",
+                    modifier = Modifier
+                        .clickable {
+                            onConfirm(text)
+                            onDismiss()
+                        }
+                        .padding(8.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            },
+            dismissButton = {
+                Text(
+                    text = "Cancelar",
+                    modifier = Modifier
+                        .clickable { onDismiss() }
+                        .padding(8.dp),
+                    color = MaterialTheme.colorScheme.error
+                )
+            },
+            title = {
+                Text(
+                    text = "Nova Categoria",
+                    color = Color.Black
+
+                )
+                    },
+            text = {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    placeholder = { Text("Digite o nome da categoria") },
+                    singleLine = true
+                )
+            }
+        )
     }
 }
 
