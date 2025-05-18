@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,6 +52,7 @@ import com.google.firebase.firestore.QuerySnapshot
 
 @Composable
 fun HomeScreen(navController: NavController) {
+    val context = LocalContext.current
     var categoryList by remember { mutableStateOf<List<Pair<String, Long>>>(emptyList()) }
 
     LaunchedEffect(Unit) {
@@ -72,7 +74,7 @@ fun HomeScreen(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    createCategory("Nova Categoria")
+                    createCategory(context, "Cursos")
                 },
                 containerColor = colorScheme.primary,
                 shape = CircleShape,

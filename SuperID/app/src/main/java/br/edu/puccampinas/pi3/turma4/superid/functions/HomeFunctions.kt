@@ -1,19 +1,23 @@
 package br.edu.puccampinas.pi3.turma4.superid.functions
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.flow
+
+private val db = Firebase.firestore
+private val auth = Firebase.auth
 
 fun getCategorys(onResult: (List<Pair<String, Long>>) -> Unit) {
-    val db = Firebase.firestore
-    val uid = Firebase.auth.uid
     val categoryList = mutableListOf<Pair<String, Long>>()
 
     db.collection("users")
-        .document(uid ?: return)
+        .document(auth.uid ?: return)
         .collection("categorias")
         .get()
         .addOnSuccessListener { result ->
@@ -31,25 +35,48 @@ fun getCategorys(onResult: (List<Pair<String, Long>>) -> Unit) {
         }
 }
 
-fun createCategory(name: String) {
-    val db = Firebase.firestore
-    val auth = Firebase.auth
-
-    var categoryDoc = hashMapOf<String, String>(
+fun createCategory(context: Context, name: String) {
+    val categoryDoc = hashMapOf<String, String>(
         "name" to name,
-        "quantidae" to "0"
+        "quantidade" to "0"
     )
 
-    db.collection("users").document("${auth.uid}")
-        .collection("categorias").document(name).set(categoryDoc)
-        .addOnCompleteListener{taks ->
-            if (taks.isSuccessful) {
-                Log.i("FIRESTORE-INFO", "Categoria Criada!")
-            } else {
-                Log.e("FIRESTORE-INFO", "Erro ao criar a categoria: ${taks.exception}")
-            }
+    checkEqualCategory(name) { isValid ->
+        if (isValid) {
+            db.collection("users").document(auth.uid.toString())
+                .collection("categorias").document(name).set(categoryDoc)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.i("FIRESTORE-INFO", "Categoria Criada!")
+                        Toast.makeText(context, "Categoria criada com sucesso!", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Log.e("FIRESTORE-INFO", "Erro ao criar a categoria: ${task.exception}")
+                    }
+                }
+        } else {
+            Toast.makeText(context, "Já existe uma categoria com esse nome", Toast.LENGTH_LONG).show()
         }
-        .addOnFailureListener { error ->
-            Log.e("FIRESTORE-INFO", "Erro ao criar a categoria: ", error)
+    }
+}
+
+fun checkEqualCategory(nameCategory: String, callback: (Boolean) -> Unit) {
+    db.collection("users")
+        .document(auth.uid.toString())
+        .collection("categorias")
+        .get()
+        .addOnSuccessListener { result ->
+            var notIsEquals = true
+            for (document in result) {
+                val name = document.data["name"] as? String ?: "Sem nome"
+                if (nameCategory == name) {
+                    notIsEquals = false
+                    break
+                }
+            }
+            callback(notIsEquals)
+        }
+        .addOnFailureListener { exception ->
+            Log.e("CATEGORY", "Erro ao buscar categorias", exception)
+            callback(false) // Em caso de erro, assume que não pode criar
         }
 }
