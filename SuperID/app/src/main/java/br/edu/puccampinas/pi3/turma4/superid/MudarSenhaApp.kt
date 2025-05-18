@@ -52,97 +52,69 @@ class MudarSenhaApp : ComponentActivity() {
     }
 }
 
-@Composable
-fun HeaderAlterarSenhas() {
-    Column(
-        modifier = Modifier
-            .background(Color.Transparent)
-            .fillMaxWidth()
-            .fillMaxHeight(0.1f),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        IconButton(
-            onClick = {},
-            modifier = Modifier.size(50.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                contentDescription = "Voltar",
-                tint = Color.White,
-                modifier = Modifier.size(30.dp)
-            )
-        }
-    }
+fun atualizarDadosFirestore(
+    titulo: String,
+    descricao: String,
+    login: String,
+    senha: String,
+    onSuccess: () -> Unit,
+    onError: (String) -> Unit
+) {
+    val db = FirebaseFirestore.getInstance()
+    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
+    val categoria = "Sites Web"
+    val senhaId = "CPanVhlx8zNYWLYBSEj4"
 
-    Column(
-        modifier = Modifier
-            .background(Color.Black)
-            .fillMaxWidth()
-            .height(45.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        Text("Alterar Senha", color = Color.White, fontSize = 40.sp)
-    }
+    val dadosAtualizados = hashMapOf(
+        "titulo" to titulo,
+        "descricao" to descricao,
+        "login" to login,
+        "senha" to senha
+    )
+
+    db.collection("users")
+        .document(usuarioId)
+        .collection("categorias")
+        .document(categoria)
+        .collection("senhas")
+        .document(senhaId)
+        .set(dadosAtualizados)
+        .addOnSuccessListener {
+            onSuccess()
+        }
+        .addOnFailureListener { e ->
+            onError(e.message ?: "Erro")
+        }
 }
 
-@Composable
-fun BotaoSalvar(onClick: () -> Unit) {
-    val greenBtn = Color(0xFF166534)
-    Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxSize(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = greenBtn
-        ),
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = PaddingValues()
-    ) {
-        Text("Salvar", color = Color.White)
-    }
-}
+fun puxarDados(onResult: (String, String, String, String) -> Unit) {
+    val db = FirebaseFirestore.getInstance()
+    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
+    val categoria = "Sites Web"
+    val senhaId = "CPanVhlx8zNYWLYBSEj4"
 
-@Composable
-fun BottomBar() {
-    Row(
-        modifier = Modifier
-            .background(Color.Transparent)
-            .fillMaxWidth()
-            .height(60.dp)
-            .drawBehind {
-                val strokeWidth = 2.dp.toPx()
-                drawLine(
-                    color = Color.White,
-                    start = Offset(0f, 0f),
-                    end = Offset(size.width, 0f),
-                    strokeWidth = strokeWidth
-                )
-            },
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = {}) {
-            Icon(imageVector = Icons.Filled.Home,
-                contentDescription = "Home",
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
-            )
+    db.collection("users")
+        .document(usuarioId)
+        .collection("categorias")
+        .document(categoria)
+        .collection("senhas")
+        .document(senhaId)
+        .get()
+        .addOnSuccessListener { document ->
+            if (document.exists()) {
+                val titulo = document.getString("titulo") ?: ""
+                val descricao = document.getString("descricao") ?: ""
+                val login = document.getString("login") ?: ""
+                val senha = document.getString("senha") ?: ""
+                Log.d("Firestore", "Dados carregados com sucesso.")
+                onResult(titulo, descricao, login, senha)
+            } else {
+                Log.d("Firestore", "Documento não encontrado.")
+            }
         }
-        IconButton(onClick = {}) {
-            Icon(imageVector = Icons.Filled.QrCode,
-                contentDescription = "QR Code",
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
-            )
+        .addOnFailureListener { exception ->
+            Log.w("Firestore", "Erro ao buscar o documento", exception)
         }
-        IconButton(onClick = {}) {
-            Icon(imageVector = Icons.Filled.Person,
-                contentDescription = "Perfil",
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
-            )
-        }
-    }
 }
 
 @Composable
@@ -156,7 +128,7 @@ fun AlterarSenha() {
     var nova_senha by remember { mutableStateOf("") }
     var conf_nova_senha by remember { mutableStateOf("") }
 
-    // Carrega os dados do Firestore uma vez
+    // Carrega os dados do Firestore
     LaunchedEffect(Unit) {
         puxarDados { t, d, l, s ->
             titulo = t
@@ -242,6 +214,40 @@ fun AlterarSenha() {
 }
 
 @Composable
+fun HeaderAlterarSenhas() {
+    Column(
+        modifier = Modifier
+            .background(Color.Transparent)
+            .fillMaxWidth()
+            .fillMaxHeight(0.1f),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        IconButton(
+            onClick = {},
+            modifier = Modifier.size(50.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "Voltar",
+                tint = Color.White,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .background(Color.Black)
+            .fillMaxWidth()
+            .height(45.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Text("Alterar Senha", color = Color.White, fontSize = 35.sp)
+    }
+}
+
+@Composable
 fun TextFieldsAlterarSenhas(
     titulo: String,
     onTituloChange: (String) -> Unit,
@@ -260,7 +266,7 @@ fun TextFieldsAlterarSenhas(
 
     val commonModifier = Modifier
         .fillMaxWidth()
-        .padding(top = 25.dp)
+        .padding(top = 10.dp)
         .height(50.dp)
 
     OutlinedTextField(
@@ -349,133 +355,61 @@ fun TextFieldsAlterarSenhas(
     )
 }
 
-fun atualizarDadosFirestore(
-    titulo: String,
-    descricao: String,
-    login: String,
-    senha: String,
-    onSuccess: () -> Unit,
-    onError: (String) -> Unit
-) {
-    val db = FirebaseFirestore.getInstance()
-    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
-    val categoria = "Sites Web"
-    val senhaId = "CPanVhlx8zNYWLYBSEj4"
-
-    val dadosAtualizados = hashMapOf(
-        "titulo" to titulo,
-        "descricao" to descricao,
-        "login" to login,
-        "senha" to senha
-    )
-
-    db.collection("users")
-        .document(usuarioId)
-        .collection("categorias")
-        .document(categoria)
-        .collection("senhas")
-        .document(senhaId)
-        .set(dadosAtualizados)
-        .addOnSuccessListener {
-            onSuccess()
-        }
-        .addOnFailureListener { e ->
-            onError(e.message ?: "Erro")
-        }
-}
-
-fun puxarDados(onResult: (String, String, String, String) -> Unit) {
-    val db = FirebaseFirestore.getInstance()
-    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
-    val categoria = "Sites Web"
-    val senhaId = "CPanVhlx8zNYWLYBSEj4"
-
-    db.collection("users")
-        .document(usuarioId)
-        .collection("categorias")
-        .document(categoria)
-        .collection("senhas")
-        .document(senhaId)
-        .get()
-        .addOnSuccessListener { document ->
-            if (document.exists()) {
-                val titulo = document.getString("titulo") ?: ""
-                val descricao = document.getString("descricao") ?: ""
-                val login = document.getString("login") ?: ""
-                val senha = document.getString("senha") ?: ""
-                Log.d("Firestore", "Dados carregados com sucesso.")
-                onResult(titulo, descricao, login, senha)
-            } else {
-                Log.d("Firestore", "Documento não encontrado.")
-            }
-        }
-        .addOnFailureListener { exception ->
-            Log.w("Firestore", "Erro ao buscar o documento", exception)
-        }
-}
-
-/*
-@Preview
 @Composable
-fun AlterarSenha() {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
-        containerColor = Color.Black
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(color = Color.Black),
-            horizontalAlignment = Alignment.Start
-        ) {
-            HeaderAlterarSenhas()
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                TextFieldsAlterarSenhas()
-            }
-
-            // BOTÃO SALVAR FIXO
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .shadow(
-                        elevation = 10.dp,
-                        shape = RoundedCornerShape(10.dp),
-                        ambientColor = Color(0xFFB0FFB0),
-                        spotColor = Color(0xFFB0FFB0)
-                    )
-                    .background(
-                        color = Color(0xff0f6630),
-                        shape = RoundedCornerShape(10.dp)
-                    )
-            ) {
-                BotaoSalvar(onClick = {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            "Senha salva com sucesso!", "OK"
-                        )
-                    }
-                })
-            }
-
-            BottomBar()
+fun BottomBar() {
+    Row(
+        modifier = Modifier
+            .background(Color.Transparent)
+            .fillMaxWidth()
+            .height(60.dp)
+            .drawBehind {
+                val strokeWidth = 2.dp.toPx()
+                drawLine(
+                    color = Color.White,
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = strokeWidth
+                )
+            },
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Filled.Home,
+                contentDescription = "Home",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Filled.QrCode,
+                contentDescription = "QR Code",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+        IconButton(onClick = {}) {
+            Icon(imageVector = Icons.Filled.Person,
+                contentDescription = "Perfil",
+                tint = Color.White,
+                modifier = Modifier.size(32.dp)
+            )
         }
     }
 }
 
- */
+@Composable
+fun BotaoSalvar(onClick: () -> Unit) {
+    val greenBtn = Color(0xFF166534)
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxSize(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = greenBtn
+        ),
+        shape = RoundedCornerShape(10.dp),
+        contentPadding = PaddingValues()
+    ) {
+        Text("Salvar", color = Color.White)
+    }
+}
