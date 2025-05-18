@@ -1,5 +1,6 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,32 +43,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import br.edu.puccampinas.pi3.turma4.superid.functions.createCategory
 import br.edu.puccampinas.pi3.turma4.superid.functions.getCategorys
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.QuerySnapshot
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    var categoryList by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
+    var categoryList by remember { mutableStateOf<List<Pair<String, Long>>>(emptyList()) }
 
-    // Chama a função para buscar as categorias
     LaunchedEffect(Unit) {
-        getCategorys { categories ->
-            categoryList = categories
-        }
+       getCategorys { categories ->
+           categories.forEach {
+               categoryList = categories
+           }
+       }
     }
 
     val groupedItems = categoryList.chunked(2)
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = colorScheme.background,
         bottomBar = {
-            Divider(color = MaterialTheme.colorScheme.onBackground, thickness = 4.dp)
+            Divider(color = colorScheme.onBackground, thickness = 4.dp)
             BottomBar(navController)
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Adicionar senha */ },
-                containerColor = MaterialTheme.colorScheme.primary,
+                onClick = {
+                    createCategory("Nova Categoria")
+                },
+                containerColor = colorScheme.primary,
                 shape = CircleShape,
                 modifier = Modifier
                     .height(72.dp)
@@ -77,7 +84,7 @@ fun HomeScreen(navController: NavController) {
                     Icons.Default.Add,
                     contentDescription = "Adicionar senha",
                     modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = colorScheme.onPrimary
                 )
             }
         }
@@ -86,12 +93,12 @@ fun HomeScreen(navController: NavController) {
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .background(colorScheme.background)
                 .padding(16.dp)
         ) {
             Text(
                 text = "Olá, user!",
-                color = MaterialTheme.colorScheme.onBackground,
+                color = colorScheme.onBackground,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -100,21 +107,21 @@ fun HomeScreen(navController: NavController) {
 
             OutlinedTextField(
                 value = "",
-                onValueChange = { /* TODO: Filtro de busca */ },
-                placeholder = { Text("Procurar categoria", color = MaterialTheme.colorScheme.onSecondary) },
+                onValueChange = { /* TODO: Implementar busca */ },
+                placeholder = { Text("Procurar categoria", color = colorScheme.onSecondary) },
                 leadingIcon = {
                     Icon(
                         Icons.Default.Search,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondary
+                        tint = colorScheme.onSecondary
                     )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
-                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    unfocusedContainerColor = colorScheme.secondary,
+                    focusedContainerColor = colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent
                 ),
@@ -134,7 +141,7 @@ fun HomeScreen(navController: NavController) {
                                 .weight(1f)
                                 .height(100.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.primary)
+                                .background(colorScheme.primary)
                                 .padding(12.dp)
                         ) {
                             Column(
@@ -143,12 +150,12 @@ fun HomeScreen(navController: NavController) {
                             ) {
                                 Text(
                                     text = "$label ($count)",
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = 14.sp
+                                    color = colorScheme.onPrimary,
+                                    fontSize = 10.sp
                                 )
                                 Text(
                                     text = label,
-                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    color = colorScheme.onPrimary,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -156,7 +163,6 @@ fun HomeScreen(navController: NavController) {
                         }
                     }
 
-                    // Se a linha tiver apenas um item, preenche o espaço restante
                     if (rowItems.size == 1) {
                         Spacer(modifier = Modifier.weight(1f))
                     }
@@ -170,7 +176,7 @@ fun HomeScreen(navController: NavController) {
 
 @Preview(showBackground = true)
 @Composable
-fun MainScreenPreview() {
+fun HomeScreenPreview() {
     SuperIDTheme(darkTheme = true, dynamicColor = false) {
         HomeScreen(navController = rememberNavController())
     }

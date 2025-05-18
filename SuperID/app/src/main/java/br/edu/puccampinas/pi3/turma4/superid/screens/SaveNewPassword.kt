@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
@@ -52,81 +53,41 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.firestore.FirebaseFirestore
 import br.edu.puccampinas.pi3.turma4.superid.R
 import br.edu.puccampinas.pi3.turma4.superid.functions.verifyInputs
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SavePwColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.inputBackground
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddPwUI(navController: NavController) {
     Scaffold(
-        containerColor = SavePwColors.backgroundColor,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            BottomAppBar(
-                containerColor = SavePwColors.primaryGreen,
-                contentColor = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.padding(0.dp).height(100.dp)
-            ) {
-                BottomBar()
-            }
+            BottomBar(navController)
         }
     ){
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.Center) {
-            MainContent()
+            MainContent(navController)
         }
     }
 }
 
 @Composable
-fun BottomBar(){
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
-        Button(onClick = { }, modifier = Modifier.weight(1f).wrapContentSize(),contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.buttonColors(
-            SavePwColors.primaryGreen)) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painter = painterResource(R.drawable.icon_home), contentDescription = null)
-                Spacer(modifier = Modifier.size(5.dp))
-                Text("Home",  color = MaterialTheme.colorScheme.onSecondary, fontSize = 12.sp)
-            }
+fun MainContent(navController: NavController){
 
-        }
-        Button(onClick = { }, modifier = Modifier.weight(2f),contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.buttonColors(
-                SavePwColors.primaryGreen)) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painter = painterResource(R.drawable.icon_qrcode), contentDescription = null)
-                Spacer(modifier = Modifier.size(5.dp))
-                Text("Autenticação", color = MaterialTheme.colorScheme.onSecondary, fontSize = 12.sp)
-            }
-
-        }
-        Button(onClick = { }, modifier = Modifier.weight(1f).wrapContentSize(),contentPadding = PaddingValues(0.dp),
-            colors = ButtonDefaults.buttonColors(
-                SavePwColors.primaryGreen)) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painter = painterResource(R.drawable.icon_person), contentDescription = null)
-                Spacer(modifier = Modifier.size(5.dp))
-                Text("Perfil", color = MaterialTheme.colorScheme.onSecondary, fontSize = 12.sp)
-            }
-
-        }
-    }
-}
-
-@Composable
-fun MainContent(){
-
-    Box(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
-        Button(
-            onClick = {/*TODO: fun para voltar para pw screen*/ },
-            colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),contentPadding = PaddingValues(0.dp)) {
-            Image(painter = painterResource(R.drawable.setinha), contentDescription = null)
-        }
-    }
+//    IconButton(
+//        onClick = { navController.navigate("singin") },
+//        modifier = Modifier
+//            .align(Alignment.TopStart)
+//            .padding(21.dp)
+//            .height(60.dp)
+//    ) {
+//        Icon(
+//            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//            contentDescription = "Voltar",
+//            tint = MaterialTheme.colorScheme.onBackground
+//        )
+//    }
     NewPasswordForms()
 }
 @Composable
@@ -137,7 +98,7 @@ fun NewPasswordForms(){
     Spacer(modifier = Modifier.size(50.dp))
     Box(modifier = Modifier.fillMaxWidth()){
         Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally){
-            Text("Nova Senha", textAlign = TextAlign.Center, fontSize = 30.sp, color = SavePwColors.titleColor)
+            Text("Nova Senha", textAlign = TextAlign.Center, fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground)
             Spacer(modifier = Modifier.size(25.dp))
             Box(modifier = Modifier.fillMaxWidth()){
                 Column(modifier = Modifier.fillMaxWidth(),horizontalAlignment = Alignment.CenterHorizontally) {
@@ -151,10 +112,10 @@ fun NewPasswordForms(){
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = inputBackground,
-                            focusedContainerColor = inputBackground,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                            focusedContainerColor = MaterialTheme.colorScheme.onBackground,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = SavePwColors.primaryGreen),
+                            focusedBorderColor = MaterialTheme.colorScheme.primary),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
                     Spacer(modifier = Modifier.size(20.dp))
@@ -168,10 +129,10 @@ fun NewPasswordForms(){
                         maxLines = 5,
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = inputBackground,
-                            focusedContainerColor = inputBackground,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                            focusedContainerColor = MaterialTheme.colorScheme.onBackground,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = SavePwColors.primaryGreen),
+                            focusedBorderColor =MaterialTheme.colorScheme.primary),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.size(20.dp))
@@ -184,10 +145,10 @@ fun NewPasswordForms(){
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = inputBackground,
-                            focusedContainerColor = inputBackground,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                            focusedContainerColor = MaterialTheme.colorScheme.onBackground,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = SavePwColors.primaryGreen),
+                            focusedBorderColor = MaterialTheme.colorScheme.primary),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
                     Spacer(modifier = Modifier.size(20.dp))
@@ -213,25 +174,25 @@ fun NewPasswordForms(){
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = inputBackground,
-                            focusedContainerColor = inputBackground,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                            focusedContainerColor = MaterialTheme.colorScheme.onBackground,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = SavePwColors.primaryGreen),
+                            focusedBorderColor = MaterialTheme.colorScheme.primary),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
                     if(success){
-                        Text("Senha salva!", color = SavePwColors.primaryGreen, fontSize = 15.sp)
+                        Text("Senha salva!", color = MaterialTheme.colorScheme.primary, fontSize = 15.sp)
                     }
                     if(!failure){
                         Spacer(modifier = Modifier.size(15.dp))
-                        Text("Campos inválidos!", color = SavePwColors.onFailureColor, fontSize = 15.sp)
+                        Text("Campos inválidos!", color = MaterialTheme.colorScheme.error, fontSize = 15.sp)
                     }
                     Spacer(modifier = Modifier.size(45.dp))
                     Button(onClick = {/*TODO: FUN SAVE PW*/
                        val savingStatus: Boolean = verifyInputs(titulo,descricao,login,senha)
                         if(savingStatus) success = true else failure = false
                     }, modifier = Modifier.fillMaxWidth().height(55.dp), shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(SavePwColors.primaryGreen)){
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)){
                         Text("Salvar", color = MaterialTheme.colorScheme.onSecondary)
                     }
                 }
@@ -243,5 +204,7 @@ fun NewPasswordForms(){
 @Preview(showBackground = true)
 @Composable
 fun AddPwPreview() {
-    AddPwUI(navController = rememberNavController())
+    SuperIDTheme(darkTheme = true, dynamicColor = false) {
+        AddPwUI(navController = rememberNavController())
+    }
 }
