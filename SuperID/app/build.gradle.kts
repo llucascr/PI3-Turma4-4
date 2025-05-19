@@ -89,5 +89,7 @@ dependencies {
 
     implementation(libs.androidx.material)
 
+    implementation(libs.play.services.code.scanner)
+
 
 }
