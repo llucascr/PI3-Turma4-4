@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -28,6 +29,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
+
+
+
+//Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
 
 class popUpDeletarSenhaApp : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,23 +63,47 @@ fun PopUp(){
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
-                .size(220.dp)
+                .size(250.dp)
                 .background(color = Color.White)
                 .padding(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ){
-                Text("Ação é permanente.")
+            Icon(
+                imageVector = Icons.Filled.Warning,
+                contentDescription = "Alerta",
+                tint = Color.Red
+            )
 
-                Button(
-                    onClick = {}
-                ){
-                    Text("Confirmar")
-                }
-                Button(onClick = {}){
-                    Text("Cancelar")
-                }
+            Text(
+                text = "Essa ação é permanente.",
+                color = Color(0xFF661B16),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .width(220.dp)
+                    .padding(top = 35.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF166534),
+                    contentColor = Color.White
+                )
+            ){
+                Text("Confirmar")
+            }
+            Button(onClick = {},
+                modifier = Modifier
+                    .width(220.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF661B16),
+                    contentColor = Color.White
+                )
+            ){
+                Text("Cancelar")
+            }
         }
-
     }
 }
