@@ -1,6 +1,7 @@
 package br.edu.puccampinas.pi3.turma4.superid
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
+//fire
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 //Icon
@@ -83,7 +86,9 @@ fun PopUp(){
             )
 
             Button(
-                onClick = {},
+                onClick = {
+                    deletarSenha()
+                },
                 modifier = Modifier
                     .width(220.dp)
                     .padding(top = 35.dp),
@@ -107,3 +112,23 @@ fun PopUp(){
         }
     }
 }
+
+fun deletarSenha(){
+    //infos da senha
+    val db = FirebaseFirestore.getInstance()
+    val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
+    val categoria = "Sites Web"
+    val senhaId = "CPanVhlx8zNYWLYBSEj4"
+
+    db.collection("users")
+        .document(usuarioId)
+        .collection("categorias")
+        .document(categoria)
+        .collection("senhas")
+        .document(senhaId)
+        .delete()
+        .addOnSuccessListener { Log.d("TesteFire", "DocumentSnapshot successfully deleted!") }
+        .addOnFailureListener { e -> Log.w("TesteFire", "Error deleting document", e) }
+}
+
+fun cancelar(){}
