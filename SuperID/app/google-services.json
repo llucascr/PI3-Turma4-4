@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "125737710127",
+    "project_id": "superid-pi3-turma4-4",
+    "storage_bucket": "superid-pi3-turma4-4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:125737710127:android:888bfcd484c38ac8a84cda",
+        "android_client_info": {
+          "package_name": "br.edu.puccampinas.pi3.turma4.superid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsbcDQJH5N7_AysjnVJDw_qkcQkjfPz20"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
