@@ -63,7 +63,7 @@ fun atualizarDadosFirestore(
     val db = FirebaseFirestore.getInstance()
     val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
     val categoria = "Sites Web"
-    val senhaId = "CPanVhlx8zNYWLYBSEj4"
+    val senhaId = "MiDp2e6u9cJZYjFEKMJv"
 
     val dadosAtualizados = hashMapOf(
         "titulo" to titulo,
@@ -91,7 +91,7 @@ fun puxarDados(onResult: (String, String, String, String) -> Unit) {
     val db = FirebaseFirestore.getInstance()
     val usuarioId = "ugjUYTnL6wYIdQx3Mx216wxrtL22"
     val categoria = "Sites Web"
-    val senhaId = "CPanVhlx8zNYWLYBSEj4"
+    val senhaId = "MiDp2e6u9cJZYjFEKMJv"
 
     db.collection("users")
         .document(usuarioId)
@@ -193,19 +193,25 @@ fun AlterarSenha() {
             ) {
                 BotaoSalvar(
                     onClick = {
-                    atualizarDadosFirestore(titulo, descricao, login, nova_senha,
-                        onSuccess = {
+                        if (nova_senha == conf_nova_senha) {
+                            atualizarDadosFirestore(titulo, descricao, login, nova_senha,
+                                onSuccess = {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Senha salva com sucesso!", "OK")
+                                    }
+                                },
+                                onError = { errorMsg ->
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Erro ao salvar: $errorMsg", "OK")
+                                    }
+                                }
+                            )
+                        } else {
                             scope.launch {
-                                snackbarHostState.showSnackbar("Senha salva com sucesso!", "OK")
-                            }
-                        },
-                        onError = { errorMsg ->
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Erro ao salvar: $errorMsg", "OK")
+                                snackbarHostState.showSnackbar("As senhas não coincidem", "TENTE NOVAMENTE")
                             }
                         }
-                    )
-                })
+                    })
             }
 
             BottomBar()
