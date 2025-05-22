@@ -17,93 +17,90 @@ import android.Manifest
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Color
+import br.edu.puccampinas.pi3.turma4.superid.screens.AutoDismissPopup
+import br.edu.puccampinas.pi3.turma4.superid.screens.PopUpScreen
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
+import org.json.JSONObject
 import java.util.Locale
 
 
 class QrCodeActivity : ComponentActivity() {
-    private var allowManualInput = false
-    private var enableAutoZoom = false
-    private var barcodeResultView: TextView? = null
+    private var siteUrl: String? = null
+    private var apiKey: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        barcodeResultView = findViewById(R.id.barcode_result_view)
+        startBarcodeScanner()
     }
 
-    fun onAllowManualInputCheckboxClicked(view: View) {
-        allowManualInput = (view as CheckBox).isChecked
-    }
+    private fun startBarcodeScanner() {
+        val options = GmsBarcodeScannerOptions.Builder()
+            .enableAutoZoom()
+            .build()
 
-    fun onEnableAutoZoomCheckboxClicked(view: View) {
-        enableAutoZoom = (view as CheckBox).isChecked
-    }
+        val scanner = GmsBarcodeScanning.getClient(this, options)
 
-    fun onScanButtonClicked(view: View) {
-        val optionsBuilder = GmsBarcodeScannerOptions.Builder()
-        if (allowManualInput) {
-            optionsBuilder.allowManualInput()
-        }
-        if (enableAutoZoom) {
-            optionsBuilder.enableAutoZoom()
-        }
-        val gmsBarcodeScanner = GmsBarcodeScanning.getClient(this, optionsBuilder.build())
-        gmsBarcodeScanner
-            .startScan()
+        scanner.startScan()
             .addOnSuccessListener { barcode: Barcode ->
-                barcodeResultView!!.text = getSuccessfulMessage(barcode)
+                val rawValue = barcode.rawValue
+                try {
+                    val json = JSONObject(rawValue)
+                    if (json.has("siteUrl") && json.has("apiKey")) {
+                        siteUrl = json.getString("siteUrl")
+                        apiKey = json.getString("apiKey")
+
+                        showSuccessPopup()
+                    } else {
+                        showFailurePopup()
+                    }
+                } catch (e: Exception) {
+                    showFailurePopup()
+//                    Toast.makeText(this, "QR Code inválido", Toast.LENGTH_SHORT).show()
+                }
             }
-            .addOnFailureListener { e: Exception -> barcodeResultView!!.text = getErrorMessage(e) }
             .addOnCanceledListener {
-                barcodeResultView!!.text = getString(R.string.error_scanner_cancelled)
+                showFailurePopup()
+//                Toast.makeText(this, "QR Code cancelado", Toast.LENGTH_SHORT).show()
             }
     }
 
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.putBoolean(KEY_ALLOW_MANUAL_INPUT, allowManualInput)
-        savedInstanceState.putBoolean(KEY_ENABLE_AUTO_ZOOM, enableAutoZoom)
-        super.onSaveInstanceState(savedInstanceState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        allowManualInput = savedInstanceState.getBoolean(KEY_ALLOW_MANUAL_INPUT)
-        enableAutoZoom = savedInstanceState.getBoolean(KEY_ENABLE_AUTO_ZOOM)
-    }
-
-    private fun getSuccessfulMessage(barcode: Barcode): String {
-        val barcodeValue =
-            String.format(
-                Locale.US,
-                "Display Value: %s\nRaw Value: %s\nFormat: %s\nValue Type: %s",
-                barcode.displayValue,
-                barcode.rawValue,
-                barcode.format,
-                barcode.valueType
-            )
-        return getString(R.string.barcode_result, barcodeValue)
-    }
-
-    private fun getErrorMessage(e: Exception): String? {
-        return if (e is MlKitException) {
-            when (e.errorCode) {
-                MlKitException.CODE_SCANNER_CAMERA_PERMISSION_NOT_GRANTED ->
-                    getString(R.string.error_camera_permission_not_granted)
-                MlKitException.CODE_SCANNER_APP_NAME_UNAVAILABLE ->
-                    getString(R.string.error_app_name_unavailable)
-                else -> getString(R.string.error_default_message, e)
+    private fun showSuccessPopup() {
+        setContent {
+            SuperIDTheme {
+                PopUpScreen("QrCode encontrado!", Icons.Default.CheckCircle, MaterialTheme.colorScheme.primary) {
+                    val resultIntent = intent.apply {
+                        putExtra("siteUrl", siteUrl)
+                        putExtra("apiKey", apiKey)
+                    }
+                    setResult(RESULT_OK, resultIntent)
+                    finish()
+                }
             }
-        } else {
-            e.message
         }
     }
 
-    companion object {
-        private const val KEY_ALLOW_MANUAL_INPUT = "allow_manual_input"
-        private const val KEY_ENABLE_AUTO_ZOOM = "enable_auto_zoom"
+    private fun showFailurePopup() {
+        setContent {
+            SuperIDTheme {
+                AutoDismissPopup(
+                    message = "QrCode não encontrado!",
+                    icon = Icons.Default.Cancel,
+                    iconColor = MaterialTheme.colorScheme.error
+                ) {
+                    setResult(RESULT_CANCELED)
+                    finish()
+                }
+            }
+        }
     }
 }
