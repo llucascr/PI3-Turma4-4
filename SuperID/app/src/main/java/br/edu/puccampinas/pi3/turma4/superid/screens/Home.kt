@@ -69,9 +69,7 @@ fun HomeScreen(navController: NavController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* SOMENTE PARA TESTES*/
-                    val intent = Intent(context, SavePasswordActivity::class.java)
-                    context.startActivity(intent)},
+                onClick = { },
                 containerColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
                 modifier = Modifier
