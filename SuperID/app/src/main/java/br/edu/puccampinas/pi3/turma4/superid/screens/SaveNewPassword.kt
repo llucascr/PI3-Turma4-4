@@ -2,6 +2,8 @@ package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,12 +39,15 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.RadioButtonDefaults.colors
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,27 +68,37 @@ import br.edu.puccampinas.pi3.turma4.superid.R
 import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.verifyInputs
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddPwUI(navController: NavController) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             BottomBar(navController)
         }
     ){
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.Center) {
-            MainContent()
+            MainContent(scope,snackbarHostState)
         }
     }
 }
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainContent(){
+fun MainContent(scope: CoroutineScope, snackbarHostState: SnackbarHostState){
     val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
@@ -107,11 +122,11 @@ fun MainContent(){
             }
         }
     }
-    NewPasswordForms()
+    NewPasswordForms(scope, snackbarHostState)
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewPasswordForms(){
-    var showSuccessDialog by remember { mutableStateOf(false) }
+fun NewPasswordForms(scope: CoroutineScope, snackbarHostState: SnackbarHostState){
     var success by remember {mutableStateOf(false)}
     var failure by remember {mutableStateOf(true)}
     Spacer(modifier = Modifier.size(50.dp))
@@ -207,17 +222,17 @@ fun NewPasswordForms(){
                             unfocusedTextColor = Color.Black),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
-                    if(success){
-                        Text("Senha salva!", color = MaterialTheme.colorScheme.primary, fontSize = 15.sp)
-                    }
-                    if(!failure){
-                        Spacer(modifier = Modifier.size(15.dp))
-                        Text("Campos inválidos!", color = MaterialTheme.colorScheme.error, fontSize = 15.sp)
-                    }
+
                     Spacer(modifier = Modifier.size(45.dp))
-                    Button(onClick = {/*TODO: FUN SAVE PW*/
+                    Button(onClick = {
                        val savingStatus: Boolean = verifyInputs(titulo,descricao,login,senha)
-                        if(savingStatus) success = true else failure = false
+                        if(savingStatus){
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Senha salva com sucesso!")
+                            }
+                        } else{
+
+                        }
                     }, modifier = Modifier.fillMaxWidth().height(55.dp), shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)){
                         Text("Salvar", color = MaterialTheme.colorScheme.onSecondary)

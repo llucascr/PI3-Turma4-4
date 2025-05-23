@@ -1,10 +1,13 @@
 package br.edu.puccampinas.pi3.turma4.superid.functions
 
+import android.os.Build
 import android.util.Log
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import android.util.Base64
+import androidx.annotation.RequiresApi
+import encrypt
 import kotlin.math.log
 
 
@@ -13,7 +16,8 @@ private val db = Firebase.firestore
 
 
 //função de verificação de inputs vazios
-fun verifyInputs(titulo: String,descricao: String?, login: String, senha: String): Boolean{
+@RequiresApi(Build.VERSION_CODES.O)
+fun verifyInputs(titulo: String, descricao: String?, login: String, senha: String): Boolean{
     if(titulo.isEmpty() || login.isEmpty() || senha.isEmpty()){
         Log.e("FIREBASE", "Campos vazios!")
         return false
@@ -40,10 +44,11 @@ private fun getStringToken():String{
     return string
 }
 //função para salvar senha no firestore
-private fun SaveNewPw(titulo: String,descricao: String?,login: String,senha: String){
+@RequiresApi(Build.VERSION_CODES.O)
+private fun SaveNewPw(titulo: String, descricao: String?, login: String, senha: String){
     val userId = auth.currentUser
     val accessToken = toBase64(getStringToken())
-    val senhacriptografada = encrypt(senha)
+    val senhacriptografada = encrypt(userId.toString(),senha)
     Log.i("user id", "User: ${userId}")
     val PwInformations = hashMapOf<String,String?>(
         "titulo" to titulo,

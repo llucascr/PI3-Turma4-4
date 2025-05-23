@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.functions.generateKeyIfNotExists
 import br.edu.puccampinas.pi3.turma4.superid.screens.AddPwUI
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 import com.google.firebase.firestore.ktx.firestore
@@ -26,7 +25,6 @@ class SavePasswordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        generateKeyIfNotExists()
         setContent {
             SuperIDTheme{
               SavePasswordScreen(modifier = Modifier)
