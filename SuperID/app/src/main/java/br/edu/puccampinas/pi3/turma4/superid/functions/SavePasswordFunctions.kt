@@ -1,5 +1,6 @@
 package br.edu.puccampinas.pi3.turma4.superid.functions
 
+import android.os.Build
 import android.util.Log
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
