@@ -1,5 +1,6 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,11 +37,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import br.edu.puccampinas.pi3.turma4.superid.PasswordByCategoryActivity
+import br.edu.puccampinas.pi3.turma4.superid.SavePasswordActivity
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
+import kotlin.jvm.java
 
 @Composable
 fun PasswordsByCategoryScreen(
@@ -50,6 +55,7 @@ fun PasswordsByCategoryScreen(
     //onAddPasswordClick: () -> Unit,
     //onPasswordClick: (String) -> Unit
 ) {
+    val context = LocalContext.current
     val passwords = listOf(
         PasswordItem("Conta google", "www.google.com"),
         PasswordItem("Brainly", "www.brainly.com"),
@@ -61,7 +67,11 @@ fun PasswordsByCategoryScreen(
         bottomBar = { BottomBar(navController) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*adicionar senha*/ },
+                onClick = { /*adicionar senha*/
+
+                    val intent = Intent(context, SavePasswordActivity::class.java)
+                    //intent.putExtra("categoryName","categoria aqui")
+                    context.startActivity(intent)},
                 containerColor = colorScheme.primary,
                 shape = CircleShape,
                 modifier = Modifier

@@ -1,6 +1,7 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
+import br.edu.puccampinas.pi3.turma4.superid.PasswordByCategoryActivity
 import br.edu.puccampinas.pi3.turma4.superid.SavePasswordActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.getCategorys
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
@@ -139,6 +142,12 @@ fun HomeScreen(navController: NavController) {
                                 .clip(RoundedCornerShape(12.dp))
                                 .background(MaterialTheme.colorScheme.primary)
                                 .padding(12.dp)
+                                .clickable{
+                                    Log.d("HomeScreen", "Categoria clicada: $label")
+                                    val intent = Intent(context, PasswordByCategoryActivity::class.java)
+                                    intent.putExtra("categoryName",label)
+                                    context.startActivity(intent)
+                                }
                         ) {
                             Column(
                                 verticalArrangement = Arrangement.SpaceBetween,
