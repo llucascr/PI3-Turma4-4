@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -140,9 +141,21 @@ fun AlterarSenha() {
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { snackbarData ->
+                Snackbar(
+                    modifier = Modifier
+                        .padding(bottom = 40.dp),
+                    snackbarData = snackbarData,
+                    containerColor = Color(0xFFFFFFFF), // Cor de fundo do Snackbar
+                    contentColor = Color.Black, // Cor do texto
+                    actionColor = Color.Black, // Cor da ação (ex: "OK")
+                    shape = RoundedCornerShape(12.dp) // (Opcional) Forma arredondada
+                )
+            }
+        },
         containerColor = Color.Black
-    ) { paddingValues ->
+    ){ paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -155,7 +168,6 @@ fun AlterarSenha() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
@@ -177,7 +189,10 @@ fun AlterarSenha() {
 
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 10.dp
+                    )
                     .fillMaxWidth()
                     .height(50.dp)
                     .shadow(
@@ -213,7 +228,10 @@ fun AlterarSenha() {
                         }
                     })
             }
-
+            Spacer(
+                Modifier
+                    .height(50.dp)
+            )
             BottomBar()
         }
     }
@@ -249,7 +267,7 @@ fun HeaderAlterarSenhas() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        Text("Alterar Senha", color = Color.White, fontSize = 35.sp)
+        Text("Alterar Senha", color = Color.White, fontSize = 32.sp)
     }
 }
 
@@ -272,7 +290,7 @@ fun TextFieldsAlterarSenhas(
 
     val commonModifier = Modifier
         .fillMaxWidth()
-        .padding(top = 10.dp)
+        .padding(top = 6.dp)
         .height(50.dp)
 
     OutlinedTextField(
@@ -409,13 +427,15 @@ fun BotaoSalvar(onClick: () -> Unit) {
     val greenBtn = Color(0xFF166534)
     Button(
         onClick = onClick,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         colors = ButtonDefaults.buttonColors(
             containerColor = greenBtn
         ),
-        shape = RoundedCornerShape(10.dp),
-        contentPadding = PaddingValues()
+        shape = RoundedCornerShape(10.dp)
     ) {
-        Text("Salvar", color = Color.White)
+        Text(
+            "Salvar", color = Color.White
+        )
     }
 }
