@@ -147,10 +147,10 @@ fun AlterarSenha() {
                     modifier = Modifier
                         .padding(bottom = 40.dp),
                     snackbarData = snackbarData,
-                    containerColor = Color(0xFFFFFFFF), // Cor de fundo do Snackbar
-                    contentColor = Color.Black, // Cor do texto
-                    actionColor = Color.Black, // Cor da ação (ex: "OK")
-                    shape = RoundedCornerShape(12.dp) // (Opcional) Forma arredondada
+                    containerColor = Color(0xFFFFFFFF),
+                    contentColor = Color.Black,
+                    actionColor = Color.Black,
+                    shape = RoundedCornerShape(12.dp)
                 )
             }
         },
