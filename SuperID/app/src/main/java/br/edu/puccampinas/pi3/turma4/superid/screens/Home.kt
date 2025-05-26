@@ -74,7 +74,7 @@ fun HomeScreen(navController: NavController) {
                 onClick = {
                     showDialog = true
                 },
-                containerColor = colorScheme.primary,
+                containerColor = colorScheme.onSecondary,
                 shape = CircleShape,
                 modifier = Modifier
                     .height(72.dp)
@@ -84,7 +84,7 @@ fun HomeScreen(navController: NavController) {
                     Icons.Default.Add,
                     contentDescription = "Adicionar senha",
                     modifier = Modifier.size(32.dp),
-                    tint = colorScheme.onPrimary
+                    tint = colorScheme.primary
                 )
             }
             CategoryInputDialog(

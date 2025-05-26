@@ -1,116 +1,102 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
 import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-import * as admin from "firebase-admin";
 import * as crypto from "crypto";
 import * as QRCode from "qrcode";
+import { initializeApp } from "firebase-admin/app";
+import { getFirestore, Timestamp } from "firebase-admin/firestore";
 
-admin.initializeApp();
-const firestore = admin.firestore();
+initializeApp();
+const db = getFirestore();
 
-export const performAuth = onRequest(async (request, response) => {
-  try {
-    const { siteUrl, apiKey } = request.body;
+export const performAuth = onRequest(async (req, res) => {
+  const { apiKey, url } = req.body;
 
-    if (!siteUrl || !apiKey) {
-      logger.warn("Parâmetros obrigatórios ausentes.");
-      response.status(400).send("Parâmetros obrigatórios: siteUrl e apiKey.");
-      return;
-    }
-
-    const partnerDoc = await firestore.collection("partners").doc(siteUrl).get();
-    if (!partnerDoc.exists || partnerDoc.data()?.apiKey !== apiKey) {
-      logger.warn("Parceiro não encontrado ou apiKey inválida.");
-      response.status(403).send("Acesso negado.");
-      return;
-    }
-
-    const loginToken = crypto.randomBytes(128).toString("hex"); // 256 caracteres
-
-    await firestore.collection("login").add({
-      siteUrl,
-      apiKey,
-      loginToken,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      attempts: 0
-    });
-
-    const qrCodeBase64 = await QRCode.toDataURL(loginToken);
-
-    logger.info("QR Code gerado com sucesso para:", siteUrl);
-    response.status(200).json({ qrCodeBase64 });
-  } catch (error) {
-    logger.error("Erro em performAuth:", error);
-    response.status(500).send("Erro interno no servidor.");
+  if (!apiKey || !url) {
+    res.status(400).send("Missing apiKey or url");
+    return;
   }
-});
 
-export const getLoginStatus = onRequest(async (request, response) => {
   try {
-    const { loginToken } = request.body;
-
-    if (!loginToken) {
-      logger.warn("Token ausente na requisição.");
-      response.status(400).send("Parâmetro obrigatório: loginToken.");
-      return;
-    }
-
-    const querySnapshot = await firestore.collection("login")
-      .where("loginToken", "==", loginToken)
-      .limit(1)
+    const partnersRef = db.collection("partners");
+    const snapshot = await partnersRef
+      .where("url", "==", url)
+      .where("apiKey", "==", apiKey)
       .get();
 
-    if (querySnapshot.empty) {
-      logger.warn("Token não encontrado.");
-      response.status(404).send("Token inválido ou expirado.");
+    if (snapshot.empty) {
+      logger.warn("Parceiro não autorizado:", { apiKey, url });
+      res.status(403).send("Unauthorized partner");
       return;
     }
 
-    const doc = querySnapshot.docs[0];
-    const data = doc.data();
+    const loginToken = generateRandomBase64(256);
+    const createdAt = Timestamp.now();
 
-    const now = admin.firestore.Timestamp.now();
-    const createdAt = data.createdAt;
-    const attempts = data.attempts ?? 0;
+    await db.collection("login").doc(loginToken).set({
+      apiKey,
+      loginToken,
+      createdAt,
+      attempts: 0,
+    });
 
-    // Verificar tempo de vida (1 minuto)
-    const diffSeconds = (now.seconds - createdAt.seconds);
-    if (diffSeconds > 60 || attempts >= 3) {
-      await doc.ref.delete(); // excluir token inválido
-      logger.warn("Token expirado ou tentativas excedidas.");
-      response.status(403).send("Token expirado. Gere um novo QR Code.");
-      return;
-    }
+    const qrCodeBase64 = await generateQRCodeBase64(loginToken);
 
-    // Atualizar tentativas
-    await doc.ref.update({ attempts: attempts + 1 });
-
-    // Verifica se já foi usado
-    if (data.user) {
-      logger.info("Login confirmado para usuário:", data.user);
-      response.status(200).json({
-        user: data.user,
-        loginTime: data.userLoggedAt.toDate()
-      });
-    } else {
-      logger.info("Token ainda não utilizado.");
-      response.status(204).send(); // No Content
-    }
-
+    res.status(200).send({ qrBase64: qrCodeBase64, loginToken: loginToken });
   } catch (error) {
-    logger.error("Erro em getLoginStatus:", error);
-    response.status(500).send("Erro interno no servidor.");
+    logger.error("Erro em performAuth", error);
+    res.status(500).send("Internal server error");
   }
 });
+
+export const getLoginStatus = onRequest(async (req, res) => {
+  const { loginToken } = req.body;
+
+  if (!loginToken) {
+    res.status(400).send("Missing loginToken");
+    return;
+  }
+
+  try {
+    const loginDocRef = db.collection("login").doc(loginToken);
+    const loginSnap = await loginDocRef.get();
+
+    if (!loginSnap.exists) {
+      res.status(404).send("Token not found");
+      return;
+    }
+
+    const loginData = loginSnap.data();
+    const now = Timestamp.now();
+    const created = loginData?.createdAt as Timestamp;
+    const diff = now.seconds - created.seconds;
+
+    if (diff > 60 || (loginData?.attempts ?? 0) >= 3) {
+      await loginDocRef.delete();
+      res.status(410).send({ status: "expired" });
+      return;
+    }
+
+    // Incrementar tentativas
+    await loginDocRef.update({
+      attempts: (loginData?.attempts ?? 0) + 1,
+    });
+
+    if (loginData?.user) {
+      res.status(200).send({ status: "success", uid: loginData.user });
+    } else {
+      res.status(202).send({ status: "pending" });
+    }
+  } catch (error) {
+    logger.error("Erro em getLoginStatus", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+function generateRandomBase64(length: number): string {
+  return crypto.randomBytes(length).toString("base64url").slice(0, length);
+}
+
+async function generateQRCodeBase64(text: string): Promise<string> {
+  return await QRCode.toDataURL(text);
+}
