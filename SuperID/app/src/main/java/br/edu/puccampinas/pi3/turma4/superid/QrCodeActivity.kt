@@ -4,39 +4,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
-import com.example.cameraapp2.permissions.WithPermission
-import android.Manifest
-import android.view.View
-import android.widget.CheckBox
-import android.widget.TextView
-import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.Color
 import br.edu.puccampinas.pi3.turma4.superid.screens.AutoDismissPopup
 import br.edu.puccampinas.pi3.turma4.superid.screens.PopUpScreen
-import com.google.mlkit.common.MlKitException
+import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
-import org.json.JSONObject
-import java.util.Locale
-
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.ktx.Firebase
+import android.util.Log
 
 class QrCodeActivity : ComponentActivity() {
-    private var siteUrl: String? = null
-    private var apiKey: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,55 +29,73 @@ class QrCodeActivity : ComponentActivity() {
 
     private fun startBarcodeScanner() {
         val options = GmsBarcodeScannerOptions.Builder()
-            .enableAutoZoom()
             .build()
 
         val scanner = GmsBarcodeScanning.getClient(this, options)
 
         scanner.startScan()
             .addOnSuccessListener { barcode: Barcode ->
-                val rawValue = barcode.rawValue
-                try {
-                    val json = JSONObject(rawValue)
-                    if (json.has("siteUrl") && json.has("apiKey")) {
-                        siteUrl = json.getString("siteUrl")
-                        apiKey = json.getString("apiKey")
-
-                        showSuccessPopup()
-                    } else {
-                        showFailurePopup()
-                    }
-                } catch (e: Exception) {
-                    showFailurePopup()
-//                    Toast.makeText(this, "QR Code inválido", Toast.LENGTH_SHORT).show()
+                val loginToken = barcode.rawValue
+                if (!loginToken.isNullOrEmpty()) {
+                    updateLoginDocument(loginToken)
+                } else {
+                    showFailurePopup("QR Code inválido: Token vazio")
                 }
             }
             .addOnCanceledListener {
-                showFailurePopup()
-//                Toast.makeText(this, "QR Code cancelado", Toast.LENGTH_SHORT).show()
+                showFailurePopup("Escaneamento de QR Code cancelado.")
+            }
+            .addOnFailureListener { e ->
+                Log.e("QRCODE_SCANNER", "Erro ao escanear QR Code: ${e.message}")
+                showFailurePopup("Erro ao escanear QR Code: ${e.message}")
             }
     }
 
-    private fun showSuccessPopup() {
+    private fun updateLoginDocument(loginToken: String) {
+        val db = Firebase.firestore
+        val currentUser = Firebase.auth.currentUser
+
+        if (currentUser == null) {
+            showFailurePopup("Usuário não autenticado no aplicativo.")
+            return
+        }
+
+        val userUid = currentUser.uid
+        val loginDocRef = db.collection("login").document(loginToken)
+
+        // Update the document to include the user's UID and a timestamp for when the login occurred
+        val updates = hashMapOf<String, Any>(
+            "user" to userUid,
+            "loggedInAt" to FieldValue.serverTimestamp()
+        )
+
+        loginDocRef.update(updates)
+            .addOnSuccessListener {
+                Log.d("FIRESTORE", "Documento de login atualizado com sucesso para token: $loginToken com UID: $userUid")
+                showSuccessPopup("Login realizado com sucesso via QR Code!")
+            }
+            .addOnFailureListener { e ->
+                Log.e("FIRESTORE", "Erro ao atualizar documento de login: ${e.message}", e)
+                showFailurePopup("Erro ao finalizar login via QR Code: ${e.message}")
+            }
+    }
+
+    private fun showSuccessPopup(message: String) {
         setContent {
             SuperIDTheme {
-                PopUpScreen("QrCode encontrado!", Icons.Default.CheckCircle, MaterialTheme.colorScheme.primary) {
-                    val resultIntent = intent.apply {
-                        putExtra("siteUrl", siteUrl)
-                        putExtra("apiKey", apiKey)
-                    }
-                    setResult(RESULT_OK, resultIntent)
+                PopUpScreen(message, Icons.Default.CheckCircle, MaterialTheme.colorScheme.primary) {
+                    setResult(RESULT_OK)
                     finish()
                 }
             }
         }
     }
 
-    private fun showFailurePopup() {
+    private fun showFailurePopup(message: String) {
         setContent {
             SuperIDTheme {
                 AutoDismissPopup(
-                    message = "QrCode não encontrado!",
+                    message = message,
                     icon = Icons.Default.Cancel,
                     iconColor = MaterialTheme.colorScheme.error
                 ) {
