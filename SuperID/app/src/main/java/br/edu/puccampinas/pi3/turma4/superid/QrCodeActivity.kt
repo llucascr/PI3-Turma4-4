@@ -47,7 +47,7 @@ class QrCodeActivity : ComponentActivity() {
             }
             .addOnFailureListener { e ->
                 Log.e("QRCODE_SCANNER", "Erro ao escanear QR Code: ${e.message}")
-                showFailurePopup("Erro ao escanear QR Code: ${e.message}")
+                showFailurePopup("Erro ao escanear QR Code!")
             }
     }
 
@@ -63,7 +63,6 @@ class QrCodeActivity : ComponentActivity() {
         val userUid = currentUser.uid
         val loginDocRef = db.collection("login").document(loginToken)
 
-        // Update the document to include the user's UID and a timestamp for when the login occurred
         val updates = hashMapOf<String, Any>(
             "user" to userUid,
             "loggedInAt" to FieldValue.serverTimestamp()
@@ -76,7 +75,7 @@ class QrCodeActivity : ComponentActivity() {
             }
             .addOnFailureListener { e ->
                 Log.e("FIRESTORE", "Erro ao atualizar documento de login: ${e.message}", e)
-                showFailurePopup("Erro ao finalizar login via QR Code: ${e.message}")
+                showFailurePopup("Erro ao finalizar login via QR Code!")
             }
     }
 

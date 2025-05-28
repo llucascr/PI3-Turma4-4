@@ -251,8 +251,8 @@
         #snackbar {
             visibility: hidden;
             min-width: 280px;
-            background-color: #ff5555;
-            color: white;
+            background-color: rgba(20, 184, 155, 0.2); /* tom verde água claro translúcido */
+            color: rgba(255, 255, 255, 0.9);
             text-align: center;
             border-radius: 12px;
             padding: 16px;
@@ -265,7 +265,16 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
             opacity: 0;
             transition: opacity 0.5s ease, visibility 0.5s ease;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
+        #snackbar.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
 
         #snackbar.show {
             visibility: visible;
@@ -318,7 +327,6 @@
             <div id="status">Aguardando escaneamento...</div>
         </div>
     </div>
-    <div id="snackbar"></div>
     <div id="snackbar"></div>
     <script src="assets/main.js"></script>
 </body>

@@ -18,17 +18,17 @@ export const performAuth = onRequest(async (req, res) => {
   }
 
   try {
-    // const partnersRef = db.collection("partners");
-    // const snapshot = await partnersRef
-    //   .where("url", "==", url)
-    //   .where("apiKey", "==", apiKey)
-    //   .get();
+    const partnersRef = db.collection("partners");
+    const snapshot = await partnersRef
+      .where("url", "==", url)
+      .where("apiKey", "==", apiKey)
+      .get();
 
-    // if (snapshot.empty) {
-    //   logger.warn("Parceiro não autorizado:", { apiKey, url });
-    //   res.status(403).send("Unauthorized partner");
-    //   return;
-    // }
+    if (snapshot.empty) {
+      logger.warn("Parceiro não autorizado:", { apiKey, url });
+      res.status(403).send("Unauthorized partner");
+      return;
+    }
 
     const loginToken = generateRandomBase64(256);
     const createdAt = Timestamp.now();

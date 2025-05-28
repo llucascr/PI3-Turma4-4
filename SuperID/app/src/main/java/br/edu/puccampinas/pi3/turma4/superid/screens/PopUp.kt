@@ -72,7 +72,7 @@ fun AutoDismissPopup(
     message: String,
     icon: ImageVector,
     iconColor: Color,
-    durationMillis: Long = 2000,
+    durationMillis: Long = 3000,
     onDismiss: () -> Unit
 ) {
     LaunchedEffect(Unit) {

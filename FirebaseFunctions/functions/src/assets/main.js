@@ -1,12 +1,12 @@
-const PROJECT_ID = "super-id-f18ec";
-const API_KEY = "f6UIj/l23X+M4xW7yZ9aQ0bVpEs6iYdZgB8nJt2HuKl9rSwzXcAe5oPq1I7b8UjYn2OmLwzXcAe5oPq1I7b8e5oPq1I7b8UjYn2OmLwzXcAe5oPq1I7b8UjYn2OmLw==";
+const PROJECT_ID = "superid-pi3-turma4-4";
+const API_KEY = "AlzaSyDsbcDQJH5N7_AysjnVJDw_qkcQkjfPz20"
 const SITE_URL = "www.example.com";
 
 let loginToken = null;
 let pollInterval = null;
 let pollCount = 0;
-const MAX_POLLS = 4;
-const POLL_INTERVAL_MS = 15000;
+const MAX_POLLS = 10;
+const POLL_INTERVAL_MS = 3000;
 
 function openModal() {
   document.getElementById("modal").style.display = "flex";
@@ -59,7 +59,7 @@ async function checkLoginStatus() {
 
     if (data.status === "success") {
       clearInterval(pollInterval);
-      document.getElementById("status").innerText = "Login efetuado com sucesso!";
+      showSuccessMessage()
     } else if (data.status === "expired") {
       clearInterval(pollInterval);
       document.getElementById("status").innerText = "Token expirado. Gerando novo QR Code...";
@@ -78,4 +78,15 @@ async function checkLoginStatus() {
     document.getElementById("status").innerText = "Erro ao verificar status";
     console.error(err);
   }
+}
+
+function showSuccessMessage(message = "✅ Login efetuado com sucesso!") {
+    const snackbar = document.getElementById("snackbar");
+    snackbar.innerText = message;
+    snackbar.classList.add("show");
+
+    setTimeout(() => {
+        snackbar.classList.remove("show");
+        closeModal();
+    }, 3000);
 }
