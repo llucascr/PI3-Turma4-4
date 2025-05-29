@@ -2,6 +2,7 @@
     <string name="app_name">SuperID</string>
     <string name="title_activity_sing_up">SingUpActivity</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="title_activity_mudar_senha_app">MudarSenhaApp</string>
     <string name="title_activity_qr_code">QrCodeActivity</string>
     <string name="title_activity_save_password">SavePasswordActivity</string>
     <string name="title_activity_home">HomeActivity</string>
