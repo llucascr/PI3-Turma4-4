@@ -2,6 +2,8 @@ package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -65,6 +67,7 @@ import br.edu.puccampinas.pi3.turma4.superid.functions.verifyInputs
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddPwUI(navController: NavController, categoryName: String) {
@@ -79,6 +82,7 @@ fun AddPwUI(navController: NavController, categoryName: String) {
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainContent(categoryName: String){
     val context = LocalContext.current
@@ -106,6 +110,7 @@ fun MainContent(categoryName: String){
     }
     NewPasswordForms(categoryName)
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewPasswordForms(categoryName: String){
     var showSuccessDialog by remember { mutableStateOf(false) }

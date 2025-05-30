@@ -1,5 +1,8 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,9 +30,12 @@ import androidx.navigation.NavController
 import androidx.compose.runtime.*
 import br.edu.puccampinas.pi3.turma4.superid.functions.decrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import kotlin.math.log
 
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PasswordDetailsScreen(
     categoryName: String,
@@ -78,7 +84,7 @@ fun PasswordDetailsScreen(
 
             password?.let { data ->
                 InfoItem(label = "Login", value = data.login)
-                InfoItem(label = "Senha", value = decrypt(data.password), showEyeIcon = true)
+                InfoItem(label = "Senha", value = decrypt(Firebase.auth.currentUser.toString(), data.password), showEyeIcon = true)
                 InfoItem(label = "WebSite", value = data.url)
                 InfoItem(label = "Descrição", value = data.description)
 

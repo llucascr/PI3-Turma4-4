@@ -1,9 +1,11 @@
 package br.edu.puccampinas.pi3.turma4.superid
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -21,6 +23,7 @@ import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordDetailsScreen
 
 class HomeActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,6 +39,7 @@ class HomeActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeNav(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
