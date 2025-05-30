@@ -84,7 +84,7 @@ fun PasswordDetailsScreen(
 
             password?.let { data ->
                 InfoItem(label = "Login", value = data.login)
-                InfoItem(label = "Senha", value = decrypt(Firebase.auth.currentUser.toString(), data.password), showEyeIcon = true)
+//                InfoItem(label = "Senha", value = decrypt())
                 InfoItem(label = "WebSite", value = data.url)
                 InfoItem(label = "Descrição", value = data.description)
 

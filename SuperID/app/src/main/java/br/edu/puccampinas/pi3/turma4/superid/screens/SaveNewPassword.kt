@@ -3,6 +3,7 @@ package br.edu.puccampinas.pi3.turma4.superid.screens
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -75,7 +76,7 @@ fun AddPwUI(navController: NavController, categoryName: String) {
         containerColor = MaterialTheme.colorScheme.background
     ){
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.Center) {
-            MainContent(categoryName)
+            MainContent(categoryName, navController)
         }
     }
 }
@@ -84,7 +85,7 @@ fun AddPwUI(navController: NavController, categoryName: String) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainContent(categoryName: String){
+fun MainContent(categoryName: String, navController: NavController){
     val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
@@ -108,14 +109,15 @@ fun MainContent(categoryName: String){
             }
         }
     }
-    NewPasswordForms(categoryName)
+    NewPasswordForms(categoryName, navController)
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewPasswordForms(categoryName: String){
+fun NewPasswordForms(categoryName: String, navController: NavController){
     var showSuccessDialog by remember { mutableStateOf(false) }
     var success by remember {mutableStateOf(false)}
     var failure by remember {mutableStateOf(true)}
+    var context = LocalContext.current
     Spacer(modifier = Modifier.size(50.dp))
     Box(modifier = Modifier.fillMaxWidth()){
         Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally){
@@ -231,7 +233,12 @@ fun NewPasswordForms(categoryName: String){
                     )
                     if(success){
                         Text("Senha salva!", color = MaterialTheme.colorScheme.primary, fontSize = 15.sp)
-                        // Toast de erro
+                        Toast.makeText(
+                            context,
+                            "Senha Cadastrada com sucesso!",
+                            Toast.LENGTH_LONG,
+                        ).show()
+                        navController.navigate("passwordsByCategory/${categoryName}")
                     }
                     if(!failure){
                         Spacer(modifier = Modifier.size(15.dp))
@@ -239,7 +246,14 @@ fun NewPasswordForms(categoryName: String){
                     }
                     Spacer(modifier = Modifier.size(45.dp))
                     Button(onClick = {/*TODO: FUN SAVE PW*/
-                       val savingStatus: Boolean = verifyInputs(titulo,descricao,login,senha,url,categoryName)
+                       val savingStatus: Boolean = verifyInputs(
+                           titulo,
+                           descricao,
+                           login,
+                           senha,
+                           url,
+                           categoryName
+                       )
                         if(savingStatus) success = true else failure = false
                     }, modifier = Modifier.fillMaxWidth().height(55.dp), shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)){
