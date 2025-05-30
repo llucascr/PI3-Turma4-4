@@ -77,8 +77,10 @@ fun PasswordsByCategoryScreen(
         bottomBar = { BottomBar(navController) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*adicionar senha*/ },
-                containerColor = colorScheme.primary,
+                onClick = {
+                    
+                },
+                containerColor = colorScheme.onSecondary,
                 shape = CircleShape,
                 modifier = Modifier
                     .height(72.dp)
@@ -86,9 +88,9 @@ fun PasswordsByCategoryScreen(
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Adicionar senha",
+                    contentDescription = "Adicionar categoria",
                     modifier = Modifier.size(32.dp),
-                    tint = colorScheme.onPrimary
+                    tint = colorScheme.primary
                 )
             }
         },

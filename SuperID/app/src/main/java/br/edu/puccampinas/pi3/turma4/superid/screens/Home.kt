@@ -73,7 +73,7 @@ fun HomeScreen(navController: NavController) {
                 onClick = {
                     showDialog = true
                 },
-                containerColor = colorScheme.onPrimary,
+                containerColor = colorScheme.onSecondary,
                 shape = CircleShape,
                 modifier = Modifier
                     .height(72.dp)
