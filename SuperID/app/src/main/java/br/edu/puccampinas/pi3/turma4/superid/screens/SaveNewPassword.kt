@@ -1,6 +1,7 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,6 +31,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults
@@ -44,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -53,52 +57,64 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
+import com.google.firebase.firestore.FirebaseFirestore
 import br.edu.puccampinas.pi3.turma4.superid.R
+import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.verifyInputs
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddPwUI(navController: NavController) {
+fun AddPwUI(navController: NavController, categoryName: String) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            BottomBar(navController)
-        }
+        containerColor = MaterialTheme.colorScheme.background
     ){
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.Center) {
-            MainContent(navController)
+            MainContent(categoryName)
         }
     }
 }
 
-@Composable
-fun MainContent(navController: NavController){
 
-//    IconButton(
-//        onClick = { navController.navigate("singin") },
-//        modifier = Modifier
-//            .align(Alignment.TopStart)
-//            .padding(21.dp)
-//            .height(60.dp)
-//    ) {
-//        Icon(
-//            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-//            contentDescription = "Voltar",
-//            tint = MaterialTheme.colorScheme.onBackground
-//        )
-//    }
-    NewPasswordForms()
+
+@Composable
+fun MainContent(categoryName: String){
+    val context = LocalContext.current
+
+    Box(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Ícone de Voltar no canto superior esquerdo
+            IconButton(
+                onClick = {
+                    val intent = Intent(context, HomeActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(0.dp,21.dp,0.dp,0.dp)
+                    .height(60.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Voltar",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
+    }
+    NewPasswordForms(categoryName)
 }
 @Composable
-fun NewPasswordForms(){
+fun NewPasswordForms(categoryName: String){
     var showSuccessDialog by remember { mutableStateOf(false) }
     var success by remember {mutableStateOf(false)}
     var failure by remember {mutableStateOf(true)}
     Spacer(modifier = Modifier.size(50.dp))
     Box(modifier = Modifier.fillMaxWidth()){
         Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally){
-            Text("Nova Senha", textAlign = TextAlign.Center, fontSize = 30.sp, color = MaterialTheme.colorScheme.onBackground)
+            Text("Nova Senha", textAlign = TextAlign.Center, fontSize = 30.sp, color = MaterialTheme.colorScheme.primary)
             Spacer(modifier = Modifier.size(25.dp))
             Box(modifier = Modifier.fillMaxWidth()){
                 Column(modifier = Modifier.fillMaxWidth(),horizontalAlignment = Alignment.CenterHorizontally) {
@@ -112,10 +128,12 @@ fun NewPasswordForms(){
                         shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
-                            focusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary),
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
                     Spacer(modifier = Modifier.size(20.dp))
@@ -129,13 +147,35 @@ fun NewPasswordForms(){
                         maxLines = 5,
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
-                            focusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor =MaterialTheme.colorScheme.primary),
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.size(20.dp))
+
+                    var url by remember { mutableStateOf("") }
+
+                    OutlinedTextField(
+                        value = url,
+                        onValueChange = { url = it },
+                        placeholder = { Text("Url")},
+                        shape = RoundedCornerShape(12.dp),
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black),
+                        modifier = Modifier.fillMaxWidth().height(55.dp)
+                    )
+                    Spacer(modifier = Modifier.size(20.dp))
+
                     var login by remember { mutableStateOf("") }
 
                     OutlinedTextField(
@@ -145,10 +185,12 @@ fun NewPasswordForms(){
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
-                            focusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary),
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
                     Spacer(modifier = Modifier.size(20.dp))
@@ -174,14 +216,17 @@ fun NewPasswordForms(){
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground,
-                            focusedContainerColor = MaterialTheme.colorScheme.onBackground,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                            focusedContainerColor = MaterialTheme.colorScheme.secondary,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedBorderColor = MaterialTheme.colorScheme.primary),
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
                     if(success){
                         Text("Senha salva!", color = MaterialTheme.colorScheme.primary, fontSize = 15.sp)
+                        // Toast de erro
                     }
                     if(!failure){
                         Spacer(modifier = Modifier.size(15.dp))
@@ -189,7 +234,7 @@ fun NewPasswordForms(){
                     }
                     Spacer(modifier = Modifier.size(45.dp))
                     Button(onClick = {/*TODO: FUN SAVE PW*/
-                       val savingStatus: Boolean = verifyInputs(titulo,descricao,login,senha)
+                       val savingStatus: Boolean = verifyInputs(titulo,descricao,login,senha,url,categoryName)
                         if(savingStatus) success = true else failure = false
                     }, modifier = Modifier.fillMaxWidth().height(55.dp), shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)){
@@ -201,10 +246,12 @@ fun NewPasswordForms(){
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun AddPwPreview() {
-    SuperIDTheme(darkTheme = true, dynamicColor = false) {
-        AddPwUI(navController = rememberNavController())
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun AddPwPreview() {
+//    SuperIDTheme {
+//        SuperIDTheme(darkTheme = true, dynamicColor = false) {
+//            AddPwUI(navController = rememberNavController())
+//        }
+//    }
+//}

@@ -129,7 +129,7 @@ fun SignInFormScreen(navController: NavController) {
                     Spacer(modifier = Modifier.weight(1f))
                     Column {
                         Text(
-                            text = "Logout",
+                            text = "Sair",
                             color = MaterialTheme.colorScheme.primary,
                             fontSize = 18.sp,
                             modifier = Modifier

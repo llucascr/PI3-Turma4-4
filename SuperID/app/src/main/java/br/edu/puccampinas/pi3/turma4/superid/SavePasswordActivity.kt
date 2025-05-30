@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.edu.puccampinas.pi3.turma4.superid.functions.generateKeyIfNotExists
 import br.edu.puccampinas.pi3.turma4.superid.screens.AddPwUI
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 import com.google.firebase.firestore.ktx.firestore
@@ -24,24 +25,27 @@ import com.google.firebase.ktx.Firebase
 class SavePasswordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val categoryName = intent.getStringExtra("categoryName")
         enableEdgeToEdge()
+        generateKeyIfNotExists()
         setContent {
-              SavePasswordScreen(modifier = Modifier)
+            SuperIDTheme{
+              SavePasswordScreen(modifier = Modifier, categoryName.toString())
+            }
         }
     }
 }
 
 @Composable
-fun SavePasswordScreen(modifier: Modifier) {
-    //val db = Firebase.firestore
+fun SavePasswordScreen(modifier: Modifier, categoryName: String) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "saveNewPassword") {
-        composable("saveNewPassword") { AddPwUI(navController) }
+        composable("saveNewPassword") { AddPwUI(navController, categoryName) }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    SavePasswordScreen(modifier = Modifier)
+    SavePasswordScreen(modifier = Modifier, categoryName = "Sites Web")
 }
