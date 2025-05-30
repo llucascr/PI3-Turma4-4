@@ -48,7 +48,6 @@ import br.edu.puccampinas.pi3.turma4.superid.functions.createCategory
 import br.edu.puccampinas.pi3.turma4.superid.functions.getCategorys
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
-
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
@@ -74,7 +73,7 @@ fun HomeScreen(navController: NavController) {
                 onClick = {
                     showDialog = true
                 },
-                containerColor = colorScheme.primary,
+                containerColor = colorScheme.onPrimary,
                 shape = CircleShape,
                 modifier = Modifier
                     .height(72.dp)
@@ -82,9 +81,9 @@ fun HomeScreen(navController: NavController) {
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Adicionar senha",
+                    contentDescription = "Adicionar categoria",
                     modifier = Modifier.size(32.dp),
-                    tint = colorScheme.onPrimary
+                    tint = colorScheme.primary
                 )
             }
             CategoryInputDialog(
@@ -122,7 +121,7 @@ fun HomeScreen(navController: NavController) {
             item {
                 OutlinedTextField(
                     value = "",
-                    onValueChange = { /* TODO: Implementar busca */ },
+                    onValueChange = {},
                     placeholder = { Text("Procurar categoria", color = colorScheme.onSecondary) },
                     leadingIcon = {
                         Icon(
@@ -230,7 +229,7 @@ fun CategoryInputDialog(
             title = {
                 Text(
                     text = "Nova Categoria",
-                    color = Color.Black
+                    color = colorScheme.onPrimary
 
                 )
                     },
