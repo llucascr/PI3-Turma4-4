@@ -7,6 +7,7 @@
     <string name="title_activity_save_password">SavePasswordActivity</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_password_by_category">PasswordByCategoryActivity</string>
 
     <string name="allow_manual_input" translatable="false">Allow input code manually</string>
     <string name="enable_auto_zoom" translatable="false">Enable auto-zoom feature</string>

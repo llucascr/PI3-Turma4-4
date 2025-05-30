@@ -99,7 +99,7 @@ fun WelcomeScreen(navController: NavController) {
                     .clip(RoundedCornerShape(16.dp))
             ) {
                 Text(
-                    text = "Next page",
+                    text = "Próxima página",
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 16.sp
                 )
