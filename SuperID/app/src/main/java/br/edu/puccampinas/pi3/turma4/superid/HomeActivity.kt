@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.screens.HomeScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordsByCategoryScreen
 import br.edu.puccampinas.pi3.turma4.superid.screens.ProfileScreen
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
@@ -41,5 +42,6 @@ fun HomeNav(modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
+//        composable("passwordByCategory") { PasswordsByCategoryScreen() }
     }
 }

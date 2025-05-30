@@ -82,7 +82,7 @@ fun HomeScreen(navController: NavController) {
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Adicionar senha",
+                    contentDescription = "Adicionar categoria",
                     modifier = Modifier.size(32.dp),
                     tint = colorScheme.primary
                 )
@@ -116,7 +116,7 @@ fun HomeScreen(navController: NavController) {
             item {
                 OutlinedTextField(
                     value = "",
-                    onValueChange = { /* TODO: Implementar busca */ },
+                    onValueChange = {},
                     placeholder = { Text("Procurar categoria", color = colorScheme.onSecondary) },
                     leadingIcon = {
                         Icon(
@@ -154,6 +154,7 @@ fun HomeScreen(navController: NavController) {
                                     .clip(RoundedCornerShape(12.dp))
                                     .background(colorScheme.primary)
                                     .padding(12.dp)
+                                    .clickable(onClick = {navController.navigate("passwordByCategory") })
                             ) {
                                 Column(
                                     verticalArrangement = Arrangement.SpaceBetween,
@@ -221,7 +222,7 @@ fun CategoryInputDialog(
             title = {
                 Text(
                     text = "Nova Categoria",
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onPrimary
 
                 )
                     },
