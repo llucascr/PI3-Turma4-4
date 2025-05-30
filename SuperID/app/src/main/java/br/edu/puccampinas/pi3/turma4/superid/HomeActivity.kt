@@ -7,16 +7,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import br.edu.puccampinas.pi3.turma4.superid.screens.HomeScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordsByCategoryScreen
 import br.edu.puccampinas.pi3.turma4.superid.screens.ProfileScreen
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
+import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordDetailsScreen
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,5 +43,32 @@ fun HomeNav(modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
+        composable(
+            "passwordsByCategory/{categoryName}",
+            arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            PasswordsByCategoryScreen(
+                categoryName = categoryName,
+                navController = navController
+            )
+        }
+
+        composable(
+            route = "passwordDetails/{categoryName}/{documentId}",
+            arguments = listOf(
+                navArgument("categoryName") { type = NavType.StringType },
+                navArgument("documentId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val documentId = backStackEntry.arguments?.getString("documentId") ?: ""
+
+            PasswordDetailsScreen(
+                categoryName = categoryName,
+                documentId = documentId,
+                navController = navController
+            )
+        }
     }
 }

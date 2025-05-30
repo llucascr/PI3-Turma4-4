@@ -6,4 +6,5 @@
     <string name="title_activity_save_password">SavePasswordActivity</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_password_by_category">PasswordByCategoryActivity</string>
 </resources>

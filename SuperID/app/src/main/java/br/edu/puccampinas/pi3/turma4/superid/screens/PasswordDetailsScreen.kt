@@ -21,26 +21,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.DarkBackground
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
+import androidx.compose.runtime.*
+import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
+
 
 
 @Composable
 fun PasswordDetailsScreen(
-    title: String,
-    email: String,
-    password: String,
-    website: String,
-    description: String,
+    categoryName: String,
+    documentId: String,
     navController: NavController
-    //onBackClick: () -> Unit,
-    //onEditClick: () -> Unit,
-    //onDeleteClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    var password by remember { mutableStateOf<PasswordItemDetails?>(null) }
+
+    LaunchedEffect(context, categoryName, documentId) {
+        getPasswordDetails(context, categoryName, documentId) { result ->
+            password = result
+        }
+    }
+
     val colorScheme = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
 
@@ -54,9 +57,8 @@ fun PasswordDetailsScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Top bar com botão de voltar
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {/* ação voltar */}) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Voltar",
@@ -64,7 +66,7 @@ fun PasswordDetailsScreen(
                     )
                 }
                 Text(
-                    text = title,
+                    text = password?.title ?: "Carregando...",
                     style = typography.titleLarge,
                     color = colorScheme.onBackground,
                     modifier = Modifier.padding(start = 4.dp)
@@ -73,30 +75,34 @@ fun PasswordDetailsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Informações da senha
-            InfoItem(label = "Nome", value = email)
-            InfoItem(label = "Senha", value = password, showEyeIcon = true)
-            InfoItem(label = "WebSite", value = website)
-            InfoItem(label = "Descrição", value = description)
+            password?.let { data ->
+                InfoItem(label = "Login", value = data.login)
+                InfoItem(label = "Senha", value = data.password, showEyeIcon = true)
+                InfoItem(label = "WebSite", value = data.url)
+                InfoItem(label = "Descrição", value = data.description)
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-            // Botões de ação
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                ActionButton(
-                    text = "Editar",
-                    color = colorScheme.primary,
-                    onClick = {/*editar senha*/} //onEditClick
-                )
-                ActionButton(
-                    text = "Excluir",
-                    color = colorScheme.error,
-                    onClick = {/*excluir senha*/} //onDeleteClick
-                )
-            }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    ActionButton(
+                        text = "Editar",
+                        color = colorScheme.primary,
+                        onClick = { /* editar */ }
+                    )
+                    ActionButton(
+                        text = "Excluir",
+                        color = colorScheme.error,
+                        onClick = { /* excluir */ }
+                    )
+                }
+            } ?: Text(
+                text = "Carregando dados...",
+                color = colorScheme.onBackground,
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
 }
@@ -133,6 +139,14 @@ fun InfoItem(label: String, value: String, showEyeIcon: Boolean = false) {
     }
 }
 
+data class PasswordItemDetails(
+    val login: String,
+    val password: String,
+    val url: String,
+    val description: String,
+    val title: String
+)
+
 @Composable
 fun ActionButton(text: String, color: Color, onClick: () -> Unit) {
     androidx.compose.material3.Button(
@@ -147,20 +161,14 @@ fun ActionButton(text: String, color: Color, onClick: () -> Unit) {
     }
 }
 
-@Preview(showBackground = true)
+
+
+/*@Preview(showBackground = true)
 @Composable
 fun PasswordDetailsScreenPreview() {
     SuperIDTheme(darkTheme = true, dynamicColor = false) {
         PasswordDetailsScreen(
-            title = "Conta google",
-            email = "teste@email.com",
-            password = "minhaSenha123",
-            website = "https://www.google.com",
-            description = "exemplo de descrição",
-            navController = rememberNavController()
-            //onBackClick = {},
-            //onEditClick = {},
-            //onDeleteClick = {}
+
         )
     }
-}
+}*/

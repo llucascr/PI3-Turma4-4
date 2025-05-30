@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -48,6 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.functions.createCategory
 import br.edu.puccampinas.pi3.turma4.superid.functions.getCategorys
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
+
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -91,7 +91,13 @@ fun HomeScreen(navController: NavController) {
                 showDialog = showDialog,
                 onDismiss = { showDialog = false },
                 onConfirm = { nomeCategoria ->
-                    createCategory(context, nomeCategoria)
+                    createCategory(context, nomeCategoria){ success ->
+                        if (success) {
+                            getCategorys { categories ->
+                                categoryList = categories
+                            }
+                        }
+                    }
                 }
             )
         }
@@ -105,7 +111,7 @@ fun HomeScreen(navController: NavController) {
         ) {
             item {
                 Text(
-                    text = "Olá, user!",
+                    text = "Home",
                     color = colorScheme.onBackground,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
@@ -154,6 +160,9 @@ fun HomeScreen(navController: NavController) {
                                     .clip(RoundedCornerShape(12.dp))
                                     .background(colorScheme.primary)
                                     .padding(12.dp)
+                                    .clickable {
+                                        navController.navigate("passwordsByCategory/${label}")
+                                    }
                             ) {
                                 Column(
                                     verticalArrangement = Arrangement.SpaceBetween,
@@ -206,7 +215,7 @@ fun CategoryInputDialog(
                             onDismiss()
                         }
                         .padding(8.dp),
-                    color = MaterialTheme.colorScheme.primary
+                    color = colorScheme.primary
                 )
             },
             dismissButton = {
@@ -215,7 +224,7 @@ fun CategoryInputDialog(
                     modifier = Modifier
                         .clickable { onDismiss() }
                         .padding(8.dp),
-                    color = MaterialTheme.colorScheme.error
+                    color = colorScheme.error
                 )
             },
             title = {

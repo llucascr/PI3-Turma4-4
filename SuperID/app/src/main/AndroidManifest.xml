@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.hardware.camera.any" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -16,6 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SuperID"
         tools:targetApi="31">
+        <activity
+            android:name=".PasswordByCategoryActivity"
+            android:exported="false"
+            android:label="@string/title_activity_password_by_category"
+            android:theme="@style/Theme.SuperID" />
         <activity
             android:name=".QrCodeActivity"
             android:exported="false"
