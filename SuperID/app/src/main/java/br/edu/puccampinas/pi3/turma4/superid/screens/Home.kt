@@ -167,11 +167,11 @@ fun HomeScreen(navController: NavController) {
                                     verticalArrangement = Arrangement.SpaceBetween,
                                     modifier = Modifier.fillMaxSize()
                                 ) {
-                                    Text(
-                                        text = "$label ($count)",
-                                        color = colorScheme.onPrimary,
-                                        fontSize = 10.sp
-                                    )
+//                                    Text(
+//                                        text = "$label ($count)",
+//                                        color = colorScheme.onPrimary,
+//                                        fontSize = 10.sp
+//                                    )
                                     Text(
                                         text = label,
                                         color = colorScheme.onPrimary,

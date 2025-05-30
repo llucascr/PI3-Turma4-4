@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
+import br.edu.puccampinas.pi3.turma4.superid.functions.decrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
 
 
@@ -77,7 +78,7 @@ fun PasswordDetailsScreen(
 
             password?.let { data ->
                 InfoItem(label = "Login", value = data.login)
-                InfoItem(label = "Senha", value = data.password, showEyeIcon = true)
+                InfoItem(label = "Senha", value = decrypt(data.password), showEyeIcon = true)
                 InfoItem(label = "WebSite", value = data.url)
                 InfoItem(label = "Descrição", value = data.description)
 

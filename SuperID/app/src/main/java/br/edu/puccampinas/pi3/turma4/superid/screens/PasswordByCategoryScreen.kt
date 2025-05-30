@@ -1,5 +1,6 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,8 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.mutableIntStateOf
+import br.edu.puccampinas.pi3.turma4.superid.QrCodeActivity
+import br.edu.puccampinas.pi3.turma4.superid.SavePasswordActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.deleteCategory
 
 @Composable
@@ -78,7 +81,9 @@ fun PasswordsByCategoryScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    
+                    val intent = Intent(context, SavePasswordActivity::class.java)
+                    intent.putExtra("categoryName", categoryName)
+                    context.startActivity(intent)
                 },
                 containerColor = colorScheme.onSecondary,
                 shape = CircleShape,
