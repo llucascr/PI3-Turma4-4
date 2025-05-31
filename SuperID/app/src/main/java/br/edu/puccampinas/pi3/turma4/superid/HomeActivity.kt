@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,6 +44,7 @@ class HomeActivity : ComponentActivity() {
 @Composable
 fun HomeNav(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+    val context = LocalContext.current
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { HomeScreen(navController) }
@@ -72,6 +74,23 @@ fun HomeNav(modifier: Modifier = Modifier) {
                 categoryName = categoryName,
                 documentId = documentId,
                 navController = navController
+            )
+        }
+
+        composable(
+            route = "passwordDetails/{categoryName}/{documentId}/editarSenha",
+            arguments = listOf(
+                navArgument("categoryName") { type = NavType.StringType },
+                navArgument("documentId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val documentId = backStackEntry.arguments?.getString("documentId") ?: ""
+
+            AlterarSenha(
+                categoryName,
+                documentId,
+                navController
             )
         }
     }

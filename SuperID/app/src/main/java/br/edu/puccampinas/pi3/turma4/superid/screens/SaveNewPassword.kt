@@ -238,7 +238,7 @@ fun NewPasswordForms(categoryName: String, navController: NavController){
                             "Senha Cadastrada com sucesso!",
                             Toast.LENGTH_LONG,
                         ).show()
-                        navController.navigate("passwordsByCategory/${categoryName}")
+                        navController.navigate("passwordsByCategory/$categoryName")
                     }
                     if(!failure){
                         Spacer(modifier = Modifier.size(15.dp))
