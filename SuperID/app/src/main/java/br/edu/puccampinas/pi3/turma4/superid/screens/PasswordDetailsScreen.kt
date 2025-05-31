@@ -65,7 +65,7 @@ fun PasswordDetailsScreen(
                 .padding(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { navController.popBackStack() }) {
+                IconButton(onClick = { navController.navigate("passwordsByCategory/$categoryName") }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Voltar",
@@ -97,7 +97,7 @@ fun PasswordDetailsScreen(
                     ActionButton(
                         text = "Editar",
                         color = colorScheme.primary,
-                        onClick = { /* editar */ }
+                        onClick = { navController.navigate("passwordDetails/$categoryName/$documentId/editarSenha") }
                     )
                     ActionButton(
                         text = "Excluir",
