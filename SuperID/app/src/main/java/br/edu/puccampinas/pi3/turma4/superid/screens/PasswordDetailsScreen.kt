@@ -3,6 +3,7 @@ package br.edu.puccampinas.pi3.turma4.superid.screens
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,10 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,10 +32,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
+import br.edu.puccampinas.pi3.turma4.superid.deletarSenha
 import br.edu.puccampinas.pi3.turma4.superid.functions.decrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import kotlin.Result.Companion.success
 import kotlin.math.log
 
 
@@ -44,6 +50,8 @@ fun PasswordDetailsScreen(
 ) {
     val context = LocalContext.current
     var password by remember { mutableStateOf<PasswordItemDetails?>(null) }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(context, categoryName, documentId) {
         getPasswordDetails(context, categoryName, documentId) { result ->
@@ -80,6 +88,16 @@ fun PasswordDetailsScreen(
                 )
             }
 
+            if (showDeleteDialog) {
+                PasswordDeleteDialog(
+                    showDialog = showDeleteDialog,
+                    onDismiss = { showDeleteDialog = false },
+                    onConfirm = {
+                        deletarSenha(context, categoryName, documentId, navController)
+                    }
+                )
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             password?.let { data ->
@@ -102,7 +120,9 @@ fun PasswordDetailsScreen(
                     ActionButton(
                         text = "Excluir",
                         color = colorScheme.error,
-                        onClick = { /* excluir */ }
+                        onClick = {
+                            showDeleteDialog = true
+                        }
                     )
                 }
             } ?: Text(
@@ -168,7 +188,51 @@ fun ActionButton(text: String, color: Color, onClick: () -> Unit) {
     }
 }
 
-
+@Composable
+fun PasswordDeleteDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            confirmButton = {
+                Text(
+                    text = "Confirmar",
+                    modifier = Modifier
+                        .clickable {
+                            onConfirm()
+                            onDismiss()
+                        }
+                        .padding(8.dp),
+                    color = colorScheme.primary
+                )
+            },
+            dismissButton = {
+                Text(
+                    text = "Cancelar",
+                    modifier = Modifier
+                        .clickable { onDismiss() }
+                        .padding(8.dp),
+                    color = colorScheme.error
+                )
+            },
+            title = {
+                Text(
+                    text = "Excluir Senha",
+                    color = colorScheme.onBackground
+                )
+            },
+            text = {
+                Text(
+                    text = "Tem certeza que deseja excluir esta categoria? A senha será excluída permanentemente.",
+                    color = colorScheme.onBackground
+                )
+            }
+        )
+    }
+}
 
 /*@Preview(showBackground = true)
 @Composable

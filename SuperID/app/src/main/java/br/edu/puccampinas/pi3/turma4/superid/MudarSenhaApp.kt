@@ -1,5 +1,7 @@
 package br.edu.puccampinas.pi3.turma4.superid
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,10 +27,14 @@ import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.ArrowBack
 
 import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.drawBehind
@@ -46,7 +52,6 @@ import com.google.firebase.auth.auth
 
 
 fun atualizarDadosFirestore(
-    context: android.content.Context,
     categoryname: String,
     documentId: String,
     titulo: String,
@@ -116,6 +121,90 @@ fun puxarDados(
         }
 }
 
+fun deletarSenha(
+    context: Context,
+    categoryname: String,
+    documentId: String,
+    navController: NavController
+) {
+    val db = FirebaseFirestore.getInstance()
+    val usuarioId = Firebase.auth.currentUser?.uid.toString()
+    val categoria = categoryname
+    val senhaId = documentId
+
+    db.collection("users")
+        .document(usuarioId)
+        .collection("categorias")
+        .document(categoria)
+        .collection("senhas")
+        .document(senhaId)
+        .delete()
+        .addOnSuccessListener {
+            Log.d("SENHA", "Senha deletada com sucesso!")
+            Toast.makeText(
+                context,
+                "Senha excluida com sucesso!",
+                Toast.LENGTH_LONG,
+            ).show()
+            navController.navigate("passwordsByCategory/$categoryname")
+        }
+        .addOnFailureListener {
+            Log.d("SENHA", "Erro ao deletar a senha!")
+            Toast.makeText(
+                context,
+                "Erro ao deletar a senha!",
+                Toast.LENGTH_LONG,
+            ).show()
+        }
+}
+
+@Composable
+fun CategoryDeleteDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            confirmButton = {
+                Text(
+                    text = "Confirmar",
+                    modifier = Modifier
+                        .clickable {
+                            onConfirm()
+                            onDismiss()
+                        }
+                        .padding(8.dp),
+                    color = colorScheme.primary
+                )
+            },
+            dismissButton = {
+                Text(
+                    text = "Cancelar",
+                    modifier = Modifier
+                        .clickable { onDismiss() }
+                        .padding(8.dp),
+                    color = colorScheme.error
+                )
+            },
+            title = {
+                Text(
+                    text = "Excluir Categoria",
+                    color = colorScheme.onBackground
+                )
+            },
+            text = {
+                Text(
+                    text = "Tem certeza que deseja excluir esta categoria? Todas as senhas dentro dela também serão excluídas permanentemente.",
+                    color = colorScheme.onBackground
+                )
+            }
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlterarSenha(
     categoryname: String,
@@ -214,7 +303,7 @@ fun AlterarSenha(
                     onClick = {
                         if (nova_senha == conf_nova_senha) {
                             nova_senha = encrypt(Firebase.auth.currentUser.toString(), nova_senha)
-                            atualizarDadosFirestore(context, categoryname, documentId,titulo, descricao, login, nova_senha,
+                            atualizarDadosFirestore(categoryname, documentId,titulo, descricao, login, nova_senha,
                                 onSuccess = {
                                     scope.launch {
                                         snackbarHostState.showSnackbar("Senha salva com sucesso!", "OK")
