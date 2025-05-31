@@ -17,7 +17,7 @@ private fun creatAccount(context: Context, name: String, email: String, password
                 Log.d("AUTH-INFO","createUserWithEmail:success | UID: ${taks.result.user!!.uid}")
                 saveAccount(context, name, taks.result.user!!, onSuccess, onFailure)
                 validationUtils.saveEmailForAuthentication(context, email)
-                sendEmailVerification()
+                 sendEmailVerification()
             } else {
                 Log.w("AUTH-INFO", "createUserWithEmail:failure", taks.exception)
             }
@@ -51,44 +51,7 @@ private fun saveAccount(context: Context, name: String, user: FirebaseUser, onSu
         }
 }
 
-private fun sendEmailVerification () {
-    val user = Firebase.auth.currentUser
 
-    user?.sendEmailVerification()
-        ?.addOnCompleteListener {taks ->
-            if (taks.isSuccessful) {
-                Log.d("AUTH-EMAIL", "E-mail sent successfully: ${user.email}")
-            } else {
-                Log.e("AUTH-EMAIL", "Error sending validation email: ${taks.exception}")
-            }
-        }
-}
-
-private fun emailValidation() {
-    val user = Firebase.auth.currentUser
-    val db = Firebase.firestore
-
-    user?.reload()
-        ?.addOnCompleteListener {task ->
-            if (task.isSuccessful) {
-                if (user.isEmailVerified) {
-                    db.collection("UserDocs").document(user.uid)
-                        .update("emailvalidated", true)
-                        .addOnCompleteListener {
-                            Log.d("AUTH-EMAIL", "Email validado com sucesso")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e("AUTH-EMAIL","ERRO ao validar o Email: $e")
-                        }
-                }else {
-                    Log.d("AUTH-EMAIL", "Email ainda não verificado")
-                }
-            } else {
-                Log.e("AUTH-EMAIL", "Erro ao recarregar usuário: ${task.exception}")
-            }
-        }
-
-}
 
 fun validationSingUp(context: Context, name: String, email: String, password: String,
                      onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
