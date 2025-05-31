@@ -2,6 +2,7 @@ package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.AuthenticationActivity
+import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.R
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
@@ -80,30 +83,83 @@ fun WelcomeScreen(navController: NavController) {
             // Descrição
             Text(
                 text = "O SuperID é um app que armazena suas senhas com segurança e permite fazer login em sites parceiros sem precisar digitá-las, usando QR Code. Com uma senha mestre, você acessa tudo de forma prática, rápida e protegida.",
-                fontSize = 14.sp,
+                fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(100.dp))
             // Botão Next Page
             Button(
                 onClick = {
-                    var intent = Intent(contex, AuthenticationActivity::class.java)
-                    contex.startActivity(intent)
+                    navController.navigate("categoriaTutorialScreen")
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .height(60.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text(
-                    text = "Próxima página",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 16.sp
-                )
+                Text(text = "Começar o Tutorial", color = Color.White, fontSize = 20.sp)
             }
+        }
+    }
+}
+
+@Composable
+fun WelcomeFinishScreen(navController: NavController) {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+//        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Spacer(modifier = Modifier.height(200.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.superid),
+            contentDescription = "Logo",
+            modifier = Modifier
+                .size(180.dp)
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "SuperID",
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = "Bem-vindo!",
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+
+        Spacer(modifier = Modifier.height(150.dp))
+
+        Button(
+            onClick = {
+                val intent = Intent(context, AuthenticationActivity::class.java)
+                context.startActivity(intent)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text(text = "Começar", color = Color.White, fontSize = 20.sp)
         }
     }
 }
@@ -113,5 +169,6 @@ fun WelcomeScreen(navController: NavController) {
 fun WelcomeScreenPreview() {
     SuperIDTheme(darkTheme = false, dynamicColor = false) {
         WelcomeScreen(navController = rememberNavController())
+//        WelcomeFinishScreen(navController = rememberNavController())
     }
 }
