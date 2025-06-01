@@ -7,15 +7,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.screens.SingUpFormScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.AuthTutorialScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.CategoriaTutorialScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordTutorialScreen
+import br.edu.puccampinas.pi3.turma4.superid.screens.WelcomeFinishScreen
 import br.edu.puccampinas.pi3.turma4.superid.screens.WelcomeScreen
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
@@ -40,6 +41,10 @@ fun WelcomeNav(modifier: Modifier) {
 
     NavHost(navController = navController, startDestination = "welcome") {
         composable("welcome") { WelcomeScreen(navController) }
+        composable("categoriaTutorialScreen") { CategoriaTutorialScreen(navController) }
+        composable("passwordTutorialScreen") { PasswordTutorialScreen(navController) }
+        composable("authTutorialScreen") { AuthTutorialScreen(navController) }
+        composable("welcomeFinish") { WelcomeFinishScreen(navController) }
     }
 
 }

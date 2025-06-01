@@ -4,6 +4,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,17 +14,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,19 +47,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.edu.puccampinas.pi3.turma4.superid.CategoryActivity
+import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
+import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.getSavedName
+import br.edu.puccampinas.pi3.turma4.superid.functions.reloadEmailVerification
 import br.edu.puccampinas.pi3.turma4.superid.functions.resetPassword
-import br.edu.puccampinas.pi3.turma4.superid.functions.validationSingIn
+import br.edu.puccampinas.pi3.turma4.superid.functions.validationSignIn
 import br.edu.puccampinas.pi3.turma4.superid.functions.validationUtils
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.backgroundColor
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.inputBackground
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SingInColors.textColor
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
-fun SingInFormScreen(navController: NavController) {
+fun SignInFormScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
@@ -64,12 +66,38 @@ fun SingInFormScreen(navController: NavController) {
     var resetPasswordError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
 
+    var emailVerification by remember { mutableStateOf(false) }
+    if (!emailVerification) {
+        LaunchedEffect(Unit) {
+            emailVerification = reloadEmailVerification()
+        }
+    }
+
     val context = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = backgroundColor
+        color = MaterialTheme.colorScheme.background
     ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Ícone de Voltar no canto superior esquerdo
+            IconButton(
+                onClick = {
+                    val intent = Intent(context, WelcomeActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(21.dp)
+                    .height(60.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Voltar",
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -79,10 +107,10 @@ fun SingInFormScreen(navController: NavController) {
         ) {
             // Título
             Text(
-                text = "Sign In",
+                text = "Entrar",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
-                color = SingInColors.primaryGreen
+                color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -94,15 +122,15 @@ fun SingInFormScreen(navController: NavController) {
                     Column {
                         Text(
                             text = name.toString(),
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onBackground,
                             fontSize = 20.sp,
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     Column {
                         Text(
-                            text = "Logout",
-                            color = SingInColors.primaryGreen,
+                            text = "Sair",
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 18.sp,
                             modifier = Modifier
                                 .clickable {
@@ -116,14 +144,16 @@ fun SingInFormScreen(navController: NavController) {
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    placeholder = { Text("Email", color = Color.Gray, fontSize = 16.sp) },
+                    placeholder = { Text("Email", color = MaterialTheme.colorScheme.onSecondary, fontSize = 16.sp) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = inputBackground,
-                        focusedContainerColor = inputBackground,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                        focusedContainerColor = MaterialTheme.colorScheme.secondary,
                         unfocusedBorderColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent
+                        focusedBorderColor = Color.Transparent,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -134,7 +164,7 @@ fun SingInFormScreen(navController: NavController) {
             if (emailError) {
                 Text(
                     text = "E-mail inválido",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -146,7 +176,7 @@ fun SingInFormScreen(navController: NavController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                placeholder = { Text("Password", color = Color.Gray, fontSize = 16.sp) },
+                placeholder = { Text("Senha", color = MaterialTheme.colorScheme.onSecondary, fontSize = 16.sp) },
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
@@ -162,10 +192,12 @@ fun SingInFormScreen(navController: NavController) {
                     }
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = inputBackground,
-                    focusedContainerColor = inputBackground,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.secondary,
+                    focusedContainerColor = MaterialTheme.colorScheme.secondary,
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent
+                    focusedBorderColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -175,7 +207,7 @@ fun SingInFormScreen(navController: NavController) {
             if (passwordError) {
                 Text(
                     text = "Senha com menos de 6 caracteres",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -184,7 +216,7 @@ fun SingInFormScreen(navController: NavController) {
             if (resetPasswordError) {
                 Text(
                     text = "Digite o email para redefinir a senha",
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                 )
@@ -198,7 +230,7 @@ fun SingInFormScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Esqueceu a senha ?",
-                    color = SingInColors.primaryGreen,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     style = TextStyle(
@@ -206,7 +238,7 @@ fun SingInFormScreen(navController: NavController) {
                     ),
                     modifier = Modifier.clickable {
                         if (!email.isNullOrBlank()) {
-                            resetPassword(email, context)
+                            resetPassword(email, emailVerification ,context)
                             resetPasswordError = false
                         } else {
                             resetPasswordError = true
@@ -223,12 +255,12 @@ fun SingInFormScreen(navController: NavController) {
                     emailError = validationUtils.emailValidation(email)
                     passwordError = validationUtils.passwordInvalid(password)
                     if (!emailError && !passwordError) {
-                        validationSingIn(
+                        validationSignIn(
                             context,
                             email,
                             password,
                             onSuccess = {
-                                val intent = Intent(context, CategoryActivity::class.java)
+                                val intent = Intent(context, HomeActivity::class.java)
                                 context.startActivity(intent)
                             },
                             onFailure = { e ->
@@ -237,13 +269,13 @@ fun SingInFormScreen(navController: NavController) {
                         )
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = SingInColors.primaryGreen),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
                     .clip(RoundedCornerShape(16.dp))
             ) {
-                Text("Log In", color = Color.White, fontSize = 16.sp)
+                Text("Entrar", color = MaterialTheme.colorScheme.onPrimary, fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(28.dp))
@@ -251,13 +283,13 @@ fun SingInFormScreen(navController: NavController) {
             // Sign Up
             Row {
                 Text(
-                    text = "Don't have account? ",
-                    color = textColor,
+                    text = "Não possui conta? ",
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 14.sp
                 )
                 Text(
-                    text = "Sign Up",
-                    color = SingInColors.primaryGreen,
+                    text = "Cadastrar-se",
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable {
@@ -272,7 +304,7 @@ fun SingInFormScreen(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun AuthenticationNavPreviwe() {
-    SuperIDTheme {
-        SingInFormScreen(navController = rememberNavController())
+    SuperIDTheme(darkTheme = true, dynamicColor = false) {
+        SignInFormScreen(navController = rememberNavController())
     }
 }
