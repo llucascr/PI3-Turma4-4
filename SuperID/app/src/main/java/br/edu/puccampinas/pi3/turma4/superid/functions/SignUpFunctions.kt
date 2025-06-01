@@ -40,7 +40,19 @@ private fun saveAccount(context: Context, name: String, user: FirebaseUser, onSu
         .addOnCompleteListener {taks ->
             if (taks.isSuccessful) {
                 Log.d("FIRESTORE-INFO", "User saved!")
+                createCategory(context, "Aplicativos", isDefault = true) { success ->
+                    Log.d("CATEGORY", "Categoria Aplicativos criada: $success")
+                }
+
+                createCategory(context, "Sites Web", isDefault = true) { success ->
+                    Log.d("CATEGORY", "Categoria Sites Web criada: $success")
+                }
+
+                createCategory(context, "Teclado de Acesso Físico", isDefault = true) { success ->
+                    Log.d("CATEGORY", "Categoria Teclado de Acesso Físico criada: $success")
+                }
                 onSuccess()
+
             } else {
                 Log.w("FIRESTORE-INFO", "Error saving user: ${taks.exception}")
             }

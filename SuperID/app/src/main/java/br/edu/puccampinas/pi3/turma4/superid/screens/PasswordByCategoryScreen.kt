@@ -68,7 +68,6 @@ fun PasswordsByCategoryScreen(
     var passwords by remember { mutableStateOf<List<PasswordItem>>(emptyList()) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
-    //var refreshTrigger by remember { mutableIntStateOf(0) }
 
     var categoryName by remember { mutableStateOf("") }
 
@@ -206,10 +205,10 @@ fun PasswordsByCategoryScreen(
                 showEditDialog = showEditDialog,
                 currentName = categoryName,
                 onDismiss = { showEditDialog = false },
-                onConfirm = { newName -> // ✅ aqui você recebe o novo nome
+                onConfirm = { newName ->
                     editCategory(context, categoryId, newName) { success ->
                         if (success) {
-                            categoryName = newName // ✅ Atualiza localmente também
+                            categoryName = newName
                         }
                     }
                 }
