@@ -8,11 +8,11 @@ import com.google.firebase.auth.auth
 
 private val auth = Firebase.auth
 
-private fun signInAccount(context: Context, email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+private fun signInAccount(context: Context, email: String, password: String, onSuccess: () -> Unit) {
     auth.signInWithEmailAndPassword(email, password)
         .addOnCompleteListener { taks ->
             if (taks.isSuccessful) {
-                var user = auth.currentUser
+                val user = auth.currentUser
                 Log.d("AUTH-INFO", "singInWithEmailAndPassword: Success | uid: ${user?.uid}")
                 validationUtils.saveEmailForAuthentication(context, email)
                 onSuccess()
@@ -45,5 +45,5 @@ fun validationSignIn(context: Context, email: String, password: String, onSucces
         return
     }
 
-    signInAccount(context, email, password, onSuccess, onFailure)
+    signInAccount(context, email, password, onSuccess)
 }

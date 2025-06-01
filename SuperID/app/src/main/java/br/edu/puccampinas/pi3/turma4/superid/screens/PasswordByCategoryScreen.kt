@@ -42,17 +42,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordsByCategory
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
-import androidx.compose.runtime.mutableIntStateOf
-import br.edu.puccampinas.pi3.turma4.superid.QrCodeActivity
 import br.edu.puccampinas.pi3.turma4.superid.SavePasswordActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.deleteCategory
 import br.edu.puccampinas.pi3.turma4.superid.functions.editCategory

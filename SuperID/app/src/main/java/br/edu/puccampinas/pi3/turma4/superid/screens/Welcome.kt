@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -32,14 +31,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.AuthenticationActivity
-import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.R
 import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
-
-    val contex = LocalContext.current
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -115,7 +111,6 @@ fun WelcomeFinishScreen(navController: NavController) {
             .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Spacer(modifier = Modifier.height(200.dp))
 
@@ -169,6 +164,5 @@ fun WelcomeFinishScreen(navController: NavController) {
 fun WelcomeScreenPreview() {
     SuperIDTheme(darkTheme = false, dynamicColor = false) {
         WelcomeScreen(navController = rememberNavController())
-//        WelcomeFinishScreen(navController = rememberNavController())
     }
 }

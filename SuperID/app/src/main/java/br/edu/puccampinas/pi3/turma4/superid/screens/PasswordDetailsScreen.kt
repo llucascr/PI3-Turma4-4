@@ -1,7 +1,6 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,12 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
 import br.edu.puccampinas.pi3.turma4.superid.deletarSenha
-import br.edu.puccampinas.pi3.turma4.superid.functions.decrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import kotlin.Result.Companion.success
-import kotlin.math.log
 
 
 @RequiresApi(Build.VERSION_CODES.O)

@@ -6,9 +6,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import android.util.Base64
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import kotlin.math.log
 
 
 private val auth = Firebase.auth
@@ -50,8 +48,8 @@ private fun saveNewPw(titulo: String, descricao: String?, login: String, senha: 
     val userId = auth.currentUser
     val accessToken = toBase64(getStringToken())
     val senhacriptografada = encrypt(userId.toString(), senha)
-    Log.i("user id", "User: ${userId}")
-    val PwInformations = hashMapOf<String,String?>(
+    Log.i("user id", "User: $userId")
+    val pwInformations = hashMapOf(
         "titulo" to titulo,
         "descricao" to descricao,
         "url" to url,
@@ -61,7 +59,7 @@ private fun saveNewPw(titulo: String, descricao: String?, login: String, senha: 
     )
     db.collection("users").document("${userId?.uid}")
         .collection("categorias").document(categoryId)
-        .collection("senhas").document().set(PwInformations)
+        .collection("senhas").document().set(pwInformations)
         .addOnCompleteListener{taks ->
             if (taks.isSuccessful) {
                 Log.i("FIRESTORE-INFO", "Password saved!")

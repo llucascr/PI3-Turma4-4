@@ -256,7 +256,7 @@ fun editCategory(
 
     val categoryRef = db
         .collection("users")
-        .document(userId.toString())
+        .document(userId)
         .collection("categorias")
         .document(categoryId)
 

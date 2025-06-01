@@ -83,7 +83,7 @@ object validationUtils  {
         onFailure: (Exception) -> Unit
     ) {
         val user = Firebase.auth.currentUser
-        var email = getSavedEmail(context)
+        val email = getSavedEmail(context)
 
         if (user != null && email != null) {
             val credential = EmailAuthProvider.getCredential(email, password)
@@ -112,7 +112,7 @@ object validationUtils  {
 
     fun checkUserAuth(context: Context): Boolean {
         val user = Firebase.auth.currentUser
-        var email = getSavedEmail(context)
+        val email = getSavedEmail(context)
 
         return user != null && email != null
     }
