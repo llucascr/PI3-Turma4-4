@@ -3,6 +3,7 @@ package br.edu.puccampinas.pi3.turma4.superid.functions
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import br.edu.puccampinas.pi3.turma4.superid.screens.Category
 import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordItem
 import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordItemDetails
 import com.google.firebase.auth.ktx.auth
@@ -13,8 +14,8 @@ import com.google.firebase.ktx.Firebase
 private val db = Firebase.firestore
 private val auth = Firebase.auth
 
-fun getCategorys(onResult: (List<Pair<String, Long>>) -> Unit) {
-    val categoryList = mutableListOf<Pair<String, Long>>()
+fun getCategorys(onResult: (List<Category>) -> Unit) {
+    val categoryList = mutableListOf<Category>()
 
     db.collection("users")
         .document(auth.uid ?: return)
@@ -22,10 +23,18 @@ fun getCategorys(onResult: (List<Pair<String, Long>>) -> Unit) {
         .get()
         .addOnSuccessListener { result ->
             for (document in result) {
+                val id = document.id
                 val name = document.data["name"] as? String ?: "Sem nome"
-                val quantidade = document.data["quantidade"] as? Long ?: 0L
-                categoryList.add(name to quantidade)
-                Log.d("CATEGORY", "${document.id} => ${document.data}")
+                val quantidade = when (val q = document.data["quantidade"]) {
+                    is Long -> q
+                    is String -> q.toLongOrNull() ?: 0L
+                    else -> 0L
+                }
+                val isDefault = document.data["isDefault"] as? Boolean ?: false
+
+                categoryList.add(Category(id, name, quantidade, isDefault))
+
+                Log.d("CATEGORY", "$id => ${document.data}")
             }
             onResult(categoryList)
         }
@@ -35,20 +44,47 @@ fun getCategorys(onResult: (List<Pair<String, Long>>) -> Unit) {
         }
 }
 
+fun getCategoryById(categoryId: String, onResult: (String?) -> Unit) {
+    val userId = auth.uid ?: run {
+        onResult(null)
+        return
+    }
+
+    db.collection("users")
+        .document(userId)
+        .collection("categorias")
+        .document(categoryId)
+        .get()
+        .addOnSuccessListener { document ->
+            if (document.exists()) {
+                val name = document.getString("name") ?: "Sem nome"
+                onResult(name)
+            } else {
+                onResult(null) // documento não existe
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.e("CATEGORY", "Erro ao buscar nome da categoria", exception)
+            onResult(null)
+        }
+}
+
 fun createCategory(
     context: Context,
     name: String,
+    isDefault: Boolean = false,
     onResult: (Boolean) -> Unit
 ) {
-    val categoryDoc = hashMapOf<String, String>(
+    val categoryDoc = hashMapOf(
         "name" to name,
-        "quantidade" to "0"
+        "quantidade" to "0",
+        "isDefault" to isDefault
     )
 
     checkEqualCategory(name) { isValid ->
         if (isValid) {
             db.collection("users").document(auth.uid.toString())
-                .collection("categorias").document(name).set(categoryDoc)
+                .collection("categorias").document().set(categoryDoc)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.i("FIRESTORE-INFO", "Categoria Criada!")
@@ -91,7 +127,7 @@ fun checkEqualCategory(nameCategory: String, callback: (Boolean) -> Unit) {
 
 fun getPasswordsByCategory(
     context: Context,
-    categoryName: String,
+    categoryId: String,
     callback: (List<PasswordItem>) -> Unit
 ) {
     val passwordList = mutableListOf<PasswordItem>()
@@ -99,7 +135,7 @@ fun getPasswordsByCategory(
     db.collection("users")
         .document(auth.uid ?: return)
         .collection("categorias")
-        .document(categoryName)
+        .document(categoryId)
         .collection("senhas")
         .get()
         .addOnSuccessListener { result ->
@@ -123,7 +159,7 @@ fun getPasswordsByCategory(
 
 fun getPasswordDetails(
     context: Context,
-    categoryName: String,
+    categoryId: String,
     documentId: String,
     callback: (PasswordItemDetails?) -> Unit
 ) {
@@ -132,7 +168,7 @@ fun getPasswordDetails(
     db.collection("users")
         .document(auth.uid ?: return)
         .collection("categorias")
-        .document(categoryName)
+        .document(categoryId)
         .collection("senhas")
         .document(documentId)
         .get()
@@ -162,11 +198,11 @@ fun getPasswordDetails(
 
 fun deleteCategory(
     context: Context,
-    categoryName: String,
+    categoryId: String,
     onResult: (Boolean) -> Unit
 ) {
     val userRef = db.collection("users").document(auth.uid ?: return)
-    val passwordsRef = userRef.collection("categorias").document(categoryName).collection("senhas")
+    val passwordsRef = userRef.collection("categorias").document(categoryId).collection("senhas")
 
     // 1. Buscar todas as senhas da categoria
     passwordsRef.get()
@@ -182,7 +218,7 @@ fun deleteCategory(
             batch.commit()
                 .addOnSuccessListener {
                     // 4. Depois deletar a categoria
-                    userRef.collection("categorias").document(categoryName)
+                    userRef.collection("categorias").document(categoryId)
                         .delete()
                         .addOnSuccessListener {
                             Log.d("CATEGORY_DELETE", "Categoria e senhas deletadas com sucesso.")

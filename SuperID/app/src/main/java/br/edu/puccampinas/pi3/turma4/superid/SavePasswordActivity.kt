@@ -1,9 +1,11 @@
 package br.edu.puccampinas.pi3.turma4.superid
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -22,28 +24,30 @@ import com.google.firebase.ktx.Firebase
 
 
 class SavePasswordActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val categoryName = intent.getStringExtra("categoryName")
+        val categoryId = intent.getStringExtra("categoryId")
         enableEdgeToEdge()
         setContent {
             SuperIDTheme{
-              SavePasswordScreen(modifier = Modifier, categoryName.toString())
+              SavePasswordScreen(modifier = Modifier, categoryId.toString())
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SavePasswordScreen(modifier: Modifier, categoryName: String) {
+fun SavePasswordScreen(modifier: Modifier, categoryId: String) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "saveNewPassword") {
-        composable("saveNewPassword") { AddPwUI(navController, categoryName) }
+        composable("saveNewPassword") { AddPwUI(navController, categoryId) }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun Preview() {
-    SavePasswordScreen(modifier = Modifier, categoryName = "Sites Web")
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun Preview() {
+//    SavePasswordScreen(modifier = Modifier, categoryId = "Sites Web")
+//}

@@ -43,6 +43,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,12 +72,12 @@ import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddPwUI(navController: NavController, categoryName: String) {
+fun AddPwUI(navController: NavController, categoryId: String) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ){
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.Center) {
-            MainContent(categoryName, navController)
+            MainContent(categoryId, navController)
         }
     }
 }
@@ -85,7 +86,7 @@ fun AddPwUI(navController: NavController, categoryName: String) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainContent(categoryName: String, navController: NavController){
+fun MainContent(categoryId: String, navController: NavController){
     val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
@@ -109,15 +110,15 @@ fun MainContent(categoryName: String, navController: NavController){
             }
         }
     }
-    NewPasswordForms(categoryName, navController)
+    NewPasswordForms(categoryId, navController)
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewPasswordForms(categoryName: String, navController: NavController){
+fun NewPasswordForms(categoryId: String, navController: NavController){
     var showSuccessDialog by remember { mutableStateOf(false) }
     var success by remember {mutableStateOf(false)}
     var failure by remember {mutableStateOf(true)}
-    var context = LocalContext.current
+    val context = LocalContext.current
     Spacer(modifier = Modifier.size(50.dp))
     Box(modifier = Modifier.fillMaxWidth()){
         Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally){
@@ -231,14 +232,11 @@ fun NewPasswordForms(categoryName: String, navController: NavController){
                             unfocusedTextColor = Color.Black),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
-                    if(success){
-                        Text("Senha salva!", color = MaterialTheme.colorScheme.primary, fontSize = 15.sp)
-                        Toast.makeText(
-                            context,
-                            "Senha Cadastrada com sucesso!",
-                            Toast.LENGTH_LONG,
-                        ).show()
-                        navController.navigate("passwordsByCategory/$categoryName")
+                    if (success) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(context, "Senha cadastrada com sucesso!", Toast.LENGTH_LONG).show()
+                            navController.navigate("home")
+                        }
                     }
                     if(!failure){
                         Spacer(modifier = Modifier.size(15.dp))
@@ -252,7 +250,7 @@ fun NewPasswordForms(categoryName: String, navController: NavController){
                            login,
                            senha,
                            url,
-                           categoryName
+                           categoryId
                        )
                         if(savingStatus) success = true else failure = false
                     }, modifier = Modifier.fillMaxWidth().height(55.dp), shape = RoundedCornerShape(12.dp),

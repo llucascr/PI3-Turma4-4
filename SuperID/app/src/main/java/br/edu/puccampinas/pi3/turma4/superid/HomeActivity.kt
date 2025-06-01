@@ -50,45 +50,50 @@ fun HomeNav(modifier: Modifier = Modifier) {
         composable("home") { HomeScreen(navController) }
         composable("profile") { ProfileScreen(navController) }
         composable(
-            "passwordsByCategory/{categoryName}",
-            arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
+            "passwordsByCategory/{categoryId}/{isDefault}",
+            arguments = listOf(
+                navArgument("categoryId") { type = NavType.StringType },
+                navArgument("isDefault") { type = NavType.BoolType }
+            )
         ) { backStackEntry ->
-            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
+            val isDefault = backStackEntry.arguments?.getBoolean("isDefault") ?: false
             PasswordsByCategoryScreen(
-                categoryName = categoryName,
+                categoryId = categoryId,
+                isDefault = isDefault,
                 navController = navController
             )
         }
 
         composable(
-            route = "passwordDetails/{categoryName}/{documentId}",
+            route = "passwordDetails/{categoryId}/{documentId}",
             arguments = listOf(
-                navArgument("categoryName") { type = NavType.StringType },
+                navArgument("categoryId") { type = NavType.StringType },
                 navArgument("documentId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
             val documentId = backStackEntry.arguments?.getString("documentId") ?: ""
 
             PasswordDetailsScreen(
-                categoryName = categoryName,
+                categoryId = categoryId,
                 documentId = documentId,
                 navController = navController
             )
         }
 
         composable(
-            route = "passwordDetails/{categoryName}/{documentId}/editarSenha",
+            route = "passwordDetails/{categoryId}/{documentId}/editarSenha",
             arguments = listOf(
-                navArgument("categoryName") { type = NavType.StringType },
+                navArgument("categoryId") { type = NavType.StringType },
                 navArgument("documentId") { type = NavType.StringType }
             )
         ) { backStackEntry ->
-            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
             val documentId = backStackEntry.arguments?.getString("documentId") ?: ""
 
             AlterarSenha(
-                categoryName,
+                categoryId,
                 documentId,
                 navController
             )

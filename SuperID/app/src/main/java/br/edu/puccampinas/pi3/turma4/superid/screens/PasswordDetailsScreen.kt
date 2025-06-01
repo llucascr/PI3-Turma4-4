@@ -44,7 +44,7 @@ import kotlin.math.log
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PasswordDetailsScreen(
-    categoryName: String,
+    categoryId: String,
     documentId: String,
     navController: NavController
 ) {
@@ -53,8 +53,8 @@ fun PasswordDetailsScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(context, categoryName, documentId) {
-        getPasswordDetails(context, categoryName, documentId) { result ->
+    LaunchedEffect(context, categoryId, documentId) {
+        getPasswordDetails(context, categoryId, documentId) { result ->
             password = result
         }
     }
@@ -73,7 +73,7 @@ fun PasswordDetailsScreen(
                 .padding(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { navController.navigate("passwordsByCategory/$categoryName") }) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Voltar",
@@ -93,7 +93,7 @@ fun PasswordDetailsScreen(
                     showDialog = showDeleteDialog,
                     onDismiss = { showDeleteDialog = false },
                     onConfirm = {
-                        deletarSenha(context, categoryName, documentId, navController)
+                        deletarSenha(context, categoryId, documentId, navController)
                     }
                 )
             }
@@ -115,7 +115,7 @@ fun PasswordDetailsScreen(
                     ActionButton(
                         text = "Editar",
                         color = colorScheme.primary,
-                        onClick = { navController.navigate("passwordDetails/$categoryName/$documentId/editarSenha") }
+                        onClick = { navController.navigate("passwordDetails/$categoryId/$documentId/editarSenha") }
                     )
                     ActionButton(
                         text = "Excluir",
@@ -226,7 +226,7 @@ fun PasswordDeleteDialog(
             },
             text = {
                 Text(
-                    text = "Tem certeza que deseja excluir esta categoria? A senha será excluída permanentemente.",
+                    text = "Tem certeza que deseja excluir esta senha? A senha será excluída permanentemente.",
                     color = colorScheme.onBackground
                 )
             }

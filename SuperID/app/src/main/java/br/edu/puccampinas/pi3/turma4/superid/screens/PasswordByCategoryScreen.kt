@@ -55,22 +55,26 @@ import androidx.compose.runtime.mutableIntStateOf
 import br.edu.puccampinas.pi3.turma4.superid.QrCodeActivity
 import br.edu.puccampinas.pi3.turma4.superid.SavePasswordActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.deleteCategory
+import br.edu.puccampinas.pi3.turma4.superid.functions.getCategoryById
 
 @Composable
 fun PasswordsByCategoryScreen(
-    categoryName: String,
+    categoryId: String,
+    isDefault: Boolean,
     navController: NavController
-    //onBackClick: () -> Unit,
-    //onAddPasswordClick: () -> Unit,
-    //onPasswordClick: (String) -> Unit
 ) {
     val context = LocalContext.current
     var passwords by remember { mutableStateOf<List<PasswordItem>>(emptyList()) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     //var refreshTrigger by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(categoryName) {
-        getPasswordsByCategory(context, categoryName) { result ->
+    var categoryName by remember { mutableStateOf("Carregando...") }
+
+    LaunchedEffect(categoryId) {
+        getCategoryById(categoryId) { fetchedName ->
+            categoryName = fetchedName ?: "Categoria não encontrada"
+        }
+        getPasswordsByCategory(context, categoryId) { result ->
             passwords = result
         }
     }
@@ -82,7 +86,7 @@ fun PasswordsByCategoryScreen(
             FloatingActionButton(
                 onClick = {
                     val intent = Intent(context, SavePasswordActivity::class.java)
-                    intent.putExtra("categoryName", categoryName)
+                    intent.putExtra("categoryId", categoryId)
                     context.startActivity(intent)
                 },
                 containerColor = colorScheme.onSecondary,
@@ -93,7 +97,7 @@ fun PasswordsByCategoryScreen(
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Adicionar categoria",
+                    contentDescription = "Adicionar senha",
                     modifier = Modifier.size(32.dp),
                     tint = colorScheme.primary
                 )
@@ -178,7 +182,7 @@ fun PasswordsByCategoryScreen(
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(passwords) { password ->
                     PasswordCard(password, onClick = {
-                        navController.navigate("passwordDetails/${categoryName}/${password.documentId}")
+                        navController.navigate("passwordDetails/${categoryId}/${password.documentId}")
                     })
                 }
             }
@@ -187,7 +191,7 @@ fun PasswordsByCategoryScreen(
                 showDialog = showDeleteDialog,
                 onDismiss = { showDeleteDialog = false },
                 onConfirm = {
-                    deleteCategory(context, categoryName) { success ->
+                    deleteCategory(context, categoryId) { success ->
                         if (success) {
                             navController.popBackStack()
                         }
@@ -282,13 +286,13 @@ fun CategoryDeleteDialog(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun PasswordsByCategoryScreenPreview() {
-    SuperIDTheme(darkTheme = true, dynamicColor = false) {
-        PasswordsByCategoryScreen(
-            categoryName = "Place",
-            navController = rememberNavController()
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PasswordsByCategoryScreenPreview() {
+//    SuperIDTheme(darkTheme = true, dynamicColor = false) {
+//        PasswordsByCategoryScreen(
+//            categoryName = "Place",
+//            navController = rememberNavController()
+//        )
+//    }
+//}

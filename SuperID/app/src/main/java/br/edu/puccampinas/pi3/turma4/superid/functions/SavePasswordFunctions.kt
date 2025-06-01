@@ -17,12 +17,12 @@ private val db = Firebase.firestore
 
 //função de verificação de inputs vazios
 @RequiresApi(Build.VERSION_CODES.O)
-fun verifyInputs(titulo: String, descricao: String?, login: String, senha: String, url: String, categoryName: String): Boolean{
+fun verifyInputs(titulo: String, descricao: String?, login: String, senha: String, url: String, categoryId: String): Boolean{
     if(titulo.isEmpty() || login.isEmpty() || senha.isEmpty()){
         Log.e("FIREBASE", "Campos vazios!")
         return false
     }else{
-        SaveNewPw(titulo,descricao,login,senha,url, categoryName)
+        saveNewPw(titulo,descricao,login,senha,url, categoryId)
         return true
     }
 
@@ -45,8 +45,8 @@ private fun getStringToken():String{
 }
 //função para salvar senha no firestore
 @RequiresApi(Build.VERSION_CODES.O)
-private fun SaveNewPw(titulo: String, descricao: String?, login: String, senha: String,
-                      url: String, categoryName: String){
+private fun saveNewPw(titulo: String, descricao: String?, login: String, senha: String,
+                      url: String, categoryId: String){
     val userId = auth.currentUser
     val accessToken = toBase64(getStringToken())
     val senhacriptografada = encrypt(userId.toString(), senha)
@@ -60,7 +60,7 @@ private fun SaveNewPw(titulo: String, descricao: String?, login: String, senha: 
         "accessToken" to accessToken
     )
     db.collection("users").document("${userId?.uid}")
-        .collection("categorias").document(categoryName)
+        .collection("categorias").document(categoryId)
         .collection("senhas").document().set(PwInformations)
         .addOnCompleteListener{taks ->
             if (taks.isSuccessful) {
