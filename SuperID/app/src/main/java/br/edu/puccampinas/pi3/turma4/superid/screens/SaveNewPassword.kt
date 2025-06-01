@@ -1,6 +1,7 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
@@ -235,7 +236,7 @@ fun NewPasswordForms(categoryId: String, navController: NavController){
                     if (success) {
                         LaunchedEffect(Unit) {
                             Toast.makeText(context, "Senha cadastrada com sucesso!", Toast.LENGTH_LONG).show()
-                            navController.navigate("home")
+                            (context as? Activity)?.finish()
                         }
                     }
                     if(!failure){

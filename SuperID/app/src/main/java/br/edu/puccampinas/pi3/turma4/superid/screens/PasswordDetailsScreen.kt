@@ -93,7 +93,11 @@ fun PasswordDetailsScreen(
                     showDialog = showDeleteDialog,
                     onDismiss = { showDeleteDialog = false },
                     onConfirm = {
-                        deletarSenha(context, categoryId, documentId, navController)
+                        deletarSenha(context, categoryId, documentId) { success ->
+                            if (success) {
+                                navController.popBackStack()
+                            }
+                        }
                     }
                 )
             }
