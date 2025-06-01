@@ -102,7 +102,7 @@ fun PasswordDetailsScreen(
 
             password?.let { data ->
                 InfoItem(label = "Login", value = data.login)
-//                InfoItem(label = "Senha", value = decrypt())
+                InfoItem(label = "Senha", value = data.password)
                 InfoItem(label = "WebSite", value = data.url)
                 InfoItem(label = "Descrição", value = data.description)
 
