@@ -7,6 +7,7 @@ import br.edu.puccampinas.pi3.turma4.superid.screens.Category
 import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordItem
 import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordItemDetails
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -241,5 +242,31 @@ fun deleteCategory(
             Log.e("CATEGORY_DELETE", "Erro ao buscar senhas da categoria", e)
             Toast.makeText(context, "Erro ao buscar senhas da categoria", Toast.LENGTH_SHORT).show()
             onResult(false)
+        }
+}
+
+fun editCategory(
+    context: Context,
+    categoryId: String,
+    newName: String,
+    onComplete: (Boolean) -> Unit
+) {
+    val db = FirebaseFirestore.getInstance()
+    val userId = auth.uid ?: return
+
+    val categoryRef = db
+        .collection("users")
+        .document(userId.toString())
+        .collection("categorias")
+        .document(categoryId)
+
+    categoryRef.update("name", newName)
+        .addOnSuccessListener {
+            Toast.makeText(context, "Categoria atualizada com sucesso", Toast.LENGTH_SHORT).show()
+            onComplete(true)
+        }
+        .addOnFailureListener {
+            Toast.makeText(context, "Erro ao atualizar a categoria", Toast.LENGTH_SHORT).show()
+            onComplete(false)
         }
 }

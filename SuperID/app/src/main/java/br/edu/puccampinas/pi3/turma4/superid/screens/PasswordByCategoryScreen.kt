@@ -55,6 +55,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import br.edu.puccampinas.pi3.turma4.superid.QrCodeActivity
 import br.edu.puccampinas.pi3.turma4.superid.SavePasswordActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.deleteCategory
+import br.edu.puccampinas.pi3.turma4.superid.functions.editCategory
 import br.edu.puccampinas.pi3.turma4.superid.functions.getCategoryById
 
 @Composable
@@ -66,9 +67,10 @@ fun PasswordsByCategoryScreen(
     val context = LocalContext.current
     var passwords by remember { mutableStateOf<List<PasswordItem>>(emptyList()) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
     //var refreshTrigger by remember { mutableIntStateOf(0) }
 
-    var categoryName by remember { mutableStateOf("Carregando...") }
+    var categoryName by remember { mutableStateOf("") }
 
     LaunchedEffect(categoryId) {
         getCategoryById(categoryId) { fetchedName ->
@@ -136,23 +138,25 @@ fun PasswordsByCategoryScreen(
                     )
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { /* TODO: ação de editar */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Editar categoria",
-                            tint = colorScheme.onBackground,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
+                if(!isDefault){
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { showEditDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Editar categoria",
+                                tint = colorScheme.onBackground,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
 
-                    IconButton(onClick = { showDeleteDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Excluir categoria",
-                            tint = colorScheme.onBackground,
-                            modifier = Modifier.size(32.dp)
-                        )
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Excluir categoria",
+                                tint = colorScheme.onBackground,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -188,12 +192,24 @@ fun PasswordsByCategoryScreen(
             }
 
             CategoryDeleteDialog(
-                showDialog = showDeleteDialog,
+                showDeleteDialog = showDeleteDialog,
                 onDismiss = { showDeleteDialog = false },
                 onConfirm = {
                     deleteCategory(context, categoryId) { success ->
                         if (success) {
                             navController.popBackStack()
+                        }
+                    }
+                }
+            )
+            CategoryEditDialog(
+                showEditDialog = showEditDialog,
+                currentName = categoryName,
+                onDismiss = { showEditDialog = false },
+                onConfirm = { newName -> // ✅ aqui você recebe o novo nome
+                    editCategory(context, categoryId, newName) { success ->
+                        if (success) {
+                            categoryName = newName // ✅ Atualiza localmente também
                         }
                     }
                 }
@@ -241,11 +257,11 @@ data class PasswordItem(
 
 @Composable
 fun CategoryDeleteDialog(
-    showDialog: Boolean,
+    showDeleteDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    if (showDialog) {
+    if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = onDismiss,
             confirmButton = {
@@ -279,6 +295,57 @@ fun CategoryDeleteDialog(
                 Text(
                     text = "Tem certeza que deseja excluir esta categoria? Todas as senhas dentro dela também serão excluídas permanentemente.",
                     color = colorScheme.onBackground
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun CategoryEditDialog(
+    showEditDialog: Boolean,
+    currentName: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var text by remember { mutableStateOf(currentName) }
+
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            confirmButton = {
+                Text(
+                    text = "Confirmar",
+                    modifier = Modifier
+                        .clickable {
+                            onConfirm(text)
+                            onDismiss()
+                        }
+                        .padding(8.dp),
+                    color = colorScheme.primary
+                )
+            },
+            dismissButton = {
+                Text(
+                    text = "Cancelar",
+                    modifier = Modifier
+                        .clickable { onDismiss() }
+                        .padding(8.dp),
+                    color = colorScheme.error
+                )
+            },
+            title = {
+                Text(
+                    text = "Editar Categoria",
+                    color = colorScheme.onPrimary
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    placeholder = { Text(currentName) },
+                    singleLine = true
                 )
             }
         )
