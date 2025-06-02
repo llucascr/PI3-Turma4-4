@@ -7,6 +7,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import android.util.Base64
 import androidx.annotation.RequiresApi
+import br.edu.puccampinas.pi3.turma4.superid.functions.encrypt
 
 
 private val auth = Firebase.auth
@@ -47,14 +48,16 @@ private fun saveNewPw(titulo: String, descricao: String?, login: String, senha: 
                       url: String, categoryId: String){
     val userId = auth.currentUser
     val accessToken = toBase64(getStringToken())
-    val senhacriptografada = encrypt(userId.toString(), senha)
+    val encryptedData = encrypt(auth.uid.toString(), senha)
     Log.i("user id", "User: $userId")
     val pwInformations = hashMapOf(
         "titulo" to titulo,
         "descricao" to descricao,
         "url" to url,
         "login" to login,
-        "senha" to senhacriptografada,
+        "senha" to encryptedData.cipherText,
+        "salt" to encryptedData.salt,
+        "iv" to encryptedData.iv,
         "accessToken" to accessToken
     )
     db.collection("users").document("${userId?.uid}")
@@ -63,8 +66,7 @@ private fun saveNewPw(titulo: String, descricao: String?, login: String, senha: 
         .addOnCompleteListener{taks ->
             if (taks.isSuccessful) {
                 Log.i("FIRESTORE-INFO", "Password saved!")
-                val teste = decrypt(userId.toString(), senhacriptografada)
-                Log.i("SENHA", teste)
+
             } else {
                 Log.e("FIRESTORE-INFO", "Error saving password: ${taks.exception}")
             }

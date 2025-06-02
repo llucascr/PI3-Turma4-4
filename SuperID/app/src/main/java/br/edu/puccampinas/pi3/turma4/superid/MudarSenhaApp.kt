@@ -45,6 +45,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.edu.puccampinas.pi3.turma4.superid.atualizarDadosFirestore
+import br.edu.puccampinas.pi3.turma4.superid.functions.decrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.encrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
 import com.google.firebase.Firebase
@@ -59,6 +61,8 @@ fun atualizarDadosFirestore(
     login: String,
     senha: String,
     url: String,
+    salt: String,
+    iv: String,
     onSuccess: () -> Unit,
     onError: (String) -> Unit
 ) {
@@ -71,7 +75,9 @@ fun atualizarDadosFirestore(
         "descricao" to descricao,
         "login" to login,
         "senha" to senha,
-        "url" to url
+        "url" to url,
+        "salt" to salt,
+        "iv" to iv
     )
 
     db.collection("users")
@@ -89,6 +95,7 @@ fun atualizarDadosFirestore(
         }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun puxarDados(
     categoryId: String,
     documentId: String,
@@ -111,7 +118,9 @@ fun puxarDados(
                 val titulo = document.getString("titulo") ?: ""
                 val descricao = document.getString("descricao") ?: ""
                 val login = document.getString("login") ?: ""
-                val senha = document.getString("senha") ?: ""
+                val senha = decrypt(usuarioId,
+                    document.getString("senha").toString(),document.getString("salt").toString(),
+                    document.getString("iv").toString()) ?: ""
                 val url = document.getString("url") ?: ""
                 Log.d("Firestore", "Dados carregados com sucesso.")
                 onResult(titulo, descricao, login, senha, url)
@@ -310,9 +319,12 @@ fun AlterarSenha(
                 BotaoSalvar(
                     onClick = {
                         if (nova_senha == conf_nova_senha) {
-                            nova_senha = encrypt(Firebase.auth.currentUser.toString(), nova_senha)
-                            atualizarDadosFirestore(categoryname, documentId,titulo, descricao, login, nova_senha, url,
-                                onSuccess = {
+                            val usuarioId = Firebase.auth.currentUser?.uid.toString()
+                            val encryptedData = encrypt(usuarioId, nova_senha)
+
+                            //nova_senha = encryptedData.cipherText
+                            atualizarDadosFirestore(categoryname, documentId,titulo, descricao, login, encryptedData.cipherText,url,
+                                encryptedData.salt,encryptedData.iv,onSuccess = {
                                     scope.launch {
                                         snackbarHostState.showSnackbar("Senha salva com sucesso!", "OK")
                                     }

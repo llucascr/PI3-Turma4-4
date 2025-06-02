@@ -1,11 +1,14 @@
 package br.edu.puccampinas.pi3.turma4.superid.functions
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import br.edu.puccampinas.pi3.turma4.superid.screens.Category
 import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordItem
 import br.edu.puccampinas.pi3.turma4.superid.screens.PasswordItemDetails
+import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -25,7 +28,7 @@ fun getCategorys(onResult: (List<Category>) -> Unit) {
         .addOnSuccessListener { result ->
             for (document in result) {
                 val id = document.id
-                val name = document.data["name"] as? String ?: "Sem nome"
+                val name = document.data["nome"] as? String ?: "Sem nome"
                 val quantidade = when (val q = document.data["quantidade"]) {
                     is Long -> q
                     is String -> q.toLongOrNull() ?: 0L
@@ -58,7 +61,7 @@ fun getCategoryById(categoryId: String, onResult: (String?) -> Unit) {
         .get()
         .addOnSuccessListener { document ->
             if (document.exists()) {
-                val name = document.getString("name") ?: "Sem nome"
+                val name = document.getString("nome") ?: "Sem nome"
                 onResult(name)
             } else {
                 onResult(null) // documento não existe
@@ -77,7 +80,7 @@ fun createCategory(
     onResult: (Boolean) -> Unit
 ) {
     val categoryDoc = hashMapOf(
-        "name" to name,
+        "nome" to name,
         "quantidade" to "0",
         "isDefault" to isDefault
     )
@@ -111,7 +114,7 @@ fun checkEqualCategory(nameCategory: String, callback: (Boolean) -> Unit) {
         .addOnSuccessListener { result ->
             var notIsEquals = true
             for (document in result) {
-                val name = document.data["name"] as? String ?: "Sem nome"
+                val name = document.data["nome"] as? String ?: "Sem nome"
                 if (nameCategory == name) {
                     notIsEquals = false
                     break
@@ -158,6 +161,7 @@ fun getPasswordsByCategory(
         }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun getPasswordDetails(
     context: Context,
     categoryId: String,
@@ -175,11 +179,14 @@ fun getPasswordDetails(
         .get()
         .addOnSuccessListener { document ->
             if (document != null && document.exists()) {
+                val usuarioId = com.google.firebase.Firebase.auth.currentUser?.uid.toString()
                 val passwordItemDetails = PasswordItemDetails(
                     title = document.getString("titulo") ?: "",
                     description = document.getString("descricao") ?: "",
                     login = document.getString("login") ?: "",
-                    password = document.getString("senha") ?: "",
+                    password = decrypt(usuarioId,
+                        document.getString("senha").toString(),document.getString("salt").toString(),
+                        document.getString("iv").toString()) ?: "",
                     url = document.getString("url") ?: ""
                 )
 

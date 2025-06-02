@@ -66,13 +66,13 @@ fun PasswordDetailsScreen(
                 .padding(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Voltar",
-                        tint = colorScheme.onBackground
-                    )
-                }
+//                IconButton(onClick = { navController.popBackStack() }) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                        contentDescription = "Voltar",
+//                        tint = colorScheme.onBackground
+//                    )
+//                }
                 Text(
                     text = password?.title ?: "Carregando...",
                     style = typography.titleLarge,
