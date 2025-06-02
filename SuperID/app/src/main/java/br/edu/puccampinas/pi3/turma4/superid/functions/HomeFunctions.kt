@@ -267,7 +267,7 @@ fun editCategory(
         .collection("categorias")
         .document(categoryId)
 
-    categoryRef.update("name", newName)
+    categoryRef.update("nome", newName)
         .addOnSuccessListener {
             Toast.makeText(context, "Categoria atualizada com sucesso", Toast.LENGTH_SHORT).show()
             onComplete(true)
