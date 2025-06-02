@@ -6,9 +6,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import android.util.Base64
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import kotlin.math.log
+import br.edu.puccampinas.pi3.turma4.superid.functions.encrypt
 
 
 private val auth = Firebase.auth
@@ -17,12 +16,12 @@ private val db = Firebase.firestore
 
 //função de verificação de inputs vazios
 @RequiresApi(Build.VERSION_CODES.O)
-fun verifyInputs(titulo: String, descricao: String?, login: String, senha: String, url: String, categoryName: String): Boolean{
+fun verifyInputs(titulo: String, descricao: String?, login: String, senha: String, url: String, categoryId: String): Boolean{
     if(titulo.isEmpty() || login.isEmpty() || senha.isEmpty()){
         Log.e("FIREBASE", "Campos vazios!")
         return false
     }else{
-        SaveNewPw(titulo,descricao,login,senha,url, categoryName)
+        saveNewPw(titulo,descricao,login,senha,url, categoryId)
         return true
     }
 
@@ -45,28 +44,29 @@ private fun getStringToken():String{
 }
 //função para salvar senha no firestore
 @RequiresApi(Build.VERSION_CODES.O)
-private fun SaveNewPw(titulo: String, descricao: String?, login: String, senha: String,
-                      url: String, categoryName: String){
+private fun saveNewPw(titulo: String, descricao: String?, login: String, senha: String,
+                      url: String, categoryId: String){
     val userId = auth.currentUser
     val accessToken = toBase64(getStringToken())
-    val senhacriptografada = encrypt(userId.toString(), senha)
-    Log.i("user id", "User: ${userId}")
-    val PwInformations = hashMapOf<String,String?>(
+    val encryptedData = encrypt(auth.uid.toString(), senha)
+    Log.i("user id", "User: $userId")
+    val pwInformations = hashMapOf(
         "titulo" to titulo,
         "descricao" to descricao,
         "url" to url,
         "login" to login,
-        "senha" to senhacriptografada,
+        "senha" to encryptedData.cipherText,
+        "salt" to encryptedData.salt,
+        "iv" to encryptedData.iv,
         "accessToken" to accessToken
     )
     db.collection("users").document("${userId?.uid}")
-        .collection("categorias").document(categoryName)
-        .collection("senhas").document().set(PwInformations)
+        .collection("categorias").document(categoryId)
+        .collection("senhas").document().set(pwInformations)
         .addOnCompleteListener{taks ->
             if (taks.isSuccessful) {
                 Log.i("FIRESTORE-INFO", "Password saved!")
-                val teste = decrypt(userId.toString(), senhacriptografada)
-                Log.i("SENHA", teste)
+
             } else {
                 Log.e("FIRESTORE-INFO", "Error saving password: ${taks.exception}")
             }

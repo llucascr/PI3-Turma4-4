@@ -13,7 +13,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 
 
 fun resetPassword(email: String, isVerificated: Boolean ,context: Context) {
-    var auth = Firebase.auth
+    val auth = Firebase.auth
 
     if (isVerificated) {
         auth.sendPasswordResetEmail(email)
@@ -49,7 +49,7 @@ fun resetPassword(email: String, isVerificated: Boolean ,context: Context) {
  */
 fun saveName(context: Context, name: String) {
     val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-    prefs.edit() { putString("user_name", name) }
+    prefs.edit { putString("user_name", name) }
 }
 
 /**

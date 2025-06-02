@@ -45,6 +45,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.edu.puccampinas.pi3.turma4.superid.atualizarDadosFirestore
+import br.edu.puccampinas.pi3.turma4.superid.functions.decrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.encrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
 import com.google.firebase.Firebase
@@ -58,6 +60,9 @@ fun atualizarDadosFirestore(
     descricao: String,
     login: String,
     senha: String,
+    url: String,
+    salt: String,
+    iv: String,
     onSuccess: () -> Unit,
     onError: (String) -> Unit
 ) {
@@ -69,7 +74,10 @@ fun atualizarDadosFirestore(
         "titulo" to titulo,
         "descricao" to descricao,
         "login" to login,
-        "senha" to senha
+        "senha" to senha,
+        "url" to url,
+        "salt" to salt,
+        "iv" to iv
     )
 
     db.collection("users")
@@ -87,14 +95,15 @@ fun atualizarDadosFirestore(
         }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun puxarDados(
-    categoryName: String,
+    categoryId: String,
     documentId: String,
-    onResult: (String, String, String, String) -> Unit
+    onResult: (String, String, String, String, String) -> Unit
 ) {
     val db = FirebaseFirestore.getInstance()
     val usuarioId = Firebase.auth.currentUser?.uid.toString()
-    val categoria = categoryName
+    val categoria = categoryId
     val senhaId = documentId
 
     db.collection("users")
@@ -109,9 +118,12 @@ fun puxarDados(
                 val titulo = document.getString("titulo") ?: ""
                 val descricao = document.getString("descricao") ?: ""
                 val login = document.getString("login") ?: ""
-                val senha = document.getString("senha") ?: ""
+                val senha = decrypt(usuarioId,
+                    document.getString("senha").toString(),document.getString("salt").toString(),
+                    document.getString("iv").toString()) ?: ""
+                val url = document.getString("url") ?: ""
                 Log.d("Firestore", "Dados carregados com sucesso.")
-                onResult(titulo, descricao, login, senha)
+                onResult(titulo, descricao, login, senha, url)
             } else {
                 Log.d("Firestore", "Documento não encontrado.")
             }
@@ -123,13 +135,13 @@ fun puxarDados(
 
 fun deletarSenha(
     context: Context,
-    categoryname: String,
+    categoryId: String,
     documentId: String,
-    navController: NavController
+    onResult: (Boolean) -> Unit
 ) {
     val db = FirebaseFirestore.getInstance()
     val usuarioId = Firebase.auth.currentUser?.uid.toString()
-    val categoria = categoryname
+    val categoria = categoryId
     val senhaId = documentId
 
     db.collection("users")
@@ -143,18 +155,19 @@ fun deletarSenha(
             Log.d("SENHA", "Senha deletada com sucesso!")
             Toast.makeText(
                 context,
-                "Senha excluida com sucesso!",
+                "Senha excluída com sucesso!",
                 Toast.LENGTH_LONG,
             ).show()
-            navController.navigate("passwordsByCategory/$categoryname")
+            onResult(true)
         }
         .addOnFailureListener {
-            Log.d("SENHA", "Erro ao deletar a senha!")
+            Log.d("SENHA", "Erro ao deletar a senha!", it)
             Toast.makeText(
                 context,
                 "Erro ao deletar a senha!",
                 Toast.LENGTH_LONG,
             ).show()
+            onResult(false)
         }
 }
 
@@ -219,17 +232,19 @@ fun AlterarSenha(
     var login by remember { mutableStateOf("") }
     var nova_senha by remember { mutableStateOf("") }
     var conf_nova_senha by remember { mutableStateOf("") }
+    var url by remember { mutableStateOf("") }
 
     val context = LocalContext.current
 
     // Carrega os dados do Firestore
     LaunchedEffect(Unit) {
-        puxarDados(categoryname, documentId) { t, d, l, s ->
+        puxarDados(categoryname, documentId) { t, d, l, s, u ->
             titulo = t
             descricao = d
             login = l
             nova_senha = s
             conf_nova_senha = ""
+            url = u
         }
     }
 
@@ -276,7 +291,9 @@ fun AlterarSenha(
                     nova_senha = nova_senha,
                     onNovaSenhaChange = { nova_senha = it },
                     conf_nova_senha = conf_nova_senha,
-                    onConfNovaSenhaChange = { conf_nova_senha = it }
+                    onConfNovaSenhaChange = { conf_nova_senha = it },
+                    url = url,
+                    onUrlChange = { url = it }
                 )
             }
 
@@ -302,9 +319,12 @@ fun AlterarSenha(
                 BotaoSalvar(
                     onClick = {
                         if (nova_senha == conf_nova_senha) {
-                            nova_senha = encrypt(Firebase.auth.currentUser.toString(), nova_senha)
-                            atualizarDadosFirestore(categoryname, documentId,titulo, descricao, login, nova_senha,
-                                onSuccess = {
+                            val usuarioId = Firebase.auth.currentUser?.uid.toString()
+                            val encryptedData = encrypt(usuarioId, nova_senha)
+
+                            //nova_senha = encryptedData.cipherText
+                            atualizarDadosFirestore(categoryname, documentId,titulo, descricao, login, encryptedData.cipherText,url,
+                                encryptedData.salt,encryptedData.iv,onSuccess = {
                                     scope.launch {
                                         snackbarHostState.showSnackbar("Senha salva com sucesso!", "OK")
                                     }
@@ -380,6 +400,8 @@ fun TextFieldsAlterarSenhas(
     onNovaSenhaChange: (String) -> Unit,
     conf_nova_senha: String,
     onConfNovaSenhaChange: (String) -> Unit,
+    url: String,
+    onUrlChange: (String) -> Unit
 ) {
     val verde = Color(0xFF166534)
     val branco = Color(0xFFFFFFFF)
@@ -411,6 +433,23 @@ fun TextFieldsAlterarSenhas(
         value = descricao,
         onValueChange = onDescricaoChange,
         placeholder = { Text("Descrição", color = Color.Gray) },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = verde,
+            focusedBorderColor = verde,
+            focusedTextColor = preto,
+            unfocusedTextColor = preto,
+            cursorColor = preto,
+            unfocusedContainerColor = branco,
+            focusedContainerColor = branco,
+        ),
+        modifier = commonModifier,
+        shape = RoundedCornerShape(10.dp)
+    )
+
+    OutlinedTextField(
+        value = url,
+        onValueChange = onUrlChange,
+        placeholder = { Text("URL", color = Color.Gray) },
         colors = OutlinedTextFieldDefaults.colors(
             unfocusedBorderColor = verde,
             focusedBorderColor = verde,

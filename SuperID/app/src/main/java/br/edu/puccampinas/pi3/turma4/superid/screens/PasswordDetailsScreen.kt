@@ -1,7 +1,6 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,18 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
 import br.edu.puccampinas.pi3.turma4.superid.deletarSenha
-import br.edu.puccampinas.pi3.turma4.superid.functions.decrypt
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import kotlin.Result.Companion.success
-import kotlin.math.log
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PasswordDetailsScreen(
-    categoryName: String,
+    categoryId: String,
     documentId: String,
     navController: NavController
 ) {
@@ -53,8 +46,8 @@ fun PasswordDetailsScreen(
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(context, categoryName, documentId) {
-        getPasswordDetails(context, categoryName, documentId) { result ->
+    LaunchedEffect(context, categoryId, documentId) {
+        getPasswordDetails(context, categoryId, documentId) { result ->
             password = result
         }
     }
@@ -73,13 +66,13 @@ fun PasswordDetailsScreen(
                 .padding(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { navController.navigate("passwordsByCategory/$categoryName") }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Voltar",
-                        tint = colorScheme.onBackground
-                    )
-                }
+//                IconButton(onClick = { navController.popBackStack() }) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                        contentDescription = "Voltar",
+//                        tint = colorScheme.onBackground
+//                    )
+//                }
                 Text(
                     text = password?.title ?: "Carregando...",
                     style = typography.titleLarge,
@@ -93,7 +86,11 @@ fun PasswordDetailsScreen(
                     showDialog = showDeleteDialog,
                     onDismiss = { showDeleteDialog = false },
                     onConfirm = {
-                        deletarSenha(context, categoryName, documentId, navController)
+                        deletarSenha(context, categoryId, documentId) { success ->
+                            if (success) {
+                                navController.popBackStack()
+                            }
+                        }
                     }
                 )
             }
@@ -115,7 +112,7 @@ fun PasswordDetailsScreen(
                     ActionButton(
                         text = "Editar",
                         color = colorScheme.primary,
-                        onClick = { navController.navigate("passwordDetails/$categoryName/$documentId/editarSenha") }
+                        onClick = { navController.navigate("passwordDetails/$categoryId/$documentId/editarSenha") }
                     )
                     ActionButton(
                         text = "Excluir",
@@ -226,7 +223,7 @@ fun PasswordDeleteDialog(
             },
             text = {
                 Text(
-                    text = "Tem certeza que deseja excluir esta categoria? A senha será excluída permanentemente.",
+                    text = "Tem certeza que deseja excluir esta senha? A senha será excluída permanentemente.",
                     color = colorScheme.onBackground
                 )
             }

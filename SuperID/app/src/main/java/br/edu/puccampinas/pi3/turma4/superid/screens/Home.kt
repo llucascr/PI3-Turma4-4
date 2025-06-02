@@ -16,12 +16,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
@@ -51,7 +51,7 @@ import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 @Composable
 fun HomeScreen(navController: NavController) {
     val context = LocalContext.current
-    var categoryList by remember { mutableStateOf<List<Pair<String, Long>>>(emptyList()) }
+    var categoryList by remember { mutableStateOf<List<Category>>(emptyList()) }
     var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -65,7 +65,7 @@ fun HomeScreen(navController: NavController) {
     Scaffold(
         containerColor = colorScheme.background,
         bottomBar = {
-            Divider(color = colorScheme.onBackground, thickness = 4.dp)
+            HorizontalDivider(color = colorScheme.onBackground, thickness = 4.dp)
             BottomBar(navController)
         },
         floatingActionButton = {
@@ -151,7 +151,7 @@ fun HomeScreen(navController: NavController) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        rowItems.forEach { (label, count) ->
+                        rowItems.forEach { category ->
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
@@ -160,7 +160,7 @@ fun HomeScreen(navController: NavController) {
                                     .background(colorScheme.primary)
                                     .padding(12.dp)
                                     .clickable {
-                                        navController.navigate("passwordsByCategory/${label}")
+                                        navController.navigate("passwordsByCategory/${category.id}/${category.isDefault}")
                                     }
                             ) {
                                 Column(
@@ -173,7 +173,7 @@ fun HomeScreen(navController: NavController) {
 //                                        fontSize = 10.sp
 //                                    )
                                     Text(
-                                        text = label,
+                                        text = category.name,
                                         color = colorScheme.onPrimary,
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold
@@ -244,6 +244,13 @@ fun CategoryInputDialog(
         )
     }
 }
+
+data class Category(
+    val id: String,
+    val name: String,
+    val quantidade: Long,
+    val isDefault: Boolean
+)
 
 @Preview(showBackground = true)
 @Composable

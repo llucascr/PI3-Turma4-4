@@ -22,7 +22,14 @@ private const val ivLength = 16
 private val random = SecureRandom()
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun encrypt(password: String, plaintext: String): String {
+data class EncryptedData(
+    val cipherText: String,
+    val salt: String,
+    val iv: String
+)
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun encrypt(password: String, plaintext: String): EncryptedData {
     val salt = ByteArray(saltLength).also { random.nextBytes(it) }
     val iv = ByteArray(ivLength).also { random.nextBytes(it) }
 
@@ -31,29 +38,29 @@ fun encrypt(password: String, plaintext: String): String {
     cipher.init(Cipher.ENCRYPT_MODE, key, IvParameterSpec(iv))
     val encrypted = cipher.doFinal(plaintext.toByteArray(Charsets.UTF_8))
 
-    // Vamos concatenar salt + iv + ciphertext e codificar em Base64
-    val combined = ByteArray(salt.size + iv.size + encrypted.size)
-    System.arraycopy(salt, 0, combined, 0, salt.size)
-    System.arraycopy(iv, 0, combined, salt.size, iv.size)
-    System.arraycopy(encrypted, 0, combined, salt.size + iv.size, encrypted.size)
+    // Codificamos em Base64 os dados
+    val cipherTextBase64 = Base64.getEncoder().encodeToString(encrypted)
+    val saltBase64 = Base64.getEncoder().encodeToString(salt)
+    val ivBase64 = Base64.getEncoder().encodeToString(iv)
 
-    return Base64.getEncoder().encodeToString(combined)
+    return EncryptedData(
+        cipherText = cipherTextBase64,
+        salt = saltBase64,
+        iv = ivBase64
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun decrypt(password: String, base64CipherText: String): String {
-    val combined = Base64.getDecoder().decode(base64CipherText)
-
-    // extrair salt, iv e ciphertext
-    val salt = combined.copyOfRange(0, saltLength)
-    val iv = combined.copyOfRange(saltLength, saltLength + ivLength)
-    val ciphertext = combined.copyOfRange(saltLength + ivLength, combined.size)
+fun decrypt(password: String, cipherText: String, saltBase64: String, ivBase64: String): String {
+    val salt = Base64.getDecoder().decode(saltBase64)
+    val iv = Base64.getDecoder().decode(ivBase64)
+    val ciphertextBytes = Base64.getDecoder().decode(cipherText)
 
     val key = deriveKey(password, salt)
     val cipher = Cipher.getInstance(cipherAlgorithm)
     cipher.init(Cipher.DECRYPT_MODE, key, IvParameterSpec(iv))
 
-    val decrypted = cipher.doFinal(ciphertext)
+    val decrypted = cipher.doFinal(ciphertextBytes)
     return String(decrypted, Charsets.UTF_8)
 }
 
@@ -62,17 +69,4 @@ private fun deriveKey(password: String, salt: ByteArray): SecretKeySpec {
     val spec: KeySpec = PBEKeySpec(password.toCharArray(), salt, iterationCount, keyLength)
     val tmp = factory.generateSecret(spec)
     return SecretKeySpec(tmp.encoded, "AES")
-}
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-fun main() {
-    val password = "minhaSenhaSuperSecreta"
-    val textoOriginal = "Texto para criptografar com PBE + AES + PKCS5Padding"
-
-    val criptografado = encrypt(password, textoOriginal)
-    println("Texto criptografado: $criptografado")
-
-    val textoDescriptografado = decrypt(password, criptografado)
-    println("Texto descriptografado: $textoDescriptografado")
 }

@@ -1,25 +1,20 @@
 package br.edu.puccampinas.pi3.turma4.superid.screens
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -27,22 +22,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.RadioButtonDefaults.colors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,32 +41,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.HomeActivity
-import com.google.firebase.firestore.FirebaseFirestore
-import br.edu.puccampinas.pi3.turma4.superid.R
-import br.edu.puccampinas.pi3.turma4.superid.WelcomeActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.verifyInputs
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddPwUI(navController: NavController, categoryName: String) {
+fun AddPwUI(navController: NavController, categoryId: String) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ){
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.Center) {
-            MainContent(categoryName, navController)
+            MainContent(categoryId, navController)
         }
     }
 }
@@ -85,7 +68,7 @@ fun AddPwUI(navController: NavController, categoryName: String) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainContent(categoryName: String, navController: NavController){
+fun MainContent(categoryId: String, navController: NavController){
     val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
@@ -109,15 +92,14 @@ fun MainContent(categoryName: String, navController: NavController){
             }
         }
     }
-    NewPasswordForms(categoryName, navController)
+    NewPasswordForms(categoryId, navController)
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NewPasswordForms(categoryName: String, navController: NavController){
-    var showSuccessDialog by remember { mutableStateOf(false) }
+fun NewPasswordForms(categoryId: String, navController: NavController){
     var success by remember {mutableStateOf(false)}
     var failure by remember {mutableStateOf(true)}
-    var context = LocalContext.current
+    val context = LocalContext.current
     Spacer(modifier = Modifier.size(50.dp))
     Box(modifier = Modifier.fillMaxWidth()){
         Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally){
@@ -231,14 +213,11 @@ fun NewPasswordForms(categoryName: String, navController: NavController){
                             unfocusedTextColor = Color.Black),
                         modifier = Modifier.fillMaxWidth().height(55.dp)
                     )
-                    if(success){
-                        Text("Senha salva!", color = MaterialTheme.colorScheme.primary, fontSize = 15.sp)
-                        Toast.makeText(
-                            context,
-                            "Senha Cadastrada com sucesso!",
-                            Toast.LENGTH_LONG,
-                        ).show()
-                        navController.navigate("passwordsByCategory/$categoryName")
+                    if (success) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(context, "Senha cadastrada com sucesso!", Toast.LENGTH_LONG).show()
+                            (context as? Activity)?.finish()
+                        }
                     }
                     if(!failure){
                         Spacer(modifier = Modifier.size(15.dp))
@@ -252,7 +231,7 @@ fun NewPasswordForms(categoryName: String, navController: NavController){
                            login,
                            senha,
                            url,
-                           categoryName
+                           categoryId
                        )
                         if(savingStatus) success = true else failure = false
                     }, modifier = Modifier.fillMaxWidth().height(55.dp), shape = RoundedCornerShape(12.dp),

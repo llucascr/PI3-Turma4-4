@@ -42,35 +42,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordsByCategory
-import br.edu.puccampinas.pi3.turma4.superid.ui.theme.SuperIDTheme
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
-import androidx.compose.runtime.mutableIntStateOf
-import br.edu.puccampinas.pi3.turma4.superid.QrCodeActivity
 import br.edu.puccampinas.pi3.turma4.superid.SavePasswordActivity
 import br.edu.puccampinas.pi3.turma4.superid.functions.deleteCategory
+import br.edu.puccampinas.pi3.turma4.superid.functions.editCategory
+import br.edu.puccampinas.pi3.turma4.superid.functions.getCategoryById
 
 @Composable
 fun PasswordsByCategoryScreen(
-    categoryName: String,
+    categoryId: String,
+    isDefault: Boolean,
     navController: NavController
-    //onBackClick: () -> Unit,
-    //onAddPasswordClick: () -> Unit,
-    //onPasswordClick: (String) -> Unit
 ) {
     val context = LocalContext.current
     var passwords by remember { mutableStateOf<List<PasswordItem>>(emptyList()) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    //var refreshTrigger by remember { mutableIntStateOf(0) }
+    var showEditDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(categoryName) {
-        getPasswordsByCategory(context, categoryName) { result ->
+    var categoryName by remember { mutableStateOf("") }
+
+    LaunchedEffect(categoryId) {
+        getCategoryById(categoryId) { fetchedName ->
+            categoryName = fetchedName ?: "Categoria não encontrada"
+        }
+        getPasswordsByCategory(context, categoryId) { result ->
             passwords = result
         }
     }
@@ -82,7 +82,7 @@ fun PasswordsByCategoryScreen(
             FloatingActionButton(
                 onClick = {
                     val intent = Intent(context, SavePasswordActivity::class.java)
-                    intent.putExtra("categoryName", categoryName)
+                    intent.putExtra("categoryId", categoryId)
                     context.startActivity(intent)
                 },
                 containerColor = colorScheme.onSecondary,
@@ -93,7 +93,7 @@ fun PasswordsByCategoryScreen(
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Adicionar categoria",
+                    contentDescription = "Adicionar senha",
                     modifier = Modifier.size(32.dp),
                     tint = colorScheme.primary
                 )
@@ -132,23 +132,25 @@ fun PasswordsByCategoryScreen(
                     )
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { /* TODO: ação de editar */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Editar categoria",
-                            tint = colorScheme.onBackground,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
+                if(!isDefault){
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { showEditDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Editar categoria",
+                                tint = colorScheme.onBackground,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
 
-                    IconButton(onClick = { showDeleteDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Excluir categoria",
-                            tint = colorScheme.onBackground,
-                            modifier = Modifier.size(32.dp)
-                        )
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Excluir categoria",
+                                tint = colorScheme.onBackground,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -178,18 +180,30 @@ fun PasswordsByCategoryScreen(
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(passwords) { password ->
                     PasswordCard(password, onClick = {
-                        navController.navigate("passwordDetails/${categoryName}/${password.documentId}")
+                        navController.navigate("passwordDetails/${categoryId}/${password.documentId}")
                     })
                 }
             }
 
             CategoryDeleteDialog(
-                showDialog = showDeleteDialog,
+                showDeleteDialog = showDeleteDialog,
                 onDismiss = { showDeleteDialog = false },
                 onConfirm = {
-                    deleteCategory(context, categoryName) { success ->
+                    deleteCategory(context, categoryId) { success ->
                         if (success) {
                             navController.popBackStack()
+                        }
+                    }
+                }
+            )
+            CategoryEditDialog(
+                showEditDialog = showEditDialog,
+                currentName = categoryName,
+                onDismiss = { showEditDialog = false },
+                onConfirm = { newName ->
+                    editCategory(context, categoryId, newName) { success ->
+                        if (success) {
+                            categoryName = newName
                         }
                     }
                 }
@@ -237,11 +251,11 @@ data class PasswordItem(
 
 @Composable
 fun CategoryDeleteDialog(
-    showDialog: Boolean,
+    showDeleteDialog: Boolean,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    if (showDialog) {
+    if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = onDismiss,
             confirmButton = {
@@ -281,14 +295,65 @@ fun CategoryDeleteDialog(
     }
 }
 
-
-@Preview(showBackground = true)
 @Composable
-fun PasswordsByCategoryScreenPreview() {
-    SuperIDTheme(darkTheme = true, dynamicColor = false) {
-        PasswordsByCategoryScreen(
-            categoryName = "Place",
-            navController = rememberNavController()
+fun CategoryEditDialog(
+    showEditDialog: Boolean,
+    currentName: String,
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var text by remember { mutableStateOf(currentName) }
+
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            confirmButton = {
+                Text(
+                    text = "Confirmar",
+                    modifier = Modifier
+                        .clickable {
+                            onConfirm(text)
+                            onDismiss()
+                        }
+                        .padding(8.dp),
+                    color = colorScheme.primary
+                )
+            },
+            dismissButton = {
+                Text(
+                    text = "Cancelar",
+                    modifier = Modifier
+                        .clickable { onDismiss() }
+                        .padding(8.dp),
+                    color = colorScheme.error
+                )
+            },
+            title = {
+                Text(
+                    text = "Editar Categoria",
+                    color = colorScheme.onPrimary
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    placeholder = { Text(currentName) },
+                    singleLine = true
+                )
+            }
         )
     }
 }
+
+
+//@Preview(showBackground = true)
+//@Composable
+//fun PasswordsByCategoryScreenPreview() {
+//    SuperIDTheme(darkTheme = true, dynamicColor = false) {
+//        PasswordsByCategoryScreen(
+//            categoryName = "Place",
+//            navController = rememberNavController()
+//        )
+//    }
+//}

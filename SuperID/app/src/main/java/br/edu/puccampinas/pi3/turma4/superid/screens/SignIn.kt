@@ -117,7 +117,7 @@ fun SignInFormScreen(navController: NavController) {
 
             if (validationUtils.checkUserAuth(context)) {
                 email = validationUtils.getSavedEmail(context).toString()
-                var name = getSavedName(context)
+                val name = getSavedName(context)
                 Row {
                     Column {
                         Text(
