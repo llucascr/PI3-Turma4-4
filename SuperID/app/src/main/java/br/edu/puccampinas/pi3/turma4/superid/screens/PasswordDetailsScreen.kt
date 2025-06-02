@@ -30,6 +30,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import br.edu.puccampinas.pi3.turma4.superid.deletarSenha
 import br.edu.puccampinas.pi3.turma4.superid.functions.getPasswordDetails
 
@@ -66,13 +69,13 @@ fun PasswordDetailsScreen(
                 .padding(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Voltar",
-                        tint = colorScheme.onBackground
-                    )
-                }
+//                IconButton(onClick = { navController.popBackStack() }) {
+//                    Icon(
+//                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                        contentDescription = "Voltar",
+//                        tint = colorScheme.onBackground
+//                    )
+//                }
                 Text(
                     text = password?.title ?: "Carregando...",
                     style = typography.titleLarge,
