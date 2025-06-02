@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+    <uses-feature android:name="android.hardware.camera.any" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/superid"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/superid"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SuperID"
+        tools:targetApi="31"
+        tools:ignore="ExtraText">
+        <activity
+            android:name=".MudarSenhaApp"
+            android:exported="true"
+            android:label="@string/title_activity_mudar_senha_app"
+            android:theme="@style/Theme.SuperID" />
+        tools:targetApi="31">
+        <activity
+            android:name=".QrCodeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_qr_code"
+            android:theme="@style/Theme.SuperID" />
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/Theme.SuperID" />
+        <activity
+            android:name=".SavePasswordActivity"
+            android:exported="false"
+            android:label="@string/title_activity_save_password"
+            android:theme="@style/Theme.SuperID" />
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home"
+            android:theme="@style/Theme.SuperID" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.SuperID" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".AuthenticationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sing_up"
+            android:theme="@style/Theme.SuperID" />
+    </application>
+
+</manifest>
